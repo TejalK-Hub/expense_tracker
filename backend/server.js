@@ -1,3 +1,5 @@
+const masterRoute = require('./routes/master.routes');
+
 const express = require('express');
 
 const cors = require('cors');
@@ -39,6 +41,8 @@ app.get('/health/db', async (req,res)=> {
         })
     }
 })
+
+app.use('/master', masterRoute);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT} and DATABASE is connected`);
