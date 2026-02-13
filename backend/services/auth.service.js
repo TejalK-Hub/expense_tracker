@@ -7,7 +7,7 @@ const findUserByEmail = async (email) => {
 
     const result= await pool.query(query, [email]);
 
-    return resulty.rows[0];
+    return results.rows[0];
 }
 
 module.exports = { 

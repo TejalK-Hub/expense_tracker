@@ -23,7 +23,7 @@ const login= async (req, res) => {
 
         }
 
-        const isMatch = await bycrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch)
         {
