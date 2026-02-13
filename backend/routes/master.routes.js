@@ -4,7 +4,10 @@ const router = express.Router();
 
 const masterController = require('../controllers/master.controller');
 
-router.get('/:type', masterController.getMasterData);
+const authMiddleware = require('../middleware/auth');
+
+router.get('/:type', authMiddleware, masterController.getMasterData);
+
 
 module.exports= router;
 

@@ -1,19 +1,23 @@
 const pool = require('../config/db');
 
 const findUserByEmail = async (email) => {
-    const query = `SELECT id, name, email, password, role
-    FROM users
-    WHERE email = $1`;
+    try {
+        const query = `
+            SELECT id, name, email, password, role
+            FROM users
+            WHERE email = $1
+        `;
 
-    const result= await pool.query(query, [email]);
+        const result = await pool.query(query, [email]);
 
-    return results.rows[0];
-}
+        return result.rows[0]; // returns user or undefined
 
-module.exports = { 
-    findUserByEmail
-
+    } catch (error) {
+        console.error('Auth Service Error:', error);
+        throw error;
+    }
 };
 
-
-
+module.exports = {
+    findUserByEmail
+};
