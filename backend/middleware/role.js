@@ -1,5 +1,5 @@
 const allowAdmin = (req, res, next) => {
-    // Check if auth middleware ran
+    // Check if auth middleware run 
     if (!req.user) {
         return res.status(401).json({
             success: false,

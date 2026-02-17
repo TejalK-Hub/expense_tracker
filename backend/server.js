@@ -18,7 +18,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5001;
 
-// Health check
+// overall Health check
 app.get('/health', (req, res) => {
     res.send('Server working');
 });

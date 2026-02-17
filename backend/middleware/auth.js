@@ -4,7 +4,7 @@ require('dotenv').config();
 const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
-    // Check header exists and starts with Bearer
+    // Check header exists and start with Bearer
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({
             success: false,
