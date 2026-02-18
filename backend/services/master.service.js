@@ -6,7 +6,8 @@ const allowedTables = [
     'expense_category',
     'visit_reason',
     'expense_status',
-    'rejection_reason'
+    'rejection_reason', 
+    'clients '
 ];
 
 const validateTable = (table) => {

@@ -29,6 +29,18 @@ CREATE TABLE users (
 -- MASTER TABLES
 -- =========================
 
+CREATE TABLE clients (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(150) UNIQUE NOT NULL,
+    description TEXT,
+    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT REFERENCES users(id),
+    is_published BOOLEAN DEFAULT TRUE,
+    deleted_on TIMESTAMP,
+    deleted_by INT REFERENCES users(id)
+);
+
+
 CREATE TABLE expense_category (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
