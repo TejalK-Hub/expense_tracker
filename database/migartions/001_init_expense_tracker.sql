@@ -124,6 +124,51 @@ CREATE TABLE advances (
 );
 
 
+
+-- =========================
+-- DEFAULT MASTER DATA
+-- =========================
+
+INSERT INTO expense_category (name) VALUES
+('Travel'),
+('Food'),
+('Petrol'),
+('Material'),
+('Other');
+
+INSERT INTO expense_status (name) VALUES
+('Pending'),
+('Submitted'),
+('Approved'),
+('Rejected');
+
+INSERT INTO rejection_reason (name) VALUES
+('Bill not clear'),
+('Amount mismatch'),
+('Policy violation'),
+('Duplicate entry');
+
+INSERT INTO visit_reason (name) VALUES
+('Client Site Installation'),
+('Device Maintenance / Service'),
+('Network / Gateway Setup'),
+('IoT Device Deployment'),
+('Troubleshooting / Issue Resolution'),
+('Site Survey'),
+('Client Meeting / Technical Discussion'),
+('Training / Demonstration'),
+('Internal Field Testing'),
+('Emergency Breakdown Support'),
+('Other / Internal Office Work');
+
+
+-- =========================
+-- DEFAULT USERS (OPTIONAL) dummy data 
+-- =========================
+INSERT INTO users (name, email, password, role) VALUES
+('Admin1', 'admin1@test.com', '123', 'Admin'),
+('Employee1', 'emp1@test.com', '456', 'Employee');
+
 -- =========================
 -- MONTHLY BALANCE VIEW
 -- =========================
@@ -166,48 +211,3 @@ GROUP BY
     EXTRACT(YEAR FROM e.date),
     EXTRACT(MONTH FROM e.date),
     a.amount;
-
-
--- =========================
--- DEFAULT MASTER DATA
--- =========================
-
-INSERT INTO expense_category (name) VALUES
-('Travel'),
-('Food'),
-('Petrol'),
-('Material'),
-('Other');
-
-INSERT INTO expense_status (name) VALUES
-('Pending'),
-('Submitted'),
-('Approved'),
-('Rejected');
-
-INSERT INTO rejection_reason (name) VALUES
-('Bill not clear'),
-('Amount mismatch'),
-('Policy violation'),
-('Duplicate entry');
-
-INSERT INTO visit_reason (name) VALUES
-('Client Site Installation'),
-('Device Maintenance / Service'),
-('Network / Gateway Setup'),
-('IoT Device Deployment'),
-('Troubleshooting / Issue Resolution'),
-('Site Survey'),
-('Client Meeting / Technical Discussion'),
-('Training / Demonstration'),
-('Internal Field Testing'),
-('Emergency Breakdown Support'),
-('Other / Internal Office Work');
-
-
--- =========================
--- DEFAULT USERS (OPTIONAL)
--- =========================
-INSERT INTO users (name, email, password, role) VALUES
-('Admin1', 'admin1@test.com', '123', 'Admin'),
-('Employee1', 'emp1@test.com', '456', 'Employee');
