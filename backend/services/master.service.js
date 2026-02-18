@@ -1,8 +1,12 @@
 const pool = require('../config/db');
+const { buildUpdateQuery } = require('../utils/updateHelper');
 
 // allowed master tables 
 const allowedTables = [
-    'expense_category'
+    'expense_category',
+    'visit_reason',
+    'expense_status',
+    'rejection_reason'
 ];
 
 const validateTable = (table) => {
@@ -65,30 +69,17 @@ const create = async (table, data, userId) => {
 };
 
 
-// UPDATE
+// UPDATE (only allowed & provided, rest : same)
 const update = async (table, id, data) => {
     validateTable(table);
 
-    const query = `
-        UPDATE ${table}
-        SET name = $1,
-            description = $2,
-            is_published = $3
-        WHERE id = $4
-        RETURNING *;
-    `;
+    const allowedFields = ['name', 'description', 'is_published'];
 
-    const values = [
-        data.name,
-        data.description || null,
-        data.is_published,
-        id
-    ];
+    const { query, values } = buildUpdateQuery(table, id, data, allowedFields);
 
     const result = await pool.query(query, values);
     return result.rows[0];
 };
-
 
 // SOFT DELETE
 const remove = async (table, id, userId) => {
