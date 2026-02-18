@@ -16,7 +16,7 @@ const buildUpdateQuery = (table, id , data, allowedFields) => {
     }
     // if no fields given 
     if (keys.length===0){
-        throw new Error('No allowed fields provided for update.');
+        throw new Error('No valid fields provided for update.');
     }
 
     values.push(id);
