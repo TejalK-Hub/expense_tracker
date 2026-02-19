@@ -6,19 +6,18 @@ const getAll = async (req, res) => {
     try {
         const { table } = req.params;
 
-        const data = await masterService.getAll(table);
+        const data = await masterService.getAll(table, req.user);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data
         });
 
     } catch (error) {
-        console.error('Get Master Error:', error.message);
-
-        res.status(400).json({
+        console.error(error);
+        return res.status(500).json({
             success: false,
-            message: error.message
+            message: 'Internal server error'
         });
     }
 };

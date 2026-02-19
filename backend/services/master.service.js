@@ -18,19 +18,27 @@ const validateTable = (table) => {
 
 
 // GET ALL (published + not deleted)
-const getAll = async (table) => {
+// (Role based visibility)
+const getAll = async (table, user) => {
     validateTable(table);
 
-    const query = `
-        SELECT id, name, description, is_published
-        FROM ${table}
-        WHERE deleted_on IS NULL
-        ORDER BY name;
-    `;
+    let query = `SELECT * FROM ${table}`;
+    let values = [];
 
-    const result = await pool.query(query);
+    // Employee : only published and not deleted
+    if (user.role === 'Employee') {
+        query += `
+            WHERE is_published = true
+            AND deleted_on IS NULL
+        `;
+    }
+
+    query += ` ORDER BY name`;
+
+    const result = await pool.query(query, values);
     return result.rows;
 };
+
 
 
 // GET ONE by id 
