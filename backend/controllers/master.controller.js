@@ -1,131 +1,64 @@
-const masterService = require('../services/master.service');
-// based on table name
+const service = require('../services/master.service');
 
-// GET ALL
+// GET ALL /data/:table
 const getAll = async (req, res) => {
     try {
         const { table } = req.params;
-
-        const data = await masterService.getAll(table, req.user);
-
-        return res.status(200).json({
-            success: true,
-            data
-        });
-
+        const data = await service.getAll(table);
+        res.json({ success: true, data });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            success: false,
-            message: 'Internal server error'
-        });
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
-
-// GET ONE by id
+// GET ONE (by id) /data/:table/:id
 const getOne = async (req, res) => {
     try {
         const { table, id } = req.params;
-
-        const data = await masterService.getOne(table, id);
-
-        res.status(200).json({
-            success: true,
-            data
-        });
-
+        const data = await service.getById(table, id);
+        res.json({ success: true, data });
     } catch (error) {
-        console.error('Get One Master Error:', error.message);
-
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
-
-// CREATE
+// POST /data/:table
 const create = async (req, res) => {
     try {
         const { table } = req.params;
-
-        const data = await masterService.create(
-            table,
-            req.body,
-            req.user.id
-        );
-
-        res.status(201).json({
-            success: true,
-            data
-        });
-
+        const data = await service.create(table, req.body);
+        res.json({ success: true, data });
     } catch (error) {
-        console.error('Create Master Error:', error.message);
-
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
-
-// UPDATE y id
+// PUT /data/:table/:id
 const update = async (req, res) => {
     try {
         const { table, id } = req.params;
-
-        const data = await masterService.update(
-            table,
-            id,
-            req.body
-        );
-
-        res.status(200).json({
-            success: true,
-            data
-        });
-
+        const data = await service.update(table, id, req.body);
+        res.json({ success: true, data });
     } catch (error) {
-        console.error('Update Master Error:', error.message);
-
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
-
-// DELETE (Soft)
+// DELETE /data/:table/:id  (soft delete)
 const remove = async (req, res) => {
     try {
         const { table, id } = req.params;
 
-        const data = await masterService.remove(
-            table,
-            id,
-            req.user.id
-        );
+        
+        const deletedBy = 0;
 
-        res.status(200).json({
-            success: true,
-            data
-        });
+        const data = await service.softDelete(table, id, deletedBy);
 
+        res.json({ success: true, data });
     } catch (error) {
-        console.error('Delete Master Error:', error.message);
-
-        res.status(400).json({
-            success: false,
-            message: error.message
-        });
+        res.status(400).json({ success: false, message: error.message });
     }
 };
-
 
 module.exports = {
     getAll,

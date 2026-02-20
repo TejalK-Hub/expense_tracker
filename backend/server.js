@@ -1,14 +1,19 @@
 const express = require('express');
-
 const cors = require('cors');
-
 require('dotenv').config();
 
 const pool = require('./config/db');
 
-const masterRoute = require('./routes/master.routes');
+// Routes
+const dataRoutes = require('./routes/master.routes');      // Generic CRUD
+const dashboardRoutes = require('./routes/dashboard.routes');
+const visitsRoutes = require('./routes/visits.routes');
+const expenseRoutes = require('./routes/expense.routes');
+const expenseAdminRoutes = require('./routes/expense.admin.routes');
 
-const authRoutes = require('./routes/auth.routes');
+const expenseActionRoutes = require('./routes/expense.action.routes');
+
+//const authRoutes = require('./routes/auth.routes');        // Optional (for  login only)
 
 const app = express();
 
@@ -16,20 +21,33 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(cors());
+app.use(express.json());
+
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.use('/expenses', expenseAdminRoutes);
+
+app.use('/expenses', expenseActionRoutes);
+
 const PORT = process.env.PORT || 5001;
 
-// overall Health check
+
+
+// Server health
 app.get('/health', (req, res) => {
     res.send('Server working');
 });
 
-// DB health check
+// Database health
 app.get('/health/db', async (req, res) => {
     try {
         const result = await pool.query('SELECT NOW()');
+
         res.json({
             status: 'Database connected',
-            time: result.rows[0]
+            time: result.rows[0].now
         });
     } catch (error) {
         console.error(error);
@@ -39,11 +57,29 @@ app.get('/health/db', async (req, res) => {
     }
 });
 
-// Routes
-app.use('/master', masterRoute);
-app.use('/auth', authRoutes);
 
-// Start server
+// Internal Generic CRUD engine (not for UI)
+app.use('/internal', dataRoutes);
+
+// Optional alias for users only (if UI needs raw CRUD)
+app.use('/users', dataRoutes);
+
+// Dashboard
+app.use('/dashboard', dashboardRoutes);
+
+// UI Display APIs
+app.use('/visits', visitsRoutes);
+
+//expense route
+app.use('/expenses', expenseRoutes);
+
+// Auth (login only,and optional )
+//app.use('/auth', authRoutes);
+
+
+
+// Server
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

@@ -1,28 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const masterController = require('../controllers/master.controller');
-const authMiddleware = require('../middleware/auth');
-const { allowAdmin } = require('../middleware/role');
+const controller = require('../controllers/master.controller');
 
+// No auth 
 
-// READ (Employee + Admin)
-
-router.get('/:table', authMiddleware, masterController.getAll);
-router.get('/:table/:id', authMiddleware, masterController.getOne);
-
-
-
-// MODIFY (Admin only)
-
-//create
-router.post('/:table', authMiddleware, allowAdmin, masterController.create);
-
-//update
-router.put('/:table/:id', authMiddleware, allowAdmin, masterController.update);
-
-//delete(soft)
-router.delete('/:table/:id', authMiddleware, allowAdmin, masterController.remove);
-
+router.get('/:table', controller.getAll);
+router.get('/:table/:id', controller.getOne);
+router.post('/:table', controller.create);
+router.put('/:table/:id', controller.update);
+router.delete('/:table/:id', controller.remove);
 
 module.exports = router;

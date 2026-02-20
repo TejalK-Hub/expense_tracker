@@ -1,3 +1,4 @@
+/* 
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -30,3 +31,5 @@ const authMiddleware = (req, res, next) => {
 };
 
 module.exports = authMiddleware;
+
+*/
