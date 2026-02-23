@@ -11,6 +11,8 @@ const visitsRoutes = require('./routes/visits.routes');
 const expenseRoutes = require('./routes/expense.routes');
 const expenseAdminRoutes = require('./routes/expense.admin.routes');
 
+const expenseSummaryRoutes = require('./routes/expense.summary.routes');
+
 const expenseActionRoutes = require('./routes/expense.action.routes');
 
 //const authRoutes = require('./routes/auth.routes');        // Optional (for  login only)
@@ -30,6 +32,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/expenses', expenseAdminRoutes);
 
 app.use('/expenses', expenseActionRoutes);
+
+app.use('/expenses/summary', expenseSummaryRoutes);
 
 const PORT = process.env.PORT || 5001;
 

@@ -76,13 +76,46 @@ const getUserExpenses = async (userId) => {
 
 
 const updateExpense = async (id, data) => {
+
+    // 1 = Pending
+    // 2 = Submitted
+    // 3 = Approved
+    // 4 = Rejected
+
+    // Block if Approved
+    const checkQuery = `
+        SELECT status_id 
+        FROM expenses 
+        WHERE id = $1
+    `;
+
+    const checkResult = await pool.query(checkQuery, [id]);
+
+    if (checkResult.rows.length === 0) {
+        throw new Error('Expense not found');
+    }
+
+    const currentStatus = checkResult.rows[0].status_id;
+
+    if (currentStatus === 3) {
+        throw new Error('Approved expense cannot be edited');
+    }
+
+    // If Rejected : move back to Submitted (resubmit)
+    let newStatus = currentStatus;
+    if (currentStatus === 4) {
+        newStatus = 2;
+    }
+
     const query = `
         UPDATE expenses
-        SET date = $1,
+        SET 
+            date = $1,
             category_id = $2,
             amount = $3,
-            description = $4
-        WHERE id = $5
+            description = $4,
+            status_id = $5
+        WHERE id = $6
         RETURNING *;
     `;
 
@@ -91,6 +124,7 @@ const updateExpense = async (id, data) => {
         data.category_id,
         data.amount,
         data.description,
+        newStatus,
         id
     ];
 
