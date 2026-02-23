@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const authService = require('../services/auth.service');
 
-require('dotenv').config();
+// require('dotenv').config();
 
 
 //  email validation 

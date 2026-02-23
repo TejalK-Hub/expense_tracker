@@ -1,4 +1,6 @@
+const { JsonWebTokenError } = require('jsonwebtoken');
 const service = require('../services/expense.service');
+
 
 const createExpense = async (req, res) => {
     try {
@@ -27,8 +29,10 @@ const getExpensesByVisit = async (req, res) => {
 
 const getUserExpenses = async (req, res) => {
     try {
-        const { user_id } = req.query;
-        const data = await service.getUserExpenses(user_id);
+        console.log("URL MIDDLEWARE ", req.user
+        )
+        const { id } = req.user;
+        const data = await service.getUserExpenses(id);
         res.json({ success: true, data });
     } catch (error) {
         res.status(500).json({ success: false });

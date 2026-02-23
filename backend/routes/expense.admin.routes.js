@@ -5,4 +5,6 @@ const controller = require('../controllers/expense.admin.controller');
 // Admin expense history
 router.get('/all', controller.getAllExpenses);
 
+router.put('/:id/status', controller.updateStatus);
+
 module.exports = router;

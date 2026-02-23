@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require('../controllers/expense.controller');
 const multer = require('multer');
 const path = require('path');
+const authMiddleware = require('../middleware/auth');
 
 // Storage config 
 const storage = multer.diskStorage({
@@ -18,8 +19,10 @@ const upload = multer({ storage });
 
 // USER APIs
 router.post('/', upload.single('bill'), controller.createExpense);
-router.get('/visit/:visitId', controller.getExpensesByVisit);
-router.get('/user', controller.getUserExpenses);
+router.get('/visit/:visitId', authMiddleware, controller.getExpensesByVisit);
+
+
+router.get('/user', authMiddleware, controller.getUserExpenses);
 router.put('/:id', controller.updateExpense);
 
 module.exports = router;

@@ -8,8 +8,8 @@ const getAllExpenses = async (filters) => {
 
     // Filter by status name 
     if (filters.status) {
-        conditions.push(`es.name = $${index}`);
-        values.push(filters.status);
+        conditions.push(`LOWER(es.name) = $${index}`);
+        values.push(filters.status.toLowerCase());
         index++;
     }
 
@@ -28,7 +28,7 @@ const getAllExpenses = async (filters) => {
     const query = `
         SELECT 
             e.id,
-            e.date,
+            to_char(e.date, 'YYYY-MM-DD') as date,
             e.amount,
             e.description,
             e.bill_path,
@@ -53,6 +53,44 @@ const getAllExpenses = async (filters) => {
     return result.rows;
 };
 
+const updateExpenseStatus = async (expenseId, action, rejection_reason_id = null) => {
+
+    let statusName;
+
+    if (action === 'approve') statusName = 'Approved';
+    else if (action === 'reject') statusName = 'Rejected';
+    else throw new Error('Invalid action');
+
+    const statusQuery = `
+        SELECT id FROM expense_status
+        WHERE name = $1
+        AND deleted_on IS NULL
+    `;
+
+    const statusResult = await pool.query(statusQuery, [statusName]);
+
+    if (statusResult.rows.length === 0) {
+        throw new Error('Status not found');
+    }
+
+    const status_id = statusResult.rows[0].id;
+
+    const updateQuery = `
+        UPDATE expenses
+        SET 
+            status_id = $1,
+            approved_by = 1,
+            approved_at = NOW()
+        WHERE id = $2
+        RETURNING *;
+    `;
+
+    const result = await pool.query(updateQuery, [status_id, expenseId]);
+
+    return result.rows[0];
+};
+
 module.exports = {
-    getAllExpenses
+    getAllExpenses,
+    updateExpenseStatus
 };

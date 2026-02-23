@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+
 const pool = require('./config/db');
 
 // Routes
@@ -13,9 +14,9 @@ const expenseAdminRoutes = require('./routes/expense.admin.routes');
 
 const expenseSummaryRoutes = require('./routes/expense.summary.routes');
 
-const expenseActionRoutes = require('./routes/expense.action.routes');
 
-//const authRoutes = require('./routes/auth.routes');        // Optional (for  login only)
+
+const authRoutes = require('./routes/auth.routes');        // Optional (for  login only)
 
 const app = express();
 
@@ -23,15 +24,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(cors());
-app.use(express.json());
+
 
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/expenses', expenseAdminRoutes);
 
-app.use('/expenses', expenseActionRoutes);
+
 
 app.use('/expenses/summary', expenseSummaryRoutes);
 
@@ -61,6 +61,8 @@ app.get('/health/db', async (req, res) => {
     }
 });
 
+// Auth (login only,and optional )
+app.use('/auth', authRoutes);
 
 // Internal Generic CRUD engine (not for UI)
 app.use('/internal', dataRoutes);
@@ -74,11 +76,20 @@ app.use('/dashboard', dashboardRoutes);
 // UI Display APIs
 app.use('/visits', visitsRoutes);
 
-//expense route
-app.use('/expenses', expenseRoutes);
 
-// Auth (login only,and optional )
-//app.use('/auth', authRoutes);
+const testmiddleware = (req,res,next)=>
+{
+    console.log(" req url", req.url);
+
+    req.tejal= "triajnidewsks";
+
+    next ();
+}
+
+//expense route
+app.use('/expenses', testmiddleware, expenseRoutes);
+
+
 
 
 
