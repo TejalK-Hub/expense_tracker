@@ -1,36 +1,21 @@
-<table class="table">
-  <thead>
+<table class="table clean-table pending-table">
+  <thead class="clean-head">
     <tr>
-      <th scope="col">#</th>
+      <th scope="col">Expense</th>
       <th scope="col">ExpenseDate</th>
       <th scope="col">Category</th>
-      <th scope="col">Receipt</th>
       <th scope="col">Amount</th>
       <th scope="col">Visit</th>
     </tr>
   </thead>
-  <tbody >
-    <tr *ngFor="let exp of expenses">
+
+  <tbody>
+    <tr *ngFor="let exp of pendingExpenses" class="clean-row">
       <th scope="row">{{ exp.expense }}</th>
       <td>{{ exp.date }}</td>
       <td>{{ exp.category }}</td>
-      <td>{{ exp.receipt }}</td>
       <td>{{ exp.amount }}</td>
-      <td>
-        <button class="btn btn-sm btn-light border">View</button>
-      </td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>&#64;fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>John</td>
-      <td>Doe</td>
-      <td>&#64;social</td>
+      <td>{{ exp.visit }}</td>
     </tr>
   </tbody>
 </table>

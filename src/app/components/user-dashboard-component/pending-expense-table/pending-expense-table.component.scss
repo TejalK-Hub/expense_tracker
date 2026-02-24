@@ -1,0 +1,54 @@
+/* Table container */
+.clean-table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+/* Header */
+.clean-head th {
+  font-weight: 500;
+  color: #6b7280;
+  border: none;
+  font-size: 14px;
+  background: #f9fafb;
+  padding: 12px 18px;
+}
+
+/* Rows look like cards */
+.clean-row {
+  background: #f8fbff;
+  border-radius: 10px;
+}
+
+/* Cells */
+.clean-row td,
+.clean-row th {
+  border: none;
+  padding: 14px 18px;
+  vertical-align: middle;
+  color: #374151;
+}
+
+/* Amount column — light red */
+.pending-table .clean-row td:nth-child(4) {
+  color: #f87171;
+  font-weight: 500;
+}
+
+/* Rounded row effect */
+.clean-row td:first-child,
+.clean-row th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.clean-row td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* Soft hover */
+.clean-row:hover {
+  background: #f1f6ff;
+  transition: 0.2s ease;
+}

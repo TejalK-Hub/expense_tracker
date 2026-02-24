@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class PendingExpenseTableComponent {
 
-  expenses = [
+  pendingExpenses = [
     {
       expense: 'Client Lunch',
       date: '2026-01-12',

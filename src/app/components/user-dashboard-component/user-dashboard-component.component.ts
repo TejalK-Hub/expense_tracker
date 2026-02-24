@@ -5,6 +5,7 @@ import { DashboardBlockComponent } from './../shared/dashboard-block-component/d
 import { ExpenseTableComponent } from '../shared/expense-table-component/expense-table.component';
 import { ButtonComponent } from '../shared/button/button.component';
 import { Router } from '@angular/router';
+import { PendingExpenseTableComponent } from './pending-expense-table/pending-expense-table.component';
 
 @Component({
   selector: 'app-user-dashboard-component',
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
     ExpandableButtonComponent,
     ExpenseTableComponent,
     QuickActionsComponent,
+    PendingExpenseTableComponent,
   ],
   templateUrl: './user-dashboard-component.component.html',
   styleUrl: './user-dashboard-component.component.scss',
@@ -27,6 +29,10 @@ export class UserDashboardComponentComponent {
     expenses: 100,
     expenses_amt: 2500,
   };
+
+  viewVisits() {
+    this.route.navigate(['/visits']);
+  }
 
   handleRouting(option: number) {
     if (option === 1) {

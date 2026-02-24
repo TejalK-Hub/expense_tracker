@@ -4,18 +4,24 @@ import { InputComponent } from '../../shared/input/input.component';
 import { DropDownButtonComponent } from '../../shared/drop-down-button/drop-down-button.component';
 import { AddReceiptComponent } from '../add-receipt/add-receipt.component';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-expense-page',
   standalone: true,
-  imports: [ButtonComponent, InputComponent, DropDownButtonComponent, AddReceiptComponent, FormsModule],
+  imports: [
+    ButtonComponent,
+    InputComponent,
+    DropDownButtonComponent,
+    AddReceiptComponent,
+    FormsModule,
+    CommonModule,
+  ],
   templateUrl: './add-expense-page.component.html',
-  styleUrl: './add-expense-page.component.scss'
+  styleUrl: './add-expense-page.component.scss',
 })
 export class AddExpensePageComponent {
-
-amount: number = 0;
-description: string = '';
-// category: string = '';
-
+  amount: number = 0;
+  description: string = '';
+  // category: string = '';
 }

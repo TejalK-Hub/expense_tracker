@@ -1,34 +1,19 @@
-<table class="table">
-  <thead>
+<table class="table clean-table visits-table">
+  <thead class="clean-head">
     <tr>
-      <th scope="col">#</th>
       <th scope="col">Client</th>
-      <th scope="col">Start Date</th>
-      <th scope="col">End Date</th>
+      <th scope="col">StartDate</th>
+      <th scope="col">EndDate</th>
       <th scope="col">Reason</th>
     </tr>
   </thead>
-  <tbody >
-    <tr *ngFor="let visit of visits">
+
+  <tbody>
+    <tr *ngFor="let visit of visits" class="clean-row">
       <th scope="row">{{ visit.client }}</th>
       <td>{{ visit.startDate }}</td>
       <td>{{ visit.endDate }}</td>
       <td>{{ visit.reason }}</td>
-      <td>
-        <button class="btn btn-sm btn-light border">View</button>
-      </td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>&#64;fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>John</td>
-      <td>Doe</td>
-      <td>&#64;social</td>
     </tr>
   </tbody>
 </table>

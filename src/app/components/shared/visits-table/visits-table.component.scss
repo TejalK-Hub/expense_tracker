@@ -1,0 +1,59 @@
+/* Base table styling (same as expense table) */
+.clean-table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.clean-head th {
+  font-weight: 500;
+  color: #6b7280;
+  border: none;
+  font-size: 14px;
+  background: #f9fafb;
+  padding: 12px 18px;
+}
+
+.clean-row {
+  background: #f8fbff;
+  border-radius: 10px;
+}
+
+.clean-row td,
+.clean-row th {
+  border: none;
+  padding: 14px 18px;
+  vertical-align: middle;
+  color: #374151;
+}
+
+/* Light color coding */
+
+.visits-table .clean-row > :nth-child(2) {
+  color: #60a5fa;   // light blue → start date
+  font-weight: 500;
+}
+
+.visits-table .clean-row > :nth-child(3) {
+  color: #34d399;   // light green → end date
+  font-weight: 500;
+}
+
+/* Rounded corners */
+
+.clean-row td:first-child,
+.clean-row th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.clean-row td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+/* Hover */
+
+.clean-row:hover {
+  background: #f1f6ff;
+  transition: 0.2s ease;
+}
