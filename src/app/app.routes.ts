@@ -7,6 +7,7 @@ export const routes: Routes = [
 
     {path: 'manage-expense', component: ExpenseTableComponent},
     {path: 'add-expense', component: AddExpensePageComponent},
+    {path: 'review-expense', component: ExpenseTableComponent},
 
 
     //Admin routes

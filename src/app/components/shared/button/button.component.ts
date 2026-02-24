@@ -12,10 +12,10 @@ export class ButtonComponent {
   @Input() mainIcon: string = '';
   @Input() mainLabel: string = '';
 
-  @Output() actionClick = new EventEmitter<string>();
+  @Output() actionClick = new EventEmitter<void>();
 
-  onClick(type: string) {
-    this.actionClick.emit(type);
+  onClick() {
+    this.actionClick.emit();
   }
 
 }

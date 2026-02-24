@@ -6,10 +6,9 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './expandable-button.component.html',
-  styleUrl: './expandable-button.component.scss'
+  styleUrl: './expandable-button.component.scss',
 })
 export class ExpandableButtonComponent {
-  
   //Configurable Button Inputs
   @Input() mainIcon: string = '';
   @Input() mainLabel: string = '';
@@ -18,19 +17,16 @@ export class ExpandableButtonComponent {
   @Input() two: string = '';
   @Input() three: string = '';
 
+  @Output() optionClick = new EventEmitter<number>();
+
   expanded = false;
   isAdmin = true;
 
-  @Output() optionClicked = new EventEmitter<number>();
-
-  toggleButton(){
+  toggleButton() {
     this.expanded = !this.expanded;
   }
 
   handleClick(option: number) {
-    this.optionClicked.emit(option);
+    this.optionClick.emit(option);
   }
-
-
-
 }
