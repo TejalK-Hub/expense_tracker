@@ -1,7 +1,12 @@
-<app-drop-down-button>
-</app-drop-down-button>
+<div class="expense-card vstack gap-4">
+
+    <h3 class="title text-center">Add Expense</h3>
+<app-drop-down-button class="pill-field"> </app-drop-down-button>
+
+<app-add-receipt class="pill-field" />
 
 <app-input
+  class="pill-field"
   label="Amount"
   placeholder="Enter amount"
   [(ngModel)]="amount"
@@ -9,24 +14,25 @@
 />
 
 <app-input
+  class="pill-field"
   label="Description"
   placeholder="Enter description"
   [(ngModel)]="description"
   type="text"
 />
 
-<button
-  class="d-flex btn btn-light border shadow-sm expense mt-3"
-  >Save</button>
+<div class="d-flex justify-content-center gap-3 mt-3">
+  <button class="d-flex btn btn-light border shadow-sm expense mt-3 action-btn save">
+    Save
+  </button>
+  <button class="d-flex btn btn-light border shadow-sm expense mt-3 action-btn cancel">
+    Cancel
+  </button>
+</div>
+
+<button class="d-flex btn btn-light border shadow-sm expense mt-3 action-btn add-new align-self-center">
+  Add New
+</button>
 
 
-<button
-  class="d-flex btn btn-light border shadow-sm expense mt-3"
-  >Add New</button>
-
-
-<button
-  class="d-flex btn btn-light border shadow-sm expense mt-3"
-  >Cancel</button>
-
-
+</div>

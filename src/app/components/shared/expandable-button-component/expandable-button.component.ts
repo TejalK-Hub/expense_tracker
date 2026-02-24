@@ -17,10 +17,11 @@ export class ExpandableButtonComponent {
   @Input() two: string = '';
   @Input() three: string = '';
 
+  @Input() isAdmin: boolean = false;
+
   @Output() optionClick = new EventEmitter<number>();
 
   expanded = false;
-  isAdmin = true;
 
   toggleButton() {
     this.expanded = !this.expanded;

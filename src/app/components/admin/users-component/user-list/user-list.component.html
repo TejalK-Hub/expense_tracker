@@ -1,4 +1,4 @@
-<div class="container d-flex justify-content-center">
+<!-- <div class="container d-flex justify-content-center">
 <p-calendar 
   [(ngModel)]="selectedMonth"
   view="month"
@@ -21,4 +21,48 @@
             </li>
         </ol>
     </div>
+</div> -->
+
+
+<div class="container">
+
+    <div class="d-flex justify-content-center my-3">
+
+  <p-calendar
+    [(ngModel)]="selectedMonth"
+    view="month"
+    dateFormat="mm/yy"
+    [maxDate]="today"
+    (onSelect)="filterByMonth()">
+  </p-calendar>
+
+</div>
+
+
+  <div class="d-flex justify-content-center">
+    <ol class="list-group c-width-40 user-list">
+
+      <li
+        class="list-group-item user-card"
+        *ngFor="let user of filteredUsers"
+      >
+        <div class="d-flex align-items-center gap-3">
+
+          <!-- Dummy avatar -->
+          <img
+            src="assets/user-placeholder.png"
+            class="user-avatar"
+          />
+
+          <!-- Name + Expense -->
+          <div class="d-flex flex-column">
+            <span class="user-name">{{ user.name }}</span>
+            <span class="user-expense">Total: ₹{{ user.expense }}</span>
+          </div>
+
+        </div>
+      </li>
+
+    </ol>
+  </div>
 </div>

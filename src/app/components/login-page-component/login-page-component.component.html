@@ -1,1 +1,28 @@
-<p>login-page-component works!</p>
+<form (ngSubmit)="login()">
+  <div class="container text-center mt-5">
+    <h2>Expense Tracking</h2>
+    <p>Login to continue.</p>
+
+    <div class="mb-3">
+      <label>Email</label>
+      <input
+        type="email"
+        class="form-control"
+        [(ngModel)]="email"
+        placeholder="abc@mail.com"
+        name="email"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label>Password</label>
+      <input type="password" class="form-control" [(ngModel)]="password" name="password"/>
+    </div>
+
+    <button class="btn btn-primary w-100" type="submit">Login</button>
+
+    <div *ngIf="errorMsg" class="text-danger mt-3">
+      {{ errorMsg }}
+    </div>
+  </div>
+</form>

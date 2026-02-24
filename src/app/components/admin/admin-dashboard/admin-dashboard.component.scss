@@ -1,0 +1,30 @@
+.sidebar {
+  width: 180px;
+  padding: 20px 10px;
+  background: #f5f6f7;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Main buttons */
+.menu-item ::ng-deep button {
+  width: 130px;
+  background: #1f8a6d;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+/* Expanded options */
+.menu-item ::ng-deep .sub-btn {
+  background: #e9ecef;
+  color: #6c757d;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  margin-top: 4px;
+}

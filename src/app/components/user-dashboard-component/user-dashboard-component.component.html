@@ -62,27 +62,29 @@
 
 
     </div>
-
-    <app-button
+    
+    <div class="container d-flex flex-column align-items-center gap-4 pt-5 pb-5">
+      <app-button
       mainIcon="./expn.png"
       mainLabel="Summary"
       />
-
-    <app-expandable-button
+      
+      <app-expandable-button
       [mainIcon]="'./expn.png'"
-      mainLabel="This bttn"
+      mainLabel="Expense"
       one="Add"
       two="Manage"
       three="Review"
       (optionClick)="handleRouting($event)"
-    />
-
-    <app-button
+      />
+      
+      <app-button
       mainIcon="./expn.png"
       mainLabel="Summary"/>
-
-    <!-- <app-dashboard-block>
-      <div
+      
+    </div>
+      <!-- <app-dashboard-block>
+        <div
         class="d-flex flex-column border"
         style="width: fit-content; height: fit-content"
       >

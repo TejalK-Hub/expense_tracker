@@ -19,8 +19,18 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-list.component.scss',
 })
 export class UserListComponent {
-  today = new Date();
-  selectedMonth!: Date;
+  today: Date = new Date();
+  selectedMonth: Date = new Date();
+
+  filteredUsers: any[] = [];
+  filterByMonth() {
+    this.filteredUsers = this.getUsersForSelectedMonth();
+  }
+
+  ngOnInit() {
+    this.filterByMonth();
+  }
+
   yearlyUserExpenses: {
     [year: string]: {
       [month: string]: {
@@ -79,8 +89,15 @@ export class UserListComponent {
   };
 
   getMonthKey(date: Date) {
-  return date.toLocaleString('en-US', { month: 'short' });
-}
+    return date.toLocaleString('default', { month: 'short' });
+  }
 
+  getUsersForSelectedMonth() {
+    if (!this.selectedMonth) return [];
 
+    const year = this.selectedMonth.getFullYear();
+    const month = this.getMonthKey(this.selectedMonth);
+
+    return this.yearlyUserExpenses?.[year]?.[month] || [];
+  }
 }

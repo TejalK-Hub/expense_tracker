@@ -10,11 +10,24 @@ import { VisitsTableComponent } from './components/shared/visits-table/visits-ta
 import { DropDownButtonComponent } from './components/shared/drop-down-button/drop-down-button.component';
 import { InputComponent } from './components/shared/input/input.component';
 import { AddExpensePageComponent } from './components/user-dashboard-component/add-expense-page/add-expense-page.component';
-
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [AddExpensePageComponent, VisitsTableComponent, DropDownButtonComponent, InputComponent, PendingExpenseTableComponent, RouterOutlet, UserBlockComponent, UserDashboardComponentComponent, UserListComponent, ExpenseTableComponent, ExpandableButtonComponent],
+  imports: [
+    AddExpensePageComponent,
+    VisitsTableComponent,
+    DropDownButtonComponent,
+    InputComponent,
+    PendingExpenseTableComponent,
+    RouterOutlet,
+    UserBlockComponent,
+    UserDashboardComponentComponent,
+    UserListComponent,
+    ExpenseTableComponent,
+    ExpandableButtonComponent,
+    AdminDashboardComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

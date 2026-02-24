@@ -1,0 +1,16 @@
+<div class="container d-flex flex-column gap-3 pt-5 align-items-center">
+  <app-button mainIcon="./expn.png" mainLabel="Users" class="menu-item" />
+
+  <app-button mainIcon="./expn.png" mainLabel="Reports" class="menu-item" />
+
+  <app-expandable-button
+    class="menu-item"
+    [mainIcon]="'./expn.png'"
+    mainLabel="Expense"
+    one="Add"
+    two="Manage"
+    three="Review"
+    [isAdmin]="true"
+    (optionClick)="handleRouting($event)"
+  />
+</div>
