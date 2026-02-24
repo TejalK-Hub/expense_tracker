@@ -2,21 +2,21 @@ const pool = require('../config/db');
 
 const getAdminDashboard = async () => {
 
-    // SUMMARY
+    // SUMMARY 
     const summaryQuery = `
         SELECT
             (SELECT COUNT(*) FROM users WHERE deleted_on IS NULL) AS total_users,
             (SELECT COUNT(*) FROM visits WHERE deleted_on IS NULL) AS total_visits,
             (SELECT COUNT(*) FROM expenses) AS total_expenses,
-            (SELECT COALESCE(SUM(amount),0) FROM expenses) AS total_amount
+            CONCAT('INR ', COALESCE((SELECT SUM(amount) FROM expenses),0)) AS total_amount
     `;
 
-    // STATUS SUMMARY
+    // STATUS SUMMARY 
     const statusQuery = `
         SELECT 
             es.name AS status,
             COUNT(e.id) AS count,
-            COALESCE(SUM(e.amount),0) AS amount
+            CONCAT('INR ', COALESCE(SUM(e.amount),0)) AS amount
         FROM expense_status es
         LEFT JOIN expenses e 
             ON e.status_id = es.id
@@ -25,18 +25,18 @@ const getAdminDashboard = async () => {
         ORDER BY es.name
     `;
 
-    // CATEGORY DISTRIBUTION
+    // CATEGORY DISTRIBUTION 
     const categoryQuery = `
         SELECT 
             ec.name AS category,
             COUNT(e.id) AS count,
-            COALESCE(SUM(e.amount),0) AS amount
+            CONCAT('INR ', COALESCE(SUM(e.amount),0)) AS amount
         FROM expense_category ec
         LEFT JOIN expenses e
             ON e.category_id = ec.id
         WHERE ec.deleted_on IS NULL
         GROUP BY ec.name
-        ORDER BY amount DESC
+        ORDER BY SUM(e.amount) DESC NULLS LAST
     `;
 
     // MONTHLY TREND 
@@ -44,7 +44,7 @@ const getAdminDashboard = async () => {
         SELECT 
             TO_CHAR(date, 'YYYY-MM') AS month,
             COUNT(*) AS count,
-            SUM(amount) AS amount
+            CONCAT('INR ', COALESCE(SUM(amount),0)) AS amount
         FROM expenses
         GROUP BY month
         ORDER BY month
@@ -64,10 +64,16 @@ const getAdminDashboard = async () => {
 };
 
 
-// USER DASHBOARD 
+// USER DASHBOARD
 const getUserDashboard = async (userId) => {
     const query = `
-        SELECT *
+        SELECT 
+            user_id,
+            month,
+            pending_count,
+            CONCAT('INR ', pending_amount) AS pending_amount,
+            CONCAT('INR ', approved_amount) AS approved_amount,
+            CONCAT('INR ', total_amount) AS total_amount
         FROM monthly_balance_view
         WHERE user_id = $1
     `;

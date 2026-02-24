@@ -2,6 +2,13 @@ const service = require('../services/expense.summary.service');
 
 const getSummary = async (req, res) => {
     try {
+
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({
+            success: false,
+            message: 'Admin access only'
+            });
+        }
         const { month } = req.query;
 
         if (!month) {

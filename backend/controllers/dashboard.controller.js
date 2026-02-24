@@ -3,7 +3,7 @@ const service = require('../services/dashboard.service');
 // USER DASHBOARD (no auth)
 const getUserDashboard = async (req, res) => {
     try {
-        const userId = req.query.user_id;
+        const userId = req.user.id;
 
         if (!userId) {
             return res.status(400).json({
@@ -24,6 +24,13 @@ const getUserDashboard = async (req, res) => {
 // ADMIN DASHBOARD
 const getAdminDashboard = async (req, res) => {
     try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({
+            success: false,
+            message: 'Admin access only'
+            });
+        }
+
         const data = await service.getAdminDashboard();
         res.json({ success: true, data });
     } catch (error) {

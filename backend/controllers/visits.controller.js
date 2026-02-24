@@ -1,5 +1,6 @@
 const visitService = require('../services/visits.service');
 
+// GET ALL VISITS (generic)
 const getVisits = async (req, res) => {
     try {
         const visits = await visitService.getVisits();
@@ -17,6 +18,8 @@ const getVisits = async (req, res) => {
     }
 };
 
+
+// GET VISIT BY ID (generic)
 const getVisitById = async (req, res) => {
     try {
         const { id } = req.params;

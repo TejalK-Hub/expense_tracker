@@ -2,6 +2,13 @@ const service = require('../services/expense.admin.service');
 
 const getAllExpenses = async (req, res) => {
     try {
+
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({
+            success: false,
+            message: 'Admin access only'
+            });
+        }
         const filters = {
             status: req.query.status || 'submitted',
             month: req.query.month
@@ -17,6 +24,14 @@ const getAllExpenses = async (req, res) => {
 
 const updateStatus = async (req, res) => {
     try {
+
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({
+            success: false,
+            message: 'Admin access only'
+            });
+        }
+        
         const { id } = req.params;
         const { action, rejection_reason_id } = req.body;
 
