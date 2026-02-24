@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/scss/bootstrap";
+
+@for $i from 0 through 100 {
+  .c-width-#{$i} {
+    // The #{"%"} is necessary to interpolate the percentage symbol correctly.
+    width: #{$i}#{"%"} !important; 
+  }
+}

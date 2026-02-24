@@ -1,0 +1,7 @@
+<div>
+  <select class="form-select w-auto" [(ngModel)]="selectedCategory">
+    <option *ngFor="let category of categories" [value]="category.name">
+      {{ category.name }}
+    </option>
+  </select>
+</div>

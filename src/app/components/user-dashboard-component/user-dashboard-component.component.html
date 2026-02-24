@@ -1,0 +1,108 @@
+<!-- <div class="d-grid gap-2 col-6 mx-auto">
+  <button type="button" class="btn btn-light border shadow-sm align-items-center justify-content-center mt-4">
+    <img src="./expn.png" alt="Icon 1" height="50" class="me-2">
+    Button 1
+  </button>
+  <button type="button" class="btn btn-light border shadow-sm d-flex align-items-center justify-content-center mt-4">
+    <img src="./expn.png" alt="Icon 2" height="50" class="me-2">
+    Button 2
+  </button>
+  <button type="button" class="btn btn-light border shadow-sm d-flex align-items-center justify-content-center mt-4">
+    <img src="./expn.png" alt="Icon 2" height="50" class="me-2">
+    Button 3232323
+  </button>
+</div> -->
+
+
+<div class="row">
+  <div class="container">
+    <div class="d-flex justify-content-evenly">
+
+      <app-dashboard-block
+      header="Total Expense"
+      title="CurrentMonth - Feb 2026"
+      [content]="summary_current_month.expenses_amt"
+      />
+      <app-dashboard-block
+      header="Total Amount"
+      title="CurrentMonth - Feb 2026"
+      [content]="summary_current_month.expenses"
+      />
+
+
+
+
+      <!-- <div class="card" style="width: 18rem">
+        <div class="card-body">
+          <h5 class="card-title">Total Expense</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">
+            Current Month - Fab 2026
+          </h6>
+          <p class="card-text">{{ summary_current_month.expenses }}</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="d-flex justify-content-evenly">
+          <div class="card" style="width: 18rem">
+            <div class="card-body">
+              <h5 class="card-title">Total Amount</h5>
+              <h6 class="card-subtitle mb-2 text-body-secondary">
+                Current Month - Fab 2026
+              </h6>
+              <p class="card-text">
+                {{ summary_current_month.expenses_amt }} INR
+              </p>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+
+
+
+    </div>
+
+    <app-button
+      mainIcon="./expn.png"
+      mainLabel="Summary"
+      (actionClick)="onSummaryClick()"
+      />
+
+    <app-expandable-button
+      [mainIcon]="'./expn.png'"
+      mainLabel="This bttn"
+      one="Add"
+      two="Manage"
+      three="Review"
+      (optionClick)="handleRouting($event)"
+    />
+
+    <app-button
+      mainIcon="./expn.png"
+      mainLabel="Summary"/>
+
+    <!-- <app-dashboard-block>
+      <div
+        class="d-flex flex-column border"
+        style="width: fit-content; height: fit-content"
+      >
+        <span>Total Expense</span>
+        <span> {{ Amount }}</span>
+      </div>
+    </app-dashboard-block>
+
+    <app-dashboard-block>
+      <div class="d-flex" style="width: fit-content; height: fit-content">
+        <button class="btn btn-light border shadow-sm">
+          <img [src]="'./expn.png'" style="width: clamp(10px, 3vw, 30px)" />
+          <span>Total Expense</span>
+        </button>
+        <span> {{Amount}}</span>
+      </div>
+    </app-dashboard-block> -->
+
+    <app-expense-table/>
+
+  </div>
+</div>

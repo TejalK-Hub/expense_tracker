@@ -1,0 +1,24 @@
+<div class="container d-flex justify-content-center">
+<p-calendar 
+  [(ngModel)]="selectedMonth"
+  view="month"
+  dateFormat="mm/yy"
+  [maxDate]="today">
+</p-calendar>
+    
+</div>
+
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <ol class="list-group c-width-40" style="width: 40%;">
+            <li class="list-group-item d-flex flex-column gap-3 ">
+                <app-user-block class="w-100"/>
+                <app-user-block class="w-100"/>
+                <app-user-block class="w-100"/>
+                <app-user-block class="w-100"/>
+                
+                <app-user-block class="w-100" *ngFor="let user of yearlyUserExpenses[selectedMonth.getFullYear()][getMonthKey(selectedMonth)]"/>    
+            </li>
+        </ol>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<app-input
+  label="Amount"
+  placeholder="Enter amount"
+  [(ngModel)]="amount"
+  type="number"
+/>
+
+<app-input
+  label="Description"
+  placeholder="Enter description"
+  [(ngModel)]="description"
+  type="text"
+/>
+
+
+<app-drop-down-button
+  [options]="categories"
+  label="Category"
+  [(selectedOption)]="selectedCategory">
+</app-drop-down-button>

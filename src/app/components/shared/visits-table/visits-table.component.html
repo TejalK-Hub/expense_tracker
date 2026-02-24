@@ -1,0 +1,34 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Client</th>
+      <th scope="col">Start Date</th>
+      <th scope="col">End Date</th>
+      <th scope="col">Reason</th>
+    </tr>
+  </thead>
+  <tbody >
+    <tr *ngFor="let visit of visits">
+      <th scope="row">{{ visit.client }}</th>
+      <td>{{ visit.startDate }}</td>
+      <td>{{ visit.endDate }}</td>
+      <td>{{ visit.reason }}</td>
+      <td>
+        <button class="btn btn-sm btn-light border">View</button>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>&#64;fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>John</td>
+      <td>Doe</td>
+      <td>&#64;social</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,15 @@
+<div class="p-2">
+  <button class="d-flex btn btn-light border shadow-sm expense" (click) = "toggleButton()">
+    <img [src]="mainIcon" alt="" class="icon" />
+     {{mainLabel}}
+  </button>
+
+  <div class="d-flex flex-column" *ngIf="expanded">
+    <div>
+
+        <button class="btn btn-light border shadow-sm add_button" (click)="handleClick(1)">{{one}}</button>
+        <button class="btn btn-light border shadow-sm manage_button" (click)="handleClick(2)">{{two}}</button>
+    </div>
+    <button class="btn btn-light border shadow-sm review_button" (click)="handleClick(3)" *ngIf="isAdmin">{{three}}</button>
+  </div>
+</div>

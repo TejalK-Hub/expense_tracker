@@ -1,0 +1,23 @@
+.add_button, 
+.manage_button,
+.review_button{
+    width: fit-content;
+    height: fit-content;
+}
+
+.expandable{
+    // justify-content: space-between;
+    // width: 100px;
+    // height: 100px;
+}
+
+.expense{
+    width: clamp(100px, 12vw, 700px);
+    height: fit-content; 
+    justify-content: space-between;       
+}
+
+
+.icon{
+    width: clamp(24px, 5vw, 35px);
+}
