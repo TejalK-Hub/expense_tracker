@@ -1,5 +1,5 @@
 const allowAdmin = (req, res, next) => {
-    // Check if auth middleware run 
+    // Token must exist
     if (!req.user) {
         return res.status(401).json({
             success: false,
@@ -7,8 +7,8 @@ const allowAdmin = (req, res, next) => {
         });
     }
 
-    // Check role
-    if (req.user.role !== 'Admin') {
+    // Role check (case already normalized in auth)
+    if (req.user.role !== 'admin') {
         return res.status(403).json({
             success: false,
             message: 'Admin access only'
@@ -18,6 +18,4 @@ const allowAdmin = (req, res, next) => {
     next();
 };
 
-module.exports = {
-    allowAdmin
-};
+module.exports = allowAdmin;

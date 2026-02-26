@@ -18,9 +18,11 @@ const authMiddleware = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        console.log(decoded)
-        // Attach user info to request
-        req.user = decoded;
+
+        req.user = {
+        id: decoded.id,
+        role: decoded.role ? decoded.role.toLowerCase() : null
+        };
 
         next();
     } catch (error) {

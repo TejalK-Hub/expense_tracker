@@ -29,11 +29,21 @@ app.use(express.json());
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use('/expenses', expenseAdminRoutes);
+const testmiddleware = (req,res,next)=>
+{
+    console.log(" req url", req.url);
 
+    next ();
+}
 
-
+// Expense Summary (specific path first)
 app.use('/expenses/summary', expenseSummaryRoutes);
+
+// User expense routes (employee)
+app.use('/expenses', testmiddleware, expenseRoutes);
+
+// Admin expense routes (keep last to avoid shadowing)
+app.use('/expenses', expenseAdminRoutes);
 
 const PORT = process.env.PORT || 5001;
 
@@ -77,24 +87,16 @@ app.use('/dashboard', dashboardRoutes);
 app.use('/visits', visitsRoutes);
 
 
-const testmiddleware = (req,res,next)=>
-{
-    console.log(" req url", req.url);
 
-    req.tejal= "triajnidewsks";
-
-    next ();
-}
 
 //expense route
 app.use('/expenses', testmiddleware, expenseRoutes);
 
 
-
-
-
 // Server
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+

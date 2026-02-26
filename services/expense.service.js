@@ -46,8 +46,8 @@ const getExpensesByVisit = async (visitId, userId) => {
     const query = `
         SELECT 
             e.id,
-            TO_CHAR(e.date,'YYYY-MM-DD') AS date,
-            CONCAT('INR ', e.amount) AS amount,
+            to_char(e.date,'YYYY-MM-DD') as date,
+            e.amount,
             e.description,
             e.bill_path,
             e.receipt_id,
@@ -104,11 +104,11 @@ const updateExpense = async (id, userId, data) => {
 
    
     const checkQuery = `
-        SELECT status_id 
-        FROM expenses 
-        WHERE id = $1 AND user_id = $2
+    SELECT status_id 
+    FROM expenses 
+    WHERE id = $1
+    AND user_id = $2
     `;
-
     const checkResult = await pool.query(checkQuery, [id, userId]);
 
     if (!checkResult.rows.length) {

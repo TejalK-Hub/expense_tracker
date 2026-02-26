@@ -66,20 +66,38 @@ const getAdminDashboard = async () => {
 
 // USER DASHBOARD
 const getUserDashboard = async (userId) => {
+
     const query = `
-        SELECT 
-            user_id,
-            month,
-            pending_count,
-            CONCAT('INR ', pending_amount) AS pending_amount,
-            CONCAT('INR ', approved_amount) AS approved_amount,
-            CONCAT('INR ', total_amount) AS total_amount
-        FROM monthly_balance_view
-        WHERE user_id = $1
+        SELECT
+            COALESCE(SUM(CASE WHEN es.name = 'Approved' THEN e.amount ELSE 0 END),0) AS total_approved_amount,
+
+            COUNT(CASE WHEN es.name = 'Submitted' THEN 1 END) AS pending_count,
+
+            COALESCE(SUM(CASE WHEN es.name = 'Submitted' THEN e.amount ELSE 0 END),0) AS pending_amount
+
+        FROM expenses e
+        JOIN expense_status es ON es.id = e.status_id
+        WHERE e.user_id = $1
     `;
 
-    const result = await pool.query(query, [userId]);
-    return result.rows[0];
+    const monthlyQuery = `
+        SELECT
+            TO_CHAR(e.date,'YYYY-MM') AS month,
+            COALESCE(SUM(CASE WHEN es.name = 'Approved' THEN e.amount ELSE 0 END),0) AS amount
+        FROM expenses e
+        JOIN expense_status es ON es.id = e.status_id
+        WHERE e.user_id = $1
+        GROUP BY month
+        ORDER BY month
+    `;
+
+    const summary = await pool.query(query, [userId]);
+    const monthly = await pool.query(monthlyQuery, [userId]);
+
+    return {
+        totals: summary.rows[0],
+        monthly_summary: monthly.rows
+    };
 };
 
 module.exports = {
