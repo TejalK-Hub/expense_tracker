@@ -121,23 +121,37 @@ const login = async (req, res) => {
             });
         }
 
+        // Generate token: 
+        // Token validity from environment 
+        const tokenExpiry = process.env.JWT_EXPIRES_IN || '15d';
+
         // Generate token
-        const token = jwt.sign(
-            {
-                id: user.id,
-                role: user.role
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
+         token = jwt.sign(
+        {
+        id: user.id,
+        role: user.role
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: tokenExpiry }
         );
+
+        // Decode to get actual expiry timestamp
+        const decoded = jwt.decode(token);
+
+        // Expiry in seconds and milliseconds
+        const expiresAt = decoded.exp;                // Unix seconds
+        const expiresInSeconds = decoded.exp - decoded.iat;
 
         return res.status(200).json({
             success: true,
             token,
+            expires_at: expiresAt,              //  expiry time
+            expires_in: expiresInSeconds,       // duration
+            token_validity: tokenExpiry,        // system config value
             user: {
-                id: user.id,
-                name: user.name,
-                role: user.role
+            id: user.id,
+            name: user.name,
+            role: user.role
             }
         });
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const morgan= require('morgan')
 require('dotenv').config();
 
 
@@ -28,6 +29,8 @@ app.use(express.json());
 
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.use(morgan('combined'))
 
 const testmiddleware = (req,res,next)=>
 {
