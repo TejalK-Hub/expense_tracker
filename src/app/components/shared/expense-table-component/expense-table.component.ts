@@ -1,104 +1,68 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ExpensesService } from '../../../service/expenses.service';
 
 @Component({
   selector: 'app-expense-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './expense-table.component.html',
-  styleUrl: './expense-table.component.scss'
+  styleUrl: './expense-table.component.scss',
 })
 export class ExpenseTableComponent {
 
-  expenses = [
-    {
-      expense: 'Client Lunch',
-      date: '2026-01-12',
-      category: 'Meals & Ent.',
-      receipt: 'lunch_0112.pdf',
-      amount: 68.4,
-      status: 'Approved',
-      approvedBy: 'J. Smith',
-      flag: 'No',
-      visit: 'Client A',
-    },
-    {
-      expense: 'Uber Ride',
-      date: '2026-01-13',
-      category: 'Travel',
-      receipt: 'uber_0113.png',
-      amount: 24.75,
-      status: 'Pending',
-      approvedBy: '',
-      flag: 'No',
-      visit: 'HQ Visit',
-    },
-    {
-      expense: 'Hotel Stay',
-      date: '2026-01-10',
-      category: 'Accommodation',
-      receipt: 'hotel_0110.pdf',
-      amount: 312.0,
-      status: 'Approved',
-      approvedBy: 'M. Chen',
-      flag: 'No',
-      visit: 'NYC Trip',
-    },
-    {
-      expense: 'Office Supplies',
-      date: '2026-01-09',
-      category: 'Supplies',
-      receipt: 'staples_0109.pdf',
-      amount: 89.15,
-      status: 'Rejected',
-      approvedBy: 'A. Patel',
-      flag: 'Yes',
-      visit: '',
-    },
-    {
-      expense: 'Flight Ticket',
-      date: '2026-01-05',
-      category: 'Travel',
-      receipt: 'flight_0105.pdf',
-      amount: 540.6,
-      status: 'Approved',
-      approvedBy: 'J. Smith',
-      flag: 'No',
-      visit: 'SF Visit',
-    },
-    {
-      expense: 'Team Dinner',
-      date: '2026-01-14',
-      category: 'Meals & Ent.',
-      receipt: 'dinner_0114.jpg',
-      amount: 156.9,
-      status: 'Pending',
-      approvedBy: '',
-      flag: 'No',
-      visit: 'Team Meet',
-    },
-    {
-      expense: 'Taxi Fare',
-      date: '2026-01-08',
-      category: 'Travel',
-      receipt: 'taxi_0108.png',
-      amount: 32.5,
-      status: 'Approved',
-      approvedBy: 'M. Chen',
-      flag: 'No',
-      visit: 'Airport Run',
-    },
-    {
-      expense: 'Conference Fee',
-      date: '2026-01-02',
-      category: 'Training',
-      receipt: 'conf_0102.pdf',
-      amount: 799.0,
-      status: 'Approved',
-      approvedBy: 'A. Patel',
-      flag: 'No',
-      visit: 'TechConf',
-    },
-  ];
+  constructor(
+    private expensesService: ExpensesService,
+    private router: Router
+  ) {}
 
+  // ---------------- FILTER STATE ----------------
+
+  selectedStatus: string = '';
+  selectedDate: string = '';
+
+  // ---------------- DATA SOURCE ----------------
+
+  get expenses() {
+    return this.expensesService.expenses;
+  }
+
+  // ---------------- UNIQUE VALUES ----------------
+
+  getUniqueStatuses() {
+    return [...new Set(this.expenses.map(e => e.status))];
+  }
+
+  getUniqueDates() {
+    return [...new Set(this.expenses.map(e => e.date))];
+  }
+
+  // ---------------- FILTERED DATA ----------------
+
+  getFilteredExpenses() {
+    return this.expenses.filter(exp => {
+
+      const statusMatch =
+        !this.selectedStatus ||
+        this.selectedStatus === 'All' ||
+        exp.status.toLowerCase().trim() ===
+        this.selectedStatus.toLowerCase().trim();
+
+      const dateMatch =
+        !this.selectedDate ||
+        new Date(exp.date).toISOString().slice(0, 10) ===
+        new Date(this.selectedDate).toISOString().slice(0, 10);
+
+      return statusMatch && dateMatch;
+    });
+  }
+
+  // ---------------- OPEN PREVIEW ----------------
+
+  openPreview(exp: any) {
+    this.expensesService.setSelectedExpense(exp);
+    this.router.navigate(['/expense-preview']);
+  }
 }

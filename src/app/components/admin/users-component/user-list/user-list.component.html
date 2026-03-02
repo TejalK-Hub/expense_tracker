@@ -25,44 +25,33 @@
 
 
 <div class="container">
-
-    <div class="d-flex justify-content-center my-3">
-
-  <p-calendar
-    [(ngModel)]="selectedMonth"
-    view="month"
-    dateFormat="mm/yy"
-    [maxDate]="today"
-    (onSelect)="filterByMonth()">
-  </p-calendar>
-
-</div>
-
+  <div class="d-flex justify-content-center p-5">
+    <h2 class="mb-0">Expense Review</h2>
+  </div>
+  <div class="d-flex justify-content-center my-3 p-component-overlay-container">
+    <input type="month" [(ngModel)]="date">
+    
+  </div>
 
   <div class="d-flex justify-content-center">
     <ol class="list-group c-width-40 user-list">
-
       <li
         class="list-group-item user-card"
         *ngFor="let user of filteredUsers"
+        (click)="openUserExpenses()"
+        style="cursor: pointer"
       >
         <div class="d-flex align-items-center gap-3">
-
           <!-- Dummy avatar -->
-          <img
-            src="assets/user-placeholder.png"
-            class="user-avatar"
-          />
+          <img src="assets/user-placeholder.png" class="user-avatar" />
 
           <!-- Name + Expense -->
           <div class="d-flex flex-column">
             <span class="user-name">{{ user.name }}</span>
             <span class="user-expense">Total: ₹{{ user.expense }}</span>
           </div>
-
         </div>
       </li>
-
     </ol>
   </div>
 </div>

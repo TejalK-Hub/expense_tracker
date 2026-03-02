@@ -1,4 +1,7 @@
 <div class="container d-flex flex-column gap-3 pt-5 align-items-center">
+  <div class="pb-5">
+    <h3>Admin Dashboard</h3>
+  </div>
   <app-button mainIcon="./expn.png" mainLabel="Users" class="menu-item" />
 
   <app-button mainIcon="./expn.png" mainLabel="Reports" class="menu-item" />
@@ -13,4 +16,10 @@
     [isAdmin]="true"
     (optionClick)="handleRouting($event)"
   />
+
+  <div class="container">
+    <h4>Pending Expenses</h4>
+    <app-pending-expense-table />
+  </div>
+
 </div>

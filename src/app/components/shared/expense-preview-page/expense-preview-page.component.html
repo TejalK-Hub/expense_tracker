@@ -1,0 +1,48 @@
+<div class="details-container" *ngIf="expense">
+
+  <div class="field status">
+    <div class="label">Status</div>
+    <div class="value">{{ expense.status }}</div>
+  </div>
+
+  <div class="field">
+    <div class="label">Category</div>
+    <div class="value">{{ expense.category }}</div>
+  </div>
+
+  <div class="field amount">
+    <div class="label">Amount</div>
+    <div class="value">₹ {{ expense.amount }}</div>
+  </div>
+
+  <div class="receipt-preview">
+    <img *ngIf="expense.receipt" [src]="'assets/' + expense.receipt" />
+    <span *ngIf="!expense.receipt">No Receipt</span>
+  </div>
+
+  <div class="field">
+    <div class="label">Receipt No.</div>
+    <div class="value">{{ expense.receiptNo }}</div>
+  </div>
+
+  <div class="field description">
+    <div class="label">Description</div>
+    <div class="value">{{ expense.description }}</div>
+  </div>
+
+  <div class="field">
+    <div class="label">Visit</div>
+    <div class="value">{{ expense.visit }}</div>
+  </div>
+
+  <div class="field">
+    <div class="label">Approved By</div>
+    <div class="value">{{ expense.approvedBy }}</div>
+  </div>
+
+  <div class="field">
+    <div class="label">Approved At</div>
+    <div class="value">{{ expense.approvedAt }}</div>
+  </div>
+
+</div>

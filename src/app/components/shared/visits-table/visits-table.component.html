@@ -1,3 +1,7 @@
+<div class="container">
+<div class="d-flex justify-content-center p-5">
+  <h2 class="mb-0">Past Visits</h2>
+</div>  
 <table class="table clean-table visits-table">
   <thead class="clean-head">
     <tr>
@@ -5,6 +9,7 @@
       <th scope="col">StartDate</th>
       <th scope="col">EndDate</th>
       <th scope="col">Reason</th>
+      <th scope="col">Amount</th>
     </tr>
   </thead>
 
@@ -14,6 +19,10 @@
       <td>{{ visit.startDate }}</td>
       <td>{{ visit.endDate }}</td>
       <td>{{ visit.reason }}</td>
+      <td>₹{{ visit.amount }}</td>
     </tr>
   </tbody>
 </table>
+
+
+</div>

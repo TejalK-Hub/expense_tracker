@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../shared/button/button.component';
 import { ExpandableButtonComponent } from '../../shared/expandable-button-component/expandable-button.component';
 import { Router } from '@angular/router';
+import { PendingExpenseTableComponent } from '../../user-dashboard-component/pending-expense-table/pending-expense-table.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, ExpandableButtonComponent],
+  imports: [CommonModule, ButtonComponent, ExpandableButtonComponent, PendingExpenseTableComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })

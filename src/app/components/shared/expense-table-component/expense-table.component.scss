@@ -61,3 +61,27 @@
   padding: 4px 12px;
   font-size: 13px;
 }
+
+
+/* Status pill common */
+.status-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px; // pill shape
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937; // dark text
+}
+
+/* Status-specific colors */
+.status-pill.pending {
+  background-color: #97c3fd; // light blue
+}
+
+.status-pill.approved {
+  background-color: #9df9c9; // light green
+}
+
+.status-pill.rejected {
+  background-color: #fdc5c5; // light red
+}

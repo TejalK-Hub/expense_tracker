@@ -1,31 +1,63 @@
-<table class="table clean-table">
-  <thead class="clean-head">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">ExpenseDate</th>
-      <th scope="col">Category</th>
-      <th scope="col">Receipt</th>
-      <th scope="col">Amount</th>
-      <th scope="col">Status</th>
-      <th scope="col">ApprovedBy</th>
-      <th scope="col">ApprovedAt</th>
-      <th scope="col">Visit</th>
-    </tr>
-  </thead>
-  <tbody >
-    <tr *ngFor="let exp of expenses" class="clean-row">
-      <th scope="row">{{ exp.expense }}</th>
-      <td>{{ exp.date }}</td>
-      <td>{{ exp.category }}</td>
-      <td>{{ exp.receipt }}</td>
-      <td>{{ exp.amount }}</td>
-      <td>{{ exp.status }}</td>
-      <td>{{ exp.approvedBy }}</td>
-      <td>{{ exp.flag }}</td>
-      <td>
-        <button class="btn btn-sm btn-light border view-btn">View</button>
-      </td>
-    </tr>
-    
-  </tbody>
-</table>
+<div class="container text-center p-3">
+  <h2 class="mb-0">Past Expenses</h2>
+</div>
+
+<div class="container d-flex gap-3 mb-3 justify-content-end">
+  <!-- Status Filter -->
+  <select class="form-select w-auto" [(ngModel)]="selectedStatus">
+    <option value="">All Status</option>
+    <option *ngFor="let status of getUniqueStatuses()" [value]="status">
+      {{ status }}
+    </option>
+  </select>
+
+  <!-- Date Filter -->
+  <select class="form-select w-auto" [(ngModel)]="selectedDate">
+    <option value="">All Dates</option>
+    <option *ngFor="let date of getUniqueDates()" [value]="date">
+      {{ date }}
+    </option>
+  </select>
+</div>
+
+<div class="container d-flex justify-content-center">
+  <table class="table clean-table">
+    <thead class="clean-head">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">ExpenseDate</th>
+        <th scope="col">Category</th>
+        <th scope="col">Receipt</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Status</th>
+        <th scope="col">ApprovedBy</th>
+        <th scope="col">ApprovedAt</th>
+        <th scope="col">View</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let exp of getFilteredExpenses()" class="clean-row">
+        <th scope="row">{{ exp.expense }}</th>
+        <td>{{ exp.date }}</td>
+        <td>{{ exp.category }}</td>
+        <td>{{ exp.receipt }}</td>
+        <td>₹{{ exp.amount }}</td>
+        <td>
+          <span class="status-pill" [ngClass]="exp.status.toLowerCase()">
+            {{ exp.status }}
+          </span>
+        </td>
+        <td>{{ exp.approvedBy }}</td>
+        <td>{{ exp.approvedAt }}</td>
+        <td>
+          <button
+            class="btn btn-sm btn-light border view-btn"
+            (click)="openPreview(exp)"
+          >
+            Open
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
