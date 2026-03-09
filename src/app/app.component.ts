@@ -11,6 +11,8 @@ import { DropDownButtonComponent } from './components/shared/drop-down-button/dr
 import { InputComponent } from './components/shared/input/input.component';
 import { AddExpensePageComponent } from './components/user-dashboard-component/add-expense-page/add-expense-page.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { AddExpenseFormComponent } from './components/user-dashboard-component/add-expense-form/add-expense-form.component';
+
 
 @Component({
   selector: 'app-root',
@@ -28,6 +30,7 @@ import { AdminDashboardComponent } from './components/admin/admin-dashboard/admi
     ExpenseTableComponent,
     ExpandableButtonComponent,
     AdminDashboardComponent,
+    AddExpenseFormComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

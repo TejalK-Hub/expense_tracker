@@ -54,7 +54,7 @@ export class AddExpenseFormComponent {
     formData.append('date', '2027-02-01');
     formData.append('category_id', '1');
     formData.append('amount', '200.1');
-    formData.append('bill', this.selectedFile);
+    formData.append('bill', this.selectedFile); 
 
     this.expensesService.addExpense(formData).subscribe({
       next: (response) => {

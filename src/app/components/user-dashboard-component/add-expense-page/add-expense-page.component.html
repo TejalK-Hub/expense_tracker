@@ -1,9 +1,10 @@
 <div class="expense-card vstack gap-4">
+  
   <h3 class="title text-center">Add Expense</h3>
 
   <!-- <app-drop-down-button class="pill-field"> </app-drop-down-button> -->
 
-  <!-- <div>
+  <div>
     <select class="form-select w-auto" [(ngModel)]="selectedCategory">
       <option *ngFor="let category of categories" [value]="category.name">
         {{ category.name }}
@@ -13,8 +14,8 @@
 
   <input type="date" [(ngModel)]="date" />
 
-  <app-add-receipt class="pill-field" /> -->
-
+  <!-- <app-add-receipt class="pill-field" /> -->
+<app-add-expense-form></app-add-expense-form>
   <!-- <app-input
     class="pill-field"
     label="Amount"
@@ -22,7 +23,7 @@
     [(ngModel)]="amount"
     type="number"
   /> -->
-<!-- 
+
   <div class="mb-3">
     <label class="form-label">Amount</label>
 
@@ -33,7 +34,7 @@
     <label class="form-label">Receipt No.</label>
 
     <input class="form-control" type="text" [(ngModel)]="receiptNo" />
-  </div> -->
+  </div>
 
   <!-- <app-input
     class="pill-field"
@@ -42,7 +43,7 @@
     [(ngModel)]="description"
     type="text"
   /> -->
-<!-- 
+
   <div class="mb-3">
     <label class="form-label">Description</label>
 
@@ -67,15 +68,15 @@
     class="d-flex btn btn-light border shadow-sm expense mt-3 action-btn add-new align-self-center"
   >
     Add New
-  </button> -->
+  </button>
 
-
+<!-- 
   <form [formGroup]="userform" (ngSubmit)="onSubmit()" novalidate>
-      <!-- <input type="text" formControlName="username" name="username" id="username"/> -->
-      <!-- <input type="email" formControlName="email" name="email" id="email"/>
-      <input type="password" formControlName="password" name="password" id="password"/> -->
+      <input type="text" formControlName="username" name="username" id="username"/>
+      <input type="email" formControlName="email" name="email" id="email"/>
+      <input type="password" formControlName="password" name="password" id="password"/>
       <input type="file" (change)="fileOnChange($event)" formControlName="bill" name="bill"/>
 
       <button type="submit">Submit</button>
-  </form>
+  </form> -->
 </div>

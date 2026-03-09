@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ExpensesService } from '../../../service/expenses.service';
 import { CategoryOption } from '../../shared/shared/category-options-drop-down-model';
+import { AddExpenseFormComponent } from '../add-expense-form/add-expense-form.component';
 
 @Component({
   selector: 'app-add-expense-page',
@@ -20,6 +21,7 @@ import { CategoryOption } from '../../shared/shared/category-options-drop-down-m
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
+    AddExpenseFormComponent
   ],
   templateUrl: './add-expense-page.component.html',
   styleUrl: './add-expense-page.component.scss',
@@ -92,8 +94,18 @@ export class AddExpensePageComponent {
     console.log('File selected:', event.target.files);
     this.selectedFile = event.target.files[0] ?? null;
   }
+  
+  onFileReceived(fileName: string) {
+  console.log('Received from child:', fileName);
+}
 
   onSubmit() {
+    
+    if(!this.selectedFile) {
+      console.error('No file selected');
+      return;
+    }
+
     this.submitted = true;
     console.log(this.userform.invalid)
     if (this.userform.invalid) return;

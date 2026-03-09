@@ -42,6 +42,7 @@ export class ExpenseTableComponent {
   // ---------------- FILTERED DATA ----------------
 
   getFilteredExpenses() {
+    // this.expensesService.fetchExpense();
     return this.expenses.filter(exp => {
 
       const statusMatch =
