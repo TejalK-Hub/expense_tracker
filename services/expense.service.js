@@ -1,23 +1,33 @@
-const pool = require('../config/db');
+const pool = require('../config/db'); 
 
 
 
 // CREATE EXPENSE
 
 const createExpense = async (data) => {
+
+    // validate visit belongs to same user
+    const visitCheck = await pool.query(
+        `SELECT id FROM visits WHERE id = $1 AND user_id = $2`,
+        [data.visit_id, data.user_id]
+    );
+
+    if (!visitCheck.rows.length) {
+        throw new Error('Invalid visit for this user');
+    }
+
     const query = `
         INSERT INTO expenses
         (user_id, visit_id, date, category_id, amount, description, bill_path, status_id, receipt_id)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
         RETURNING 
             id,
-            user_id,
-            visit_id,
-            TO_CHAR(date,'YYYY-MM-DD') AS date,
+            description AS expense,
+            TO_CHAR(date,'YYYY-MM-DD') AS expense_date,
+            receipt_id AS receipt,
             CONCAT('INR ', amount) AS amount,
-            description,
+            visit_id AS visit,
             bill_path,
-            receipt_id,
             status_id
     `;
 
@@ -29,7 +39,7 @@ const createExpense = async (data) => {
         data.amount,
         data.description,
         data.bill_path,
-        2, // Submitted
+        2,
         data.receipt_id
     ];
 
@@ -40,22 +50,26 @@ const createExpense = async (data) => {
 
 
 
-// VISIT EXPENSES (USER SAFE)
+// VISIT EXPENSES 
 
 const getExpensesByVisit = async (visitId, userId) => {
     const query = `
         SELECT 
             e.id,
-            to_char(e.date,'YYYY-MM-DD') as date,
-            e.amount,
-            e.description,
+            e.description AS expense,
+            TO_CHAR(e.date,'YYYY-MM-DD') AS expense_date,
+            e.receipt_id AS receipt,
+            CONCAT('INR ', e.amount) AS amount,
+            e.visit_id AS visit,
             e.bill_path,
-            e.receipt_id,
             ec.name AS category,
-            es.name AS status
+            es.name AS status,
+            approver.name AS approved_by,
+            TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at
         FROM expenses e
         LEFT JOIN expense_category ec ON ec.id = e.category_id
         LEFT JOIN expense_status es ON es.id = e.status_id
+        LEFT JOIN users approver ON approver.id = e.approved_by
         WHERE e.visit_id = $1
         AND e.user_id = $2
         ORDER BY e.date DESC
@@ -74,19 +88,21 @@ const getUserExpenses = async (userId) => {
     const query = `
         SELECT 
             e.id,
-            TO_CHAR(e.date,'YYYY-MM-DD') AS date,
+            e.description AS expense,
+            TO_CHAR(e.date,'YYYY-MM-DD') AS expense_date,
+            e.receipt_id AS receipt,
             CONCAT('INR ', e.amount) AS amount,
-            e.description,
+            e.visit_id AS visit,
             e.bill_path,
-            e.receipt_id,
-            TO_CHAR(v.start_date,'YYYY-MM-DD') AS start_date,
-            TO_CHAR(v.end_date,'YYYY-MM-DD') AS end_date,
             ec.name AS category,
-            es.name AS status
+            es.name AS status,
+            approver.name AS approved_by,
+            TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at
         FROM expenses e
         JOIN visits v ON v.id = e.visit_id
         LEFT JOIN expense_category ec ON ec.id = e.category_id
         LEFT JOIN expense_status es ON es.id = e.status_id
+        LEFT JOIN users approver ON approver.id = e.approved_by
         WHERE e.user_id = $1
         ORDER BY e.date DESC
     `;
@@ -121,7 +137,6 @@ const updateExpense = async (id, userId, data) => {
         throw new Error('Approved expense cannot be edited');
     }
 
-    // If rejected then resubmit
     if (currentStatus === 4) {
         data.status_id = 2;
     }
@@ -170,11 +185,12 @@ const updateExpense = async (id, userId, data) => {
         AND user_id = $${index}
         RETURNING 
             id,
-            TO_CHAR(date,'YYYY-MM-DD') AS date,
+            description AS expense,
+            TO_CHAR(date,'YYYY-MM-DD') AS expense_date,
+            receipt_id AS receipt,
             CONCAT('INR ', amount) AS amount,
-            description,
+            visit_id AS visit,
             bill_path,
-            receipt_id,
             status_id
     `;
 

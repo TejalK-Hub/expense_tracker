@@ -10,14 +10,12 @@ const getAllExpenses = async (filters) => {
     let values = [];
     let index = 1;
 
-    // Status filter 
     if (filters.status) {
         conditions.push(`LOWER(es.name) = $${index}`);
         values.push(filters.status.toLowerCase());
         index++;
     }
 
-    // Month filter
     if (filters.month) {
         conditions.push(`TO_CHAR(e.date, 'YYYY-MM') = $${index}`);
         values.push(filters.month);
@@ -31,23 +29,23 @@ const getAllExpenses = async (filters) => {
     const query = `
         SELECT 
             e.id,
-            TO_CHAR(e.date, 'YYYY-MM-DD') AS date,
+            e.description AS expense,
+            TO_CHAR(e.date,'YYYY-MM-DD') AS expense_date,
+            e.receipt_id AS receipt,
             CONCAT('INR ', e.amount) AS amount,
-            e.description,
+            e.visit_id AS visit,
             e.bill_path,
-            e.receipt_id,
-            u.name AS employee_name,
-            TO_CHAR(v.start_date, 'YYYY-MM-DD') AS visit_start_date,
-            TO_CHAR(v.end_date, 'YYYY-MM-DD') AS visit_end_date,
-            vr.name AS visit_reason,
             ec.name AS category,
-            es.name AS status
+            es.name AS status,
+            approver.name AS approved_by,
+            TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at,
+            u.name AS employee_name
         FROM expenses e
         JOIN users u ON u.id = e.user_id
         JOIN visits v ON v.id = e.visit_id
-        LEFT JOIN visit_reason vr ON vr.id = v.visit_reason_id
         LEFT JOIN expense_category ec ON ec.id = e.category_id
         LEFT JOIN expense_status es ON es.id = e.status_id
+        LEFT JOIN users approver ON approver.id = e.approved_by
         ${whereClause}
         ORDER BY e.date DESC
     `;
@@ -72,7 +70,6 @@ const updateExpenseStatus = async (expenseId, action, adminId, rejection_reason_
     else if (action === 'reject') statusName = 'Rejected';
     else throw new Error('Invalid action');
 
-    // Get status id
     const statusQuery = `
         SELECT id 
         FROM expense_status
@@ -88,7 +85,6 @@ const updateExpenseStatus = async (expenseId, action, adminId, rejection_reason_
 
     const status_id = statusResult.rows[0].id;
 
-    // Update expense
     const updateQuery = `
         UPDATE expenses
         SET 
