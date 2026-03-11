@@ -8,14 +8,30 @@ const createExpense = async (data) => {
 
     // validate visit belongs to same user
     const visitCheck = await pool.query(
-        `SELECT id FROM visits WHERE id = $1 AND user_id = $2`,
-        [data.visit_id, data.user_id]
+        `
+        SELECT id, start_date, end_date
+        FROM visits
+        WHERE id = $1
+        AND user_id = $2
+        `,
+    [data.visit_id, data.user_id]
     );
 
     if (!visitCheck.rows.length) {
-        throw new Error('Invalid visit for this user');
+    throw new Error('Invalid visit for this user');
     }
 
+    const visit = visitCheck.rows[0];
+
+    const expenseDate = new Date(data.date);
+    const visitStart = new Date(visit.start_date);
+    const visitEnd = new Date(visit.end_date);
+
+    if (expenseDate < visitStart || expenseDate > visitEnd) {
+    throw new Error('Expense date must lie within visit duration');
+    }
+
+    
     const query = `
         INSERT INTO expenses
         (user_id, visit_id, date, category_id, amount, description, bill_path, status_id, receipt_id)
@@ -120,11 +136,13 @@ const updateExpense = async (id, userId, data) => {
 
    
     const checkQuery = `
-    SELECT status_id 
-    FROM expenses 
-    WHERE id = $1
-    AND user_id = $2
+        SELECT e.status_id, e.visit_id, v.start_date, v.end_date
+        FROM expenses e
+        JOIN visits v ON v.id = e.visit_id
+        WHERE e.id = $1
+        AND e.user_id = $2
     `;
+
     const checkResult = await pool.query(checkQuery, [id, userId]);
 
     if (!checkResult.rows.length) {
@@ -132,6 +150,19 @@ const updateExpense = async (id, userId, data) => {
     }
 
     const currentStatus = checkResult.rows[0].status_id;
+
+    const visit = checkResult.rows[0];
+
+    if (data.date !== undefined) {
+
+    const expenseDate = new Date(data.date);
+    const startDate = new Date(visit.start_date);
+    const endDate = new Date(visit.end_date);
+
+    if (expenseDate < startDate || expenseDate > endDate) {
+        throw new Error('Expense date must be within visit period');
+        }
+    }
 
     if (currentStatus === 3) {
         throw new Error('Approved expense cannot be edited');
