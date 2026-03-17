@@ -74,7 +74,7 @@
 }
 
 /* Status-specific colors */
-.status-pill.pending {
+.status-pill.submitted {
   background-color: #97c3fd; // light blue
 }
 
@@ -83,5 +83,5 @@
 }
 
 .status-pill.rejected {
-  background-color: #fdc5c5; // light red
+  background-color: #fdc5c5; 
 }

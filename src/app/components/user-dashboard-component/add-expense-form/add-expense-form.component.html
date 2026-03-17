@@ -1,17 +1,109 @@
-<div class="row">
+<div class="row justify-content-center mt-5">
   <div class="container">
     <div class="col-4 offset-4">
-      <h3 class="title text-center">Add Expense Form</h3>
+      <h3 class="title text-center mb-4">Add Expense Form</h3>
 
-      <form>
-          <div>
-            <label for="bill">Upload Bill:</label>
-            <input type="file" (change)="fileOnChange($event)" name="bill" class="form-control"/>
-          </div>
+      <form class="border p-4 rounded shadow-sm bg-light">
 
-          <button class="form-control mt-3" type="button" (click)="onSubmit()">Submit</button>
+        <!--------------------------------------Add Category------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+          <select
+            class="form-select"
+            [(ngModel)]="selectedCategory"
+            name="selectedCategory"
+          >
+            <option value="" disabled hidden selected>Select Category</option>
+            <option *ngFor="let category of categories" [value]="category.name">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+
+        <!--------------------------------------Add Date------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label">Date</label>
+
+          <input
+            class="form-control"
+            type="date"
+            [(ngModel)]="date"
+            name="date"
+          />
+        </div>
+
+        <!--------------------------------------Add Amount------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label">Amount</label>
+
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="amount"
+            name="amount"
+          />
+        </div>
+
+        <!--------------------------------------Add Receipt No------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label">Receipt No.</label>
+
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="receiptNo"
+            name="receiptId"
+          />
+        </div>
+
+        <!--------------------------------------Add Visit Id------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label">Visit Name</label>
+
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="visit"
+            name="visit"
+          />
+        </div>
+
+        <!--------------------------------------Add Description------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="description"
+            name="description"
+          />
+        </div>
+
+        <!--------------------------------------Add Expense Receipt------------------------------------------>
+
+        <div class="mb-3">
+          <label class="form-label" for="bill">Upload Bill:</label>
+          <input
+            type="file"
+            #fileInput
+            (change)="fileOnChange($event)"
+            name="bill"
+            class="form-control"
+          />
+        </div>
+
+        <!--------------------------------------Submit------------------------------------------>
+
+        <button class="btn btn-primary w-100 mt-3" type="button" (click)="onSubmit()">
+          Save
+        </button>
+
+        <button class="btn btn-secondary w-100 mt-2" type="button" (click)="onClear()">
+          Cancel
+        </button>
+
       </form>
     </div>
-
   </div>
 </div>

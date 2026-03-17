@@ -1,0 +1,73 @@
+<div class="row justify-content-center mt-5">
+  <div class="container">
+    <div class="col-4 offset-4 border rounded p-4 shadow-sm bg-light">
+      <h3 class="title text-center mb-4">Add Visits Form</h3>
+
+      <form>
+        
+        <!--------------------------------------Add Date------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Start Date</label>
+
+          <input
+            class="form-control"
+            type="date"
+            [(ngModel)]="s_date"
+            name="s_date"
+          />
+        </div>
+
+        <!--------------------------------------Add Date------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">End Date</label>
+
+          <input
+            class="form-control"
+            type="date"
+            [(ngModel)]="e_date"
+            name="e_date"
+          />
+        </div>
+
+        <!--------------------------------------Add Amount------------------------------------------>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Client Name</label>
+
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="cli_name"
+            name="cli_name"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Agenda</label>
+
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="agenda"
+            name="agenda"
+          />
+        </div>
+
+        <!--------------------------------------Submit------------------------------------------>
+
+        <button
+          class="form-control mt-3 btn btn-primary"
+          type="button"
+        >
+          Save
+        </button>
+
+        <button
+          class="form-control mt-2 btn btn-outline-secondary"
+          type="button"
+        >
+          Cancel
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

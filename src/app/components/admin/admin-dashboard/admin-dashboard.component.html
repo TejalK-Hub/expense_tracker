@@ -1,13 +1,31 @@
-<div class="container d-flex flex-column gap-3 pt-5 align-items-center">
-  <div class="pb-5">
-    <h3>Admin Dashboard</h3>
-  </div>
-  <app-button mainIcon="./expn.png" mainLabel="Users" class="menu-item" />
+<div class="container d-flex flex-column gap-4 pt-5 align-items-center">
 
-  <app-button mainIcon="./expn.png" mainLabel="Reports" class="menu-item" />
+  <div class="w-100 d-flex align-items-center mb-4">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+
+    <h3 class="mx-auto mb-0">Admin Dashboard</h3>
+  </div>
+
+  <app-button
+    mainIcon="./expn.png"
+    mainLabel="Users"
+    class="menu-item w-50"
+  />
+
+  <app-button
+    mainIcon="./expn.png"
+    mainLabel="Reports"
+    class="menu-item w-50"
+  />
 
   <app-expandable-button
-    class="menu-item"
+    class="menu-item w-50"
     [mainIcon]="'./expn.png'"
     mainLabel="Expense"
     one="Add"
@@ -17,8 +35,8 @@
     (optionClick)="handleRouting($event)"
   />
 
-  <div class="container">
-    <h4>Pending Expenses</h4>
+  <div class="container mt-5">
+    <h4 class="mb-3 text-center">Pending Expenses</h4>
     <app-pending-expense-table />
   </div>
 

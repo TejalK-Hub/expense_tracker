@@ -3,7 +3,13 @@ import { ButtonComponent } from '../../shared/button/button.component';
 import { InputComponent } from '../../shared/input/input.component';
 import { DropDownButtonComponent } from '../../shared/drop-down-button/drop-down-button.component';
 import { AddReceiptComponent } from '../add-receipt/add-receipt.component';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ExpensesService } from '../../../service/expenses.service';
@@ -21,7 +27,7 @@ import { AddExpenseFormComponent } from '../add-expense-form/add-expense-form.co
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    AddExpenseFormComponent
+    AddExpenseFormComponent,
   ],
   templateUrl: './add-expense-page.component.html',
   styleUrl: './add-expense-page.component.scss',
@@ -30,24 +36,13 @@ export class AddExpensePageComponent {
   constructor(
     private expensesService: ExpensesService,
     private router: Router,
-    private fb: FormBuilder
-  ) {
-    this.userform = this.fb.group({
-      // username: ['', Validators.required],
-      bill: ['', Validators.required],
-      // email: ['', Validators.required],
-      // password: ['', Validators.required],
-    });
-  }
+  ) {}
 
-  userform: FormGroup = new FormGroup({});
   submitted: boolean = false;
   loading: boolean = false;
   selectedFile: File | null = null;
-
   amount: number = 0;
   description: string = '';
-  // category: string = '';
 
   expenseName: string = '';
   date: string = '';
@@ -59,10 +54,14 @@ export class AddExpensePageComponent {
   selectedCategory: string = 'Travel';
 
   categories: CategoryOption[] = [
-    { name: 'Travel' },
-    { name: 'Food' },
-    { name: 'Stay' },
-    { name: 'Miscellaneous' },
+    { name: 'Travel', id: 1},
+    { name: 'Food', id: 2},
+    { name: 'Stay', id: 8},
+    // { name: 'Petrol', id: 3},
+    // { name: 'Material', id: 4},
+    // { name: 'Toll Updated', id: 6},
+    // { name: 'Courier', id: 7},
+    { name: 'Other', id: 5},
   ];
 
   saveExpense() {
@@ -81,34 +80,28 @@ export class AddExpensePageComponent {
 
     console.log('Expense Added:', newExpense);
 
-    this.router.navigate(['/user-dashboard'], {
-      state: { added: true },
-    });
-  }
-
-  getField(field: string) {
-    return this.userform.get(field);
+    // this.router.navigate(['/user-dashboard'], {
+    //   state: { added: true },
+    // });
+    this.router.navigate(['/user-dashboard'], { replaceUrl: true });
   }
 
   fileOnChange(event: any) {
     console.log('File selected:', event.target.files);
     this.selectedFile = event.target.files[0] ?? null;
   }
-  
+
   onFileReceived(fileName: string) {
-  console.log('Received from child:', fileName);
-}
+    console.log('Received from child:', fileName);
+  }
 
   onSubmit() {
-    
-    if(!this.selectedFile) {
+    if (!this.selectedFile) {
       console.error('No file selected');
       return;
     }
 
     this.submitted = true;
-    console.log(this.userform.invalid)
-    if (this.userform.invalid) return;
 
     const formData = new FormData();
     // formData.append('username', this.userform.value.username);
@@ -122,25 +115,23 @@ export class AddExpensePageComponent {
     formData.append('category_id', '1');
     formData.append('amount', '200.1');
 
-    if (this.selectedFile) {
-      console.log(this.selectedFile)
-      formData.append('bill', this.selectedFile);
-    }
+    formData.append('bill', this.selectedFile);
+
+    // if (this.selectedFile) {
+    //   console.log(this.selectedFile)
+    // }
 
     this.expensesService.addExpense(formData).subscribe({
       next: (response) => {
         console.log('Expense Added Successfully:', response);
-      }, 
+      },
       error: (err) => {
         console.error('Error adding expense:', err);
-      }
+      },
     });
 
     // this.loading = true;
 
-    console.log('Form Data:', formData);
-    // this.userService.createuser(formData).subscribe { next:(value)=> { alert('user Created Successfully !'); this.submitted=false; this.selectedFile = null; this.loading = false;
-    // },error:(err)=> N alert('error ' + (err.error.message)); T 1 this.loading=false;
-    // } )
+    // console.log('Form Data:', formData);
   }
 }

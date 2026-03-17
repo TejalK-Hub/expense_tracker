@@ -118,23 +118,27 @@ export class ExpensesService {
   //   },
   // ];
 
-
   expenses: any[] = [];
-
-
+  
   fetchExpense() {
     console.log('Fetching expenses for user ID:', this.auth.userId);
-    var fetchedExpen = this.httpClient
-      .post(
-        `http://localhost:5001/expenses/user?user_id=${this.auth.userId}`,
-        {},
-        { headers: { Authorization: `Bearer ${this.auth.getToken()}` } },
+    this.httpClient
+      .get(
+        `http://192.168.0.105:5001/expenses/user?user_id=${this.auth.userId}`,
+        { headers: { Authorization: `Bearer ${this.auth.getToken()}`} },
       )
-      .subscribe((res) => {
-        console.log('Fetched expenses:', res);
-        return res;
+      .subscribe({
+        next: (res: any) => {
+          // console.log('Fetched expenses:', res);
+          this.expenses = res.data;
+          console.log('Fetched expenses:', this.expenses);
+          // return res;
+        },
+        error: (err) => {
+          console.error('Error:', err);
+        },
       });
-    console.log("This is triggered:", fetchedExpen);
+    // console.log("This is triggered:", fetchedExpen);
   }
 
   selectedExpense: any = null;
@@ -159,10 +163,12 @@ export class ExpensesService {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6IkVtcGxveWVlIiwiaWF0IjoxNzcyNDU2NzI2LCJleHAiOjE3NzI1NDMxMjZ9.N8_Fu3fnpwuWVd3Mi12HxleP8sF-HHyPYmuZWFDjIYQ';
 
     // const token = this.auth.getToken();
-    console.log('Using token:', token);
+    // console.log('Using token:', token);
     const headers = { Authorization: `Bearer ${token}` };
 
-    return this.httpClient.post('http://192.168.0.105:5001/expenses', expense, { headers });
+    return this.httpClient.post('http://192.168.0.105:5001/expenses', expense, {
+      headers,
+    });
     // return this.httpClient.post('http://localhost:5001/expenses', expense, { headers });
   }
 }

@@ -1,48 +1,85 @@
-<div class="details-container" *ngIf="expense">
+<div class="container mt-5" *ngIf="expense">
 
-  <div class="field status">
-    <div class="label">Status</div>
-    <div class="value">{{ expense.status }}</div>
+  <!-- Print Button -->
+  <div class="text-end mb-3">
+    <button class="btn btn-primary" (click)="printReceipt()">Print Receipt</button>
   </div>
 
-  <div class="field">
-    <div class="label">Category</div>
-    <div class="value">{{ expense.category }}</div>
-  </div>
+  <!-- Receipt -->
+  <div id="receipt" class="card shadow p-4 mx-auto" style="max-width:500px">
 
-  <div class="field amount">
-    <div class="label">Amount</div>
-    <div class="value">₹ {{ expense.amount }}</div>
-  </div>
+    <!-- Header -->
+    <div class="text-center border-bottom pb-3 mb-3">
+      <h3 class="mb-0">Expense Receipt</h3>
+      <small class="text-muted">Company Expense Record</small>
+    </div>
 
-  <div class="receipt-preview">
-    <img *ngIf="expense.receipt" [src]="'assets/' + expense.receipt" />
-    <span *ngIf="!expense.receipt">No Receipt</span>
-  </div>
+    <!-- Info Table -->
+    <table class="table table-borderless mb-3">
+      <tr>
+        <th>Status</th>
+        <td class="text-end">{{ expense.status }}</td>
+      </tr>
 
-  <div class="field">
-    <div class="label">Receipt No.</div>
-    <div class="value">{{ expense.receiptNo }}</div>
-  </div>
+      <tr>
+        <th>Category</th>
+        <td class="text-end">{{ expense.category }}</td>
+      </tr>
 
-  <div class="field description">
-    <div class="label">Description</div>
-    <div class="value">{{ expense.description }}</div>
-  </div>
+      <tr>
+        <th>Amount</th>
+        <td class="text-end fw-bold">₹ {{ expense.amount }}</td>
+      </tr>
 
-  <div class="field">
-    <div class="label">Visit</div>
-    <div class="value">{{ expense.visit }}</div>
-  </div>
+      <tr>
+        <th>Receipt No.</th>
+        <td class="text-end">{{ expense.receipt }}</td>
+      </tr>
 
-  <div class="field">
-    <div class="label">Approved By</div>
-    <div class="value">{{ expense.approvedBy }}</div>
-  </div>
+      <tr>
+        <th>Visit</th>
+        <td class="text-end">{{ expense.visit }}</td>
+      </tr>
+    </table>
 
-  <div class="field">
-    <div class="label">Approved At</div>
-    <div class="value">{{ expense.approvedAt }}</div>
-  </div>
+    <!-- Description -->
+    <div class="mb-3">
+      <strong>Description</strong>
+      <div class="border rounded p-2 mt-1 bg-light">
+        {{ expense.expense }}
+      </div>
+    </div>
 
+    <!-- Receipt Image -->
+    <div class="text-center mb-3">
+      <strong class="d-block mb-2">Receipt Image</strong>
+
+      <img
+        *ngIf="expense.receipt"
+        [src]="'assets/' + expense.receipt"
+        class="img-fluid border rounded"
+        style="max-height:200px"
+      />
+
+      <span *ngIf="!expense.receipt" class="text-muted">
+        No Receipt Uploaded
+      </span>
+    </div>
+
+    <!-- Approval -->
+    <div class="border-top pt-3">
+      <table class="table table-borderless mb-0">
+        <tr>
+          <th>Approved By</th>
+          <td class="text-end">{{ expense.approved_by }}</td>
+        </tr>
+
+        <tr>
+          <th>Approved At</th>
+          <td class="text-end">{{ expense.approved_at }}</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
 </div>

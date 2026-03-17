@@ -5,21 +5,25 @@
 <table class="table clean-table visits-table">
   <thead class="clean-head">
     <tr>
-      <th scope="col">Client</th>
+      <th scope="col">Sr.</th>
+      <th scope="col">VisitsId</th>
       <th scope="col">StartDate</th>
       <th scope="col">EndDate</th>
-      <th scope="col">Reason</th>
-      <th scope="col">Amount</th>
+      <th scope="col">CreatedAt</th>
+      <th scope="col">CliendId</th>
     </tr>
   </thead>
 
   <tbody>
-    <tr *ngFor="let visit of visits" class="clean-row">
-      <th scope="row">{{ visit.client }}</th>
-      <td>{{ visit.startDate }}</td>
-      <td>{{ visit.endDate }}</td>
-      <td>{{ visit.reason }}</td>
-      <td>₹{{ visit.amount }}</td>
+    <tr *ngFor="let visit of visits; let i = index" class="clean-row">
+
+      <th scope="row">{{ i + 1 }}</th>
+
+      <td>{{ visit.visit_reason_id }}</td>
+      <td>{{ visit.start_date | date:'EEEE, MMMM d, y h:mm a'}}</td>
+      <td>{{ visit.end_date | date:'EEEE, MMMM d, y h:mm a'}}</td>
+      <td>{{ visit.created_at | date:'EEEE, MMMM d, y h:mm a' }}</td>
+      <td>{{ visit.client_id }}</td>
     </tr>
   </tbody>
 </table>

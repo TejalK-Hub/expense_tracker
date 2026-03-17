@@ -1,5 +1,4 @@
 <div class="expense-card vstack gap-4">
-  
   <h3 class="title text-center">Add Expense</h3>
 
   <!-- <app-drop-down-button class="pill-field"> </app-drop-down-button> -->
@@ -15,7 +14,24 @@
   <input type="date" [(ngModel)]="date" />
 
   <!-- <app-add-receipt class="pill-field" /> -->
-<app-add-expense-form></app-add-expense-form>
+
+  <!-- -------------------------------------------------------------Add Expense Receipt------------------------------------------------------->
+  <app-add-expense-form></app-add-expense-form>
+
+  <div>
+    <label for="bill">Upload Bill:</label>
+    <input
+      type="file"
+      (change)="fileOnChange($event)"
+      name="bill"
+      class="form-control"
+    />
+  </div>
+
+  <button class="form-control mt-3" type="button" (click)="onSubmit()">
+    Submit
+  </button>
+
   <!-- <app-input
     class="pill-field"
     label="Amount"
@@ -70,7 +86,7 @@
     Add New
   </button>
 
-<!-- 
+  <!-- 
   <form [formGroup]="userform" (ngSubmit)="onSubmit()" novalidate>
       <input type="text" formControlName="username" name="username" id="username"/>
       <input type="email" formControlName="email" name="email" id="email"/>

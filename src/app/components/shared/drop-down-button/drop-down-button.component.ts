@@ -13,10 +13,10 @@ import { CategoryOption } from '../shared/category-options-drop-down-model';
 export class DropDownButtonComponent {
   selectedCategory: string = 'Travel';
 
-  categories: CategoryOption[] = [
-    { name: 'Travel' },
-    { name: 'Food' },
-    { name: 'Stay' },
-    { name: 'Miscellaneous' },
-  ];
+  // categories: CategoryOption[] = [
+  //   { name: 'Travel' },
+  //   { name: 'Food' },
+  //   { name: 'Stay' },
+  //   { name: 'Miscellaneous' },
+  // ];
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ExpensesService } from '../../../service/expenses.service';
@@ -11,7 +11,7 @@ import { ExpensesService } from '../../../service/expenses.service';
   templateUrl: './expense-table.component.html',
   styleUrl: './expense-table.component.scss',
 })
-export class ExpenseTableComponent {
+export class ExpenseTableComponent implements OnInit {
 
   constructor(
     private expensesService: ExpensesService,
@@ -23,6 +23,10 @@ export class ExpenseTableComponent {
   selectedStatus: string = '';
   selectedDate: string = '';
 
+  ngOnInit() {
+    this.expensesService.fetchExpense();
+    console.log('Expenses in service:', this.expensesService.expenses);
+  }
   // ---------------- DATA SOURCE ----------------
 
   get expenses() {
@@ -36,7 +40,7 @@ export class ExpenseTableComponent {
   }
 
   getUniqueDates() {
-    return [...new Set(this.expenses.map(e => e.date))];
+    return [...new Set(this.expenses.map(e => e.expense_date))];
   }
 
   // ---------------- FILTERED DATA ----------------
@@ -53,7 +57,7 @@ export class ExpenseTableComponent {
 
       const dateMatch =
         !this.selectedDate ||
-        new Date(exp.date).toISOString().slice(0, 10) ===
+        new Date(exp.expense_date).toISOString().slice(0, 10) ===
         new Date(this.selectedDate).toISOString().slice(0, 10);
 
       return statusMatch && dateMatch;
@@ -64,6 +68,7 @@ export class ExpenseTableComponent {
 
   openPreview(exp: any) {
     this.expensesService.setSelectedExpense(exp);
+    console.log("------------> This is the expense obj: ", exp);
     this.router.navigate(['/expense-preview']);
   }
 }

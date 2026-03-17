@@ -6,16 +6,20 @@
       <th scope="col">Category</th>
       <th scope="col">Amount</th>
       <th scope="col">Visit</th>
+      <th scope="col" *ngIf="this.role==='admin'.toLowerCase().trim()">Action</th>
     </tr>
   </thead>
 
   <tbody>
-    <tr *ngFor="let exp of pendingExpenses" class="clean-row">
+    <tr *ngFor="let exp of getPendingExpenses()" class="clean-row">
       <th scope="row">{{ exp.expense }}</th>
-      <td>{{ exp.date }}</td>
+      <td>{{ exp.expense_date }}</td>
       <td>{{ exp.category }}</td>
       <td>₹{{ exp.amount }}</td>
       <td>{{ exp.visit }}</td>
+      <td *ngIf="this.role==='admin'.toLowerCase().trim()" (click)="toggleStatus()">
+        <button>{{ status }}</button>
+      </td>
     </tr>
   </tbody>
 </table>

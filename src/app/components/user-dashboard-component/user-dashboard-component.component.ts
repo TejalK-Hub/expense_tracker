@@ -6,6 +6,7 @@ import { ExpenseTableComponent } from '../shared/expense-table-component/expense
 import { ButtonComponent } from '../shared/button/button.component';
 import { Router } from '@angular/router';
 import { PendingExpenseTableComponent } from './pending-expense-table/pending-expense-table.component';
+import { AuthServiceService } from '../../service/auth-service.service';
 
 @Component({
   selector: 'app-user-dashboard-component',
@@ -22,7 +23,7 @@ import { PendingExpenseTableComponent } from './pending-expense-table/pending-ex
   styleUrl: './user-dashboard-component.component.scss',
 })
 export class UserDashboardComponentComponent {
-  constructor(private route: Router) {}
+  constructor(private route: Router, private authService: AuthServiceService) {}
 
   Amount = 400;
   summary_current_month: any = {
@@ -43,4 +44,11 @@ export class UserDashboardComponentComponent {
       this.route.navigate(['/review-expense']);
     }
   }
+
+
+  logout(){
+    this.route.navigate(['']);
+    this.authService.logout();
+  }
+
 }

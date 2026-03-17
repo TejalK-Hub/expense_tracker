@@ -4,6 +4,7 @@ import { ButtonComponent } from '../../shared/button/button.component';
 import { ExpandableButtonComponent } from '../../shared/expandable-button-component/expandable-button.component';
 import { Router } from '@angular/router';
 import { PendingExpenseTableComponent } from '../../user-dashboard-component/pending-expense-table/pending-expense-table.component';
+import { AuthServiceService } from '../../../service/auth-service.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -13,17 +14,22 @@ import { PendingExpenseTableComponent } from '../../user-dashboard-component/pen
   styleUrl: './admin-dashboard.component.scss',
 })
 export class AdminDashboardComponent {
-  constructor(private route: Router) {}
+  constructor(private route: Router, private authService: AuthServiceService) {}
 
   handleRouting(option: number) {
     console.log("Routing option:", option);
 
     if (option === 1) {
-      this.route.navigate(['/admin-add-expense']);
+      this.route.navigate(['/add-expense']);
     } else if (option === 2) {
       this.route.navigate(['/admin-manage-expense']);
     } else if (option === 3) {
       this.route.navigate(['/admin-review-expense']);
     }
+  }
+
+  logout(){
+    this.route.navigate(['']);
+    this.authService.logout();
   }
 }

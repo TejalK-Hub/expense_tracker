@@ -22,4 +22,8 @@ export class ExpensePreviewPageComponent {
       this.router.navigate(['/expenses']);
     }
   }
+
+  printReceipt() {
+  window.print();
+}
 }
