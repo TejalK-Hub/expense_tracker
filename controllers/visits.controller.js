@@ -3,7 +3,7 @@ const visitService = require('../services/visits.service');
 // GET ALL VISITS (generic)
 const getVisits = async (req, res) => {
     try {
-        const visits = await visitService.getVisits();
+        const visits = await visitService.getVisits(req.user);
 
         res.json({
             success: true,
@@ -24,7 +24,7 @@ const getVisitById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const visit = await visitService.getVisitById(id);
+        const visit = await visitService.getVisitById(id, req.user);
 
         if (!visit) {
             return res.status(404).json({
