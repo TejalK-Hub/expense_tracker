@@ -1,8 +1,18 @@
+<div class="position-absolute">
+  <app-back-button/>
+</div>
+
 <div class="container mt-5" *ngIf="expense">
 
   <!-- Print Button -->
-  <div class="text-end mb-3">
-    <button class="btn btn-primary" (click)="printReceipt()">Print Receipt</button>
+  <div class="d-flex justify-content-end gap-2 mb-3">
+    <button class="btn btn-outline-secondary" *ngIf="editable" (click)="editExpense()">
+      Edit
+    </button>
+
+    <button class="btn btn-primary"  (click)="printReceipt()">
+      Print Receipt
+    </button>
   </div>
 
   <!-- Receipt -->

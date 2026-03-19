@@ -1,32 +1,37 @@
 <div class="container">
-<div class="d-flex justify-content-center p-5">
-  <h2 class="mb-0">Past Visits</h2>
-</div>  
-<table class="table clean-table visits-table">
-  <thead class="clean-head">
-    <tr>
-      <th scope="col">Sr.</th>
-      <th scope="col">VisitsId</th>
-      <th scope="col">StartDate</th>
-      <th scope="col">EndDate</th>
-      <th scope="col">CreatedAt</th>
-      <th scope="col">CliendId</th>
-    </tr>
-  </thead>
+  <div
+    class="container p-3 d-flex align-items-center justify-content-between position-relative"
+  >
+    <div>
+      <app-back-button></app-back-button>
+    </div>
 
-  <tbody>
-    <tr *ngFor="let visit of visits; let i = index" class="clean-row">
+    <h2 class="mb-0 position-absolute start-50 translate-middle-x">
+      Past Visits
+    </h2>
+  </div>
+  <table class="table clean-table visits-table">
+    <thead class="clean-head">
+      <tr>
+        <th scope="col">Sr.</th>
+        <th scope="col">VisitsId</th>
+        <th scope="col">StartDate</th>
+        <th scope="col">EndDate</th>
+        <th scope="col">CreatedAt</th>
+        <th scope="col">CliendId</th>
+      </tr>
+    </thead>
 
-      <th scope="row">{{ i + 1 }}</th>
+    <tbody>
+      <tr *ngFor="let visit of visits; let i = index" class="clean-row">
+        <th scope="row">{{ i + 1 }}</th>
 
-      <td>{{ visit.visit_reason_id }}</td>
-      <td>{{ visit.start_date | date:'EEEE, MMMM d, y h:mm a'}}</td>
-      <td>{{ visit.end_date | date:'EEEE, MMMM d, y h:mm a'}}</td>
-      <td>{{ visit.created_at | date:'EEEE, MMMM d, y h:mm a' }}</td>
-      <td>{{ visit.client_id }}</td>
-    </tr>
-  </tbody>
-</table>
-
-
+        <td>{{ visit.visit_reason_id }}</td>
+        <td>{{ visit.start_date | date: "EEEE, MMMM d, y h:mm a" }}</td>
+        <td>{{ visit.end_date | date: "EEEE, MMMM d, y h:mm a" }}</td>
+        <td>{{ visit.created_at | date: "EEEE, MMMM d, y h:mm a" }}</td>
+        <td>{{ visit.client_id }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>

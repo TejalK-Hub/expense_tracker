@@ -3,11 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ExpensesService } from '../../../service/expenses.service';
+import { BackButtonComponent } from '../../back-button/back-button.component';
 
 @Component({
   selector: 'app-expense-table',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BackButtonComponent],
   templateUrl: './expense-table.component.html',
   styleUrl: './expense-table.component.scss',
 })

@@ -1,57 +1,74 @@
-<!-- <div class="container d-flex justify-content-center">
-<p-calendar 
-  [(ngModel)]="selectedMonth"
-  view="month"
-  dateFormat="mm/yy"
-  [maxDate]="today">
-</p-calendar>
-    
-</div>
-
 <div class="container">
-    <div class="d-flex justify-content-center">
-        <ol class="list-group c-width-40" style="width: 40%;">
-            <li class="list-group-item d-flex flex-column gap-3 ">
-                <app-user-block class="w-100"/>
-                <app-user-block class="w-100"/>
-                <app-user-block class="w-100"/>
-                <app-user-block class="w-100"/>
-                
-                <app-user-block class="w-100" *ngFor="let user of yearlyUserExpenses[selectedMonth.getFullYear()][getMonthKey(selectedMonth)]"/>    
-            </li>
-        </ol>
+  <div
+    class="container p-3 d-flex align-items-center justify-content-between position-relative"
+  >
+    <div>
+      <app-back-button></app-back-button>
     </div>
-</div> -->
 
-<div class="container">
-  <div class="d-flex justify-content-center p-5">
-    <h2 class="mb-0">Expense Review</h2>
+    <h2 class="mb-0 position-absolute start-50 translate-middle-x">
+      Users List
+    </h2>
   </div>
-  <div class="d-flex justify-content-center my-3 p-component-overlay-container">
-    <input type="month" [(ngModel)]="date" />
+
+  <div class="d-flex justify-content-center my-4 p-component-overlay-container">
+    <input
+      type="month"
+      class="form-control w-auto"
+      [(ngModel)]="date"
+      (change)="dateOnChange($event)"
+      [max]="maxMonth"
+    />
   </div>
-  
-  <div class="d-flex justify-content-center">
-    <ol class="list-group c-width-40 user-list">
+
+  <div class="d-flex flex-column align-items-center  ">
+    <div class="text-center mb-2">
+      <div class="form-check">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          [checked]="isAllSelected()"
+          (change)="toggleSelectAll($event)"
+          id="selectAll"
+        />
+        <label class="form-check-label" for="selectAll"> Select All </label>
+      </div>
+    </div>
+
+    <ol class="list-group user-list">
       <li
-        class="list-group-item user-card"
+        class="list-group-item user-card d-flex align-items-center gap-3"
         *ngFor="let user of users"
-        style="cursor: pointer"
-        (click)="openUserExpenses()"
-        >
-        <div class="d-flex align-items-center gap-3">
-          <!-- Dummy avatar -->
-          <!-- <img src="assets/user-placeholder.png" class="user-avatar" /> -->
-          <img src="expn.png" class="user-avatar" alt="expence image"/>
+      >
+        <input
+          type="checkbox"
+          class="form-check-input"
+          [checked]="isSelected(user.id)"
+          (change)="toggleUser(user.id, $event)"
+        />
 
+        <img src="expn.png" class="user-avatar" alt="expense image" />
 
-          <!-- Name + Expense -->
-          <div class="d-flex flex-column">
-            <span class="user-name">{{ user.name }}</span>
-            <span class="user-expense">Total: ₹{{ user.expense }}</span>
-          </div>
+        <div class="d-flex flex-column">
+          <span class="user-name">{{ user.name }}</span>
+          <!-- <span class="user-expense">Total: ₹{{ user.expense }}</span> -->
+          <span class="user-expense">Total: ₹{{ user.expense }}</span>
         </div>
       </li>
     </ol>
+
+    <div class="d-flex justify-content-center gap-3 mt-4 w-100">
+      <button
+        class="btn btn-primary"
+        (click)="viewExpenses()"
+        [disabled]="selectedUserIds.length === 0"
+      >
+        View Expenses
+      </button>
+
+      <button class="btn btn-outline-secondary" (click)="clearSelection()">
+        Clear
+      </button>
+    </div>
   </div>
 </div>

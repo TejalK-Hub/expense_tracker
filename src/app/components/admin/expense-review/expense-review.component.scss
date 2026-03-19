@@ -1,7 +1,5 @@
 .user-list {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
+  width: 40%;
 }
 
 .user-card {
@@ -11,7 +9,6 @@
   padding: 14px 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  align-items: center;
 }
 
 .user-card:hover {
@@ -36,14 +33,3 @@
   font-size: 13px;
   color: #f3f3f3;
 }
-
-
-
-
-//--------------------------------------------------Check Boxes-------------------------------------------------------
-
-.form-check-input {
-  cursor: pointer;
-}
-
-

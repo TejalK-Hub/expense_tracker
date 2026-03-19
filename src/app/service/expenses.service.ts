@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthServiceService } from './auth-service.service';
+import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +11,7 @@ export class ExpensesService {
   constructor(
     private httpClient: HttpClient,
     private auth: AuthServiceService,
-  ) {}
+  ) { }
 
   // expenses = [
   //   {
@@ -119,13 +121,14 @@ export class ExpensesService {
   // ];
 
   expenses: any[] = [];
-  
+  pendingExpenses: any[] = [];
+
   fetchExpense() {
     console.log('Fetching expenses for user ID:', this.auth.userId);
     this.httpClient
       .get(
-        `http://192.168.0.105:5001/expenses/user?user_id=${this.auth.userId}`,
-        { headers: { Authorization: `Bearer ${this.auth.getToken()}`} },
+        `${environment.apiBaseUrl}/expenses/user?user_id=${this.auth.userId}`,
+        { headers: { Authorization: `Bearer ${this.auth.getToken()}` } },
       )
       .subscribe({
         next: (res: any) => {
@@ -166,9 +169,34 @@ export class ExpensesService {
     // console.log('Using token:', token);
     const headers = { Authorization: `Bearer ${token}` };
 
-    return this.httpClient.post('http://192.168.0.105:5001/expenses', expense, {
+    return this.httpClient.post(`${environment.apiBaseUrl}/expenses`, expense, {
       headers,
     });
     // return this.httpClient.post('http://localhost:5001/expenses', expense, { headers });
   }
+
+
+
+  // fetchAdminPending() {
+
+  //   return this.httpClient.get(`${environment.apiBaseUrl}/expenses/all?status=submitted`).subscribe({
+  //     next: (res: any) => {
+  //       this.pendingExpenses = res.data;
+  //       console.log("Admin pending Expenses: ", this.pendingExpenses);
+  //     },
+
+  //     error: (err: any) => {
+  //       console.log(err);
+  //     }
+  //   })
+  // }
+
+  fetchAdminPending(): Observable<any> {
+    return this.httpClient.get(`${environment.apiBaseUrl}/expenses/all?status=submitted`)
+  }
+
+  updateExpense(id: any, body: any): Observable<any> {
+    return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${id}/status`, body);
+  }
+
 }

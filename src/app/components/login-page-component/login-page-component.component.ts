@@ -62,4 +62,8 @@ export class LoginPageComponentComponent {
     // Error
     this.errorMsg = 'Invalid credentials';
   }
+
+  register(){
+    this.router.navigate(['/signup'])
+  }
 }

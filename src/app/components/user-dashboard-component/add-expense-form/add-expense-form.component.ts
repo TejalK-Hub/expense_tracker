@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { ExpensesService } from '../../../service/expenses.service';
 import { AuthServiceService } from '../../../service/auth-service.service';
 import { CategoryOption } from '../../shared/shared/category-options-drop-down-model';
+import { BackButtonComponent } from '../../back-button/back-button.component';
+import { expand } from 'rxjs';
 
 @Component({
   selector: 'app-add-expense-form',
@@ -20,6 +22,7 @@ import { CategoryOption } from '../../shared/shared/category-options-drop-down-m
     AddReceiptComponent,
     FormsModule,
     CommonModule,
+    BackButtonComponent
   ],
   templateUrl: './add-expense-form.component.html',
   styleUrl: './add-expense-form.component.scss',
@@ -129,6 +132,11 @@ export class AddExpenseFormComponent {
     if (this.selectedFile) {
       this.fileInput.nativeElement.value = '';
     }
+  }
+
+  editExpense(category: string, expense_date: string, amount: string, receipt: string,  visit: number, expense: string, bill_path: string, id: number, status: "Rejected") {
+    this.amount = amount;
+    this.date = expense_date;
   }
 
 }

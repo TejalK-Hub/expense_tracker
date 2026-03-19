@@ -35,7 +35,7 @@ export class UserDashboardComponentComponent {
     this.route.navigate(['/visits']);
   }
 
-  handleRouting(option: number) {
+  handleExpense(option: number) {
     if (option === 1) {
       this.route.navigate(['/add-expense']);
     } else if (option === 2) {
@@ -44,6 +44,16 @@ export class UserDashboardComponentComponent {
       this.route.navigate(['/review-expense']);
     }
   }
+
+
+  //--------------------------------------------------Depricated Visits Approach-----------------------------------------
+  // handleVisit(option: number){
+  //   if (option===1){
+  //     this.route.navigate(['/add-visit']);
+  //   }else{
+  //     this.route.navigate(['/visits']);
+  //   }
+  // }
 
 
   logout(){

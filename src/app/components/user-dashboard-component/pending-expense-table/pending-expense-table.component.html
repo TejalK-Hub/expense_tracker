@@ -1,6 +1,7 @@
 <table class="table clean-table pending-table">
   <thead class="clean-head">
     <tr>
+      <th scope="col">Sr.</th>
       <th scope="col">Expense</th>
       <th scope="col">ExpenseDate</th>
       <th scope="col">Category</th>
@@ -11,8 +12,9 @@
   </thead>
 
   <tbody>
-    <tr *ngFor="let exp of getPendingExpenses()" class="clean-row">
-      <th scope="row">{{ exp.expense }}</th>
+    <tr *ngFor="let exp of getPendingExpenses(); let i = index" class="clean-row">
+      <th scope="row">{{ i + 1 }}</th>
+      <th >{{ exp.expense }}</th>
       <td>{{ exp.expense_date }}</td>
       <td>{{ exp.category }}</td>
       <td>₹{{ exp.amount }}</td>

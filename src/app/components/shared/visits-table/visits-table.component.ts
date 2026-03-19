@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VisitsService } from '../../../service/visits.service';
+import { BackButtonComponent } from '../../back-button/back-button.component';
 
 @Component({
   selector: 'app-visits-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BackButtonComponent ],
   templateUrl: './visits-table.component.html',
   styleUrl: './visits-table.component.scss',
 })

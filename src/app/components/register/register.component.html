@@ -1,0 +1,50 @@
+<form (ngSubmit)="signup()">
+  <div class="container text-center mt-5">
+    <h2>Expense Tracking</h2>
+    <div
+      class="container p-3 d-flex align-items-center justify-content-between position-relative"
+    >
+
+    <!-- Back Button -->
+      <div>
+        <app-back-button></app-back-button>
+      </div>
+
+      <p class="mb-0 position-absolute start-50 translate-middle-x">Sign Up</p>
+    </div>
+
+    <div class="mb-3">
+      <label>Name</label>
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="name"
+        placeholder="Deepak Kumar"
+        name="name"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label>Email</label>
+      <input
+        type="email"
+        class="form-control"
+        [(ngModel)]="email"
+        placeholder="abc@mail.com"
+        name="email"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label>Password</label>
+      <input
+        type="password"
+        class="form-control"
+        [(ngModel)]="password"
+        name="password"
+      />
+    </div>
+
+    <button class="btn btn-primary w-100" type="submit">SignUp</button>
+  </div>
+</form>

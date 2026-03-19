@@ -1,43 +1,71 @@
 <div class="container d-flex flex-column gap-4 pt-5 align-items-center">
-
   <div class="w-100 d-flex align-items-center mb-4">
-    <button
-      type="button"
-      class="btn btn-secondary"
-      (click)="logout()"
-    >
+    <button type="button" class="btn btn-secondary" (click)="logout()">
       Logout
     </button>
 
     <h3 class="mx-auto mb-0">Admin Dashboard</h3>
   </div>
 
-  <app-button
-    mainIcon="./expn.png"
-    mainLabel="Users"
-    class="menu-item w-50"
-  />
+  <div class="d-flex">
+    <app-button
+      mainIcon="./expn.png"
+      mainLabel="Users"
+      class="menu-item w-50"
+      (click)="listUsers()"
+    />
 
-  <app-button
+    <app-button
     mainIcon="./expn.png"
-    mainLabel="Reports"
+    mainLabel="Grafana Reports"
     class="menu-item w-50"
-  />
+    (click)="grafanaReports()"
+    />
 
-  <app-expandable-button
-    class="menu-item w-50"
-    [mainIcon]="'./expn.png'"
-    mainLabel="Expense"
-    one="Add"
-    two="Manage"
+    <app-expandable-button
+      class="menu-item w-50"
+      [mainIcon]="'./expn.png'"
+      mainLabel="Expense"
+      one="Add"
+      two="Review"
+      (optionClick)="handleRouting($event)"
+    />
+  </div>
+  <!--     
     three="Review"
-    [isAdmin]="true"
-    (optionClick)="handleRouting($event)"
-  />
+    [isAdmin]="true" -->
 
   <div class="container mt-5">
     <h4 class="mb-3 text-center">Pending Expenses</h4>
-    <app-pending-expense-table />
-  </div>
+    <table class="table clean-table pending-table">
+      <thead class="clean-head">
+        <tr>
+          <th scope="col">User</th>
+          <th scope="col">Emp id</th>
+          <th scope="col">Expense</th>
+          <th scope="col">ExpenseDate</th>
+          <th scope="col">Category</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Visit</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
 
+      <tbody>
+        <tr *ngFor="let exp of tableData" class="clean-row">
+          <th scope="row">{{ exp.employee_name }}</th>
+          <th>{{ exp.id }}</th>
+          <th>{{ exp.expense }}</th>
+          <td>{{ exp.expense_date }}</td>
+          <td>{{ exp.category }}</td>
+          <td>₹{{ exp.amount }}</td>
+          <td>{{ exp.visit }}</td>
+          <td>
+            <button (click)="toggleStatus(exp,'approve')">Approve</button>
+            <button (click)="toggleStatus(exp,'reject')">Reject</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

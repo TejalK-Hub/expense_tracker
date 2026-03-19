@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +27,13 @@ export class AuthServiceService {
   }
 
   login(email: string, password: string) {
-    return this.http.post('http://192.168.0.105:5001/auth/login', { email, password });
+    return this.http.post(`${environment.apiBaseUrl}/auth/login`, { email, password });
+    // return this.http.post(`http://192.168.0.105:5001/auth/login`, { email, password });
     // return this.http.post('http://localhost:5001/auth/login', { email, password });
+  }
+
+  signup(name: string, email: string, password: string) {
+    return this.http.post(`${environment.apiBaseUrl}/auth/signup`, { name, email, password });
   }
 
   setVariables(token: string, id: number, role: string) {

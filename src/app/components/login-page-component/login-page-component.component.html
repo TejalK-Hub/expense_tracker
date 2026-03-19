@@ -16,7 +16,12 @@
 
     <div class="mb-3">
       <label>Password</label>
-      <input type="password" class="form-control" [(ngModel)]="password" name="password"/>
+      <input
+        type="password"
+        class="form-control"
+        [(ngModel)]="password"
+        name="password"
+      />
     </div>
 
     <button class="btn btn-primary w-100" type="submit">Login</button>
@@ -26,3 +31,14 @@
     </div>
   </div>
 </form>
+
+<div class="text-center mt-3">
+  <span
+    class="text-primary fw-semibold text-decoration-underline"
+    role="button"
+    (click)="register()"
+  >
+    Register
+  </span>
+</div>
+<!-- <div (click)="register()" style="cursor: pointer">Register</div> -->
