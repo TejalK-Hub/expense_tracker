@@ -29,4 +29,6 @@ router.get('/user', controller.getUserExpenses);
 
 router.put('/:id', controller.updateExpense);
 
+router.get('/user/all', controller.getUserAllExpenses);
+
 module.exports = router;

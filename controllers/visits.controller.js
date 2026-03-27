@@ -46,7 +46,51 @@ const getVisitById = async (req, res) => {
     }
 };
 
+const getSelfActiveVisits = async (req, res) => {
+    try {
+        const data = await visitService.getSelfActiveVisits(req.user);
+
+        res.json({
+            success: true,
+            data
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error'
+        });
+    }
+};
+
+
+// GET ACTIVE VISITS FOR DROPDOWN (ADMIN : ALL)
+const getActiveVisits = async (req, res) => {
+    try {
+
+        const data = await visitService.getActiveVisitsByUser(req.user);
+
+        res.json({
+            success: true,
+            data
+        });
+
+    } catch (error) {
+
+        console.error('Get active visits error:', error);
+
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error'
+        });
+
+    }
+}; 
+
 module.exports = {
     getVisits,
-    getVisitById
+    getVisitById,
+    getSelfActiveVisits,
+    getActiveVisits
 };

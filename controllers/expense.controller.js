@@ -11,11 +11,15 @@ const createExpense = async (req, res) => {
         };
 
         const result = await service.createExpense(data);
+        console.log('REQ BODY:', req.body);
         res.json({ success: true, data: result });
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: 'server error' });
+        res.status(400).json({
+        success: false,
+        message: error.message
+        });
     }
 };
 
@@ -31,7 +35,10 @@ const getExpensesByVisit = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false });
+        res.status(400).json({
+        success: false,
+        message: error.message
+        });
     }
 };
 
@@ -46,7 +53,10 @@ const getUserExpenses = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false });
+        res.status(400).json({
+        success: false,
+        message: error.message
+        });
     }
 };
 
@@ -67,10 +77,27 @@ const updateExpense = async (req, res) => {
     }
 };
 
+const getUserAllExpenses = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const data = await service.getUserAllExpenses(userId);
+
+        res.json({ success: true, data });
+
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
 
 module.exports = {
     createExpense,
     getExpensesByVisit,
     getUserExpenses,
-    updateExpense
+    updateExpense,
+    getUserAllExpenses
 };

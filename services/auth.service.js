@@ -2,16 +2,20 @@ const pool = require('../config/db');
 
 // Create Employee
 const createEmployee = async (data) => {
+
+    const role = (data.role || 'employee').toLowerCase();
+
     const query = `
         INSERT INTO users (name, email, password, role)
-        VALUES ($1, $2, $3, 'Employee')
-        RETURNING id, name, email, role;
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, name, email, LOWER(role) as role;
     `;
 
     const values = [
         data.name,
         data.email,
-        data.password
+        data.password,
+        role
     ];
 
     const result = await pool.query(query, values);

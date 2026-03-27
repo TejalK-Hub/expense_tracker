@@ -8,8 +8,11 @@ const allowAdmin = require('../middleware/role');
 router.use(auth);
 router.use(allowAdmin);
 
-// Admin expense history
+// Admin expense history (default : submitted ie: pending)
 router.get('/all', controller.getAllExpenses);
+
+//admin review (all status)
+router.get('/review', controller.getAllExpensesReview);
 
 // Approve / Reject
 router.put('/:id/status', controller.updateStatus);

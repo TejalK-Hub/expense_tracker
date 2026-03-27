@@ -11,12 +11,34 @@ const validateTable = (table) => {
 const getAll = async (table) => {
     validateTable(table);
 
-    const query = `
+    let query;
+
+    if (table === 'users') {
+
+        query = `
+        SELECT id,
+               name,
+               email,
+               role,
+               is_active,
+               created_at, 
+               deleted_by, 
+               deleted_on
+        FROM ${table}
+        WHERE deleted_on IS NULL
+        ORDER BY id
+        `;
+
+    } else {
+
+    query = `
         SELECT *
         FROM ${table}
         WHERE deleted_on IS NULL
         ORDER BY id
     `;
+
+    }
 
     const result = await pool.query(query);
     return result.rows;
@@ -26,20 +48,73 @@ const getAll = async (table) => {
 const getById = async (table, id) => {
     validateTable(table);
 
-    const query = `
+    let query;
+
+    if (table === 'users') {
+
+        query = `
+        SELECT id,
+               name,
+               email,
+               role,
+               is_active,
+               created_at, 
+               deleted_by, 
+               deleted_on
+        FROM ${table}
+        WHERE id = $1
+        AND deleted_on IS NULL
+    `;
+
+    } else {
+
+    query = `
         SELECT *
         FROM ${table}
         WHERE id = $1
         AND deleted_on IS NULL
     `;
 
+    }
+
     const result = await pool.query(query, [id]);
     return result.rows[0];
 };
 
-// CREATE (dynamic)
+// CREATE 
 const create = async (table, data) => {
     validateTable(table);
+
+    // STRICT VALIDATION (MANDATORY vs OPTIONAL)
+    if (table === 'visits') {
+
+        if (!data.client_id || !data.visit_reason_id || !data.start_date || !data.end_date) {
+            throw new Error('Missing required visit fields');
+        }
+
+        if (new Date(data.end_date) < new Date(data.start_date)) {
+            throw new Error('End date cannot be before start date');
+        }
+
+        const client = await pool.query(
+        `SELECT name FROM clients WHERE id = $1`,
+        [data.client_id]
+        );
+
+        const reason = await pool.query(
+        `SELECT name FROM visit_reason WHERE id = $1`,
+        [data.visit_reason_id]
+        );
+
+        if (!client.rows.length || !reason.rows.length) {
+            throw new Error('Invalid client or visit reason');
+        }
+
+        const clientName = client.rows[0].name;
+        const reasonName = reason.rows[0].name;
+
+        data.visit_name = `${clientName}_${data.start_date}_${reasonName}`;
+    }
 
     const columns = Object.keys(data);
     const values = Object.values(data);
@@ -90,7 +165,23 @@ const update = async (table, id, data) => {
 const softDelete = async (table, id, userId) => {
     validateTable(table);
 
-    const query = `
+    let query;
+
+    if (table === 'users') {
+
+        query = `
+        UPDATE ${table}
+        SET deleted_on = NOW(),
+            deleted_by = $1,
+            is_active = false
+        WHERE id = $2
+        AND deleted_on IS NULL
+        RETURNING id,name,email,role,is_active;
+    `;
+
+    } else {
+
+    query = `
         UPDATE ${table}
         SET deleted_on = NOW(),
             deleted_by = $1
@@ -98,6 +189,8 @@ const softDelete = async (table, id, userId) => {
         AND deleted_on IS NULL
         RETURNING *;
     `;
+
+    }
 
     const result = await pool.query(query, [userId || null, id]);
     return result.rows[0];

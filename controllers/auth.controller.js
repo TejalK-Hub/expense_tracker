@@ -6,7 +6,7 @@ const authService = require('../services/auth.service');
 
 //  email validation 
 const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
 };
 
@@ -16,7 +16,24 @@ const isValidEmail = (email) => {
 
 const signup = async (req, res) => {
     try {
-        let { name, email, password } = req.body;
+        let { name, email, password, role } = req.body;
+
+        // normalize role
+        if (role) {
+        role = String(role).toLowerCase().trim();
+        }
+
+        // restrict role
+        if (!role) {
+        role = 'employee'; // default
+        }
+
+        if (!['employee', 'admin'].includes(role)) {
+        return res.status(400).json({
+        success: false,
+        message: 'Invalid role'
+        });
+        }
 
         // Normalize input
         if (email) {
@@ -53,11 +70,13 @@ const signup = async (req, res) => {
             });
         }
 
-        // Create Employee
+        
+        // Create User (employee/admin)
         const user = await authService.createEmployee({
             name,
             email,
-            password
+            password,
+            role
         });
 
         return res.status(201).json({
