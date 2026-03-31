@@ -31,4 +31,6 @@ router.put('/:id', controller.updateExpense);
 
 router.get('/user/all', controller.getUserAllExpenses);
 
+router.get('/user/summary', controller.getUserMonthlySummary);
+
 module.exports = router;

@@ -94,10 +94,31 @@ const getUserAllExpenses = async (req, res) => {
     }
 };
 
+const getUserMonthlySummary = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const data = await service.getUserMonthlySummary(userId);
+
+        res.json({
+            success: true,
+            data
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     createExpense,
     getExpensesByVisit,
     getUserExpenses,
     updateExpense,
-    getUserAllExpenses
+    getUserAllExpenses,
+    getUserMonthlySummary
 };

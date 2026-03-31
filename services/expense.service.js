@@ -323,10 +323,30 @@ const getUserAllExpenses = async (userId) => {
     return result.rows;
 };
 
+const getUserMonthlySummary = async (userId) => {
+
+    const query = `
+        SELECT 
+            COUNT(*) AS total_expenses,
+            COALESCE(SUM(amount),0) AS total_amount
+        FROM expenses
+        WHERE user_id = $1
+        AND TO_CHAR(date, 'YYYY-MM') = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
+    `;
+
+    const result = await pool.query(query, [userId]);
+
+    return {
+        total_expenses: Number(result.rows[0].total_expenses),
+        total_amount: Number(result.rows[0].total_amount)
+    };
+};
+
 module.exports = {
     createExpense,
     getExpensesByVisit,
     getUserExpenses,
     updateExpense,
-    getUserAllExpenses
+    getUserAllExpenses,
+    getUserMonthlySummary
 };
