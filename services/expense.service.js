@@ -292,6 +292,7 @@ const getUserAllExpenses = async (userId) => {
             TO_CHAR(e.date,'YYYY-MM-DD') AS expense_date,
             TO_CHAR(e.created_at,'YYYY-MM-DD HH24:MI') AS created_at,
             e.receipt_id AS receipt,
+            e.bill_path,
             CONCAT('INR ', e.amount) AS amount,
 
             e.visit_id AS visit,
