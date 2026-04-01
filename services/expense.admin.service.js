@@ -80,6 +80,18 @@ const getAllExpenses = async (filters) => {
         LEFT JOIN expense_status es ON es.id = e.status_id
         LEFT JOIN users approver ON approver.id = e.approved_by
 
+        LEFT JOIN LATERAL (
+            SELECT 
+                esh.rejection_reason_id,
+                rr.name AS rejection_reason
+            FROM expense_status_history esh
+            LEFT JOIN rejection_reason rr 
+                ON rr.id = esh.rejection_reason_id
+            WHERE esh.expense_id = e.id
+            ORDER BY esh.changed_at DESC
+            LIMIT 1
+        ) rr_data ON TRUE
+
         ${whereClause}
         ORDER BY e.created_at DESC
     `;
