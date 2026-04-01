@@ -70,7 +70,7 @@ const getAllExpenses = async (filters) => {
             TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at,
 
             rr_data.rejection_reason_id,
-            rr_data.rejection_reason,
+            rr_data.rejection_reason
 
         FROM expenses e
         JOIN users u ON u.id = e.user_id

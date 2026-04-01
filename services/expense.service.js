@@ -307,7 +307,7 @@ const getUserAllExpenses = async (userId) => {
             es.name AS status,
 
             approver.name AS approved_by,
-            TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at
+            TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at,
 
             rr_data.rejection_reason_id,
             rr_data.rejection_reason
