@@ -309,12 +309,27 @@ const getUserAllExpenses = async (userId) => {
             approver.name AS approved_by,
             TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at
 
+            rr_data.rejection_reason_id,
+            rr_data.rejection_reason
+
         FROM expenses e
         JOIN visits v ON v.id = e.visit_id
         LEFT JOIN clients c ON c.id = v.client_id
         LEFT JOIN expense_category ec ON ec.id = e.category_id
         LEFT JOIN expense_status es ON es.id = e.status_id
         LEFT JOIN users approver ON approver.id = e.approved_by
+
+        LEFT JOIN LATERAL (
+            SELECT 
+            esh.rejection_reason_id,
+            rr.name AS rejection_reason
+            FROM expense_status_history esh
+        LEFT JOIN rejection_reason rr 
+        ON rr.id = esh.rejection_reason_id
+        WHERE esh.expense_id = e.id
+        ORDER BY esh.changed_at DESC
+        LIMIT 1
+        ) rr_data ON TRUE
 
         WHERE e.user_id = $1
         ORDER BY e.created_at DESC
