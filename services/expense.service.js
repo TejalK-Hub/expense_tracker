@@ -40,11 +40,14 @@ const createExpense = async (data) => {
     throw new Error('Invalid category selected');
     }
 
-    const expenseDate = data.date;
-    const visitStart = visit.start_date.toISOString().slice(0,10);
-    const visitEnd = visit.end_date.toISOString().slice(0,10);
+    const expenseDate = new Date(data.date);
+    const visitStart = new Date(visit.start_date);
+    const visitEnd = new Date(visit.end_date);
 
-       
+    // NORMALIZE TIME (CRITICAL)
+    expenseDate.setHours(0,0,0,0);
+    visitStart.setHours(0,0,0,0);
+    visitEnd.setHours(0,0,0,0);
 
     if (expenseDate < visitStart || expenseDate > visitEnd) {
         throw new Error('Expense date must lie within visit duration');
@@ -196,9 +199,13 @@ const updateExpense = async (id, userId, data) => {
 
     if (data.date !== undefined) {
 
-    const expenseDate = data.date;
-    const visitStart = visit.start_date.toISOString().slice(0,10);
-    const visitEnd = visit.end_date.toISOString().slice(0,10);
+    const expenseDate = new Date(data.date);
+    const visitStart = new Date(visit.start_date);
+    const visitEnd = new Date(visit.end_date);
+
+    expenseDate.setHours(0,0,0,0);
+    visitStart.setHours(0,0,0,0);
+    visitEnd.setHours(0,0,0,0);
 
     if (expenseDate < visitStart || expenseDate > visitEnd) {
         throw new Error('Expense date must be within visit period');
