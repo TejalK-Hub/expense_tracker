@@ -195,7 +195,61 @@ const updateExpenseStatus = async (expenseId, action, adminId, rejection_reason_
     return result.rows[0];
 };
 
+const getAllExpensesFull = async () => {
+
+    const query = `
+        SELECT 
+            e.id,
+            e.description AS expense,
+            TO_CHAR(e.date,'YYYY-MM-DD') AS expense_date,
+            e.receipt_id AS receipt,
+            CONCAT('INR ', e.amount) AS amount,
+
+            e.visit_id AS visit,
+            v.visit_name,
+            TO_CHAR(v.start_date,'YYYY-MM-DD') AS visit_start_date,
+            TO_CHAR(v.end_date,'YYYY-MM-DD') AS visit_end_date,
+
+            c.name AS client_name,
+            c.id AS client_id,
+
+            e.user_id,
+            u.name AS user_name,
+
+            TO_CHAR(e.created_at,'YYYY-MM-DD HH24:MI') AS created_at,
+
+            e.bill_path,
+            ec.name AS category,
+            es.name AS status,
+
+            approver.name AS approved_by,
+            TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at,
+
+            h.rejection_reason_id,
+            rr.name AS rejection_reason
+
+        FROM expenses e
+        JOIN users u ON u.id = e.user_id
+        JOIN visits v ON v.id = e.visit_id
+        LEFT JOIN clients c ON c.id = v.client_id
+        LEFT JOIN expense_category ec ON ec.id = e.category_id
+        LEFT JOIN expense_status es ON es.id = e.status_id
+        LEFT JOIN users approver ON approver.id = e.approved_by
+
+        LEFT JOIN expense_status_history h 
+            ON h.expense_id = e.id
+        LEFT JOIN rejection_reason rr 
+            ON rr.id = h.rejection_reason_id
+
+        ORDER BY e.created_at DESC
+    `;
+
+    const result = await pool.query(query);
+    return result.rows;
+};
+
 module.exports = {
     getAllExpenses,
-    updateExpenseStatus
+    updateExpenseStatus,
+    getAllExpensesFull
 };

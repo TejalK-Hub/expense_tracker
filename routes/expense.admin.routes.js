@@ -11,6 +11,9 @@ router.use(allowAdmin);
 // Admin expense history (default : submitted ie: pending)
 router.get('/all', controller.getAllExpenses);
 
+//admin get all exp (no filters)
+router.get('/all/full', controller.getAllExpensesFull);
+
 //admin review (all status)
 router.get('/review', controller.getAllExpensesReview);
 

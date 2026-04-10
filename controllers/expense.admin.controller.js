@@ -33,6 +33,26 @@ const getAllExpenses = async (req, res) => {
     }
 };
 
+const getAllExpensesFull = async (req, res) => {
+    try {
+
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({
+                success: false,
+                message: 'Admin access only'
+            });
+        }
+
+        const data = await service.getAllExpensesFull();
+
+        res.json({ success: true, data });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 const updateStatus = async (req, res) => {
     try {
 
@@ -98,6 +118,7 @@ const getAllExpensesReview = async (req, res) => {
 
 module.exports = {
     getAllExpenses,
+    getAllExpensesFull,
     updateStatus,
     getAllExpensesReview
 };
