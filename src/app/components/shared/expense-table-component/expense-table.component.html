@@ -1,73 +1,262 @@
-<div class="container p-3 d-flex align-items-center justify-content-between position-relative">
-  
-  <div>
-    <app-back-button></app-back-button>
+<div class="container-fluid past-expenses py-3">
+  <!-- HEADER + FILTERS -->
+  <div
+    class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3"
+  >
+    <div class="d-flex align-items-center gap-3">
+      <app-back-button></app-back-button>
+      <h5 class="mb-3 fw-semibold">Past Expenses</h5>
+    </div>
+
+    <!-- FILTER BUTTON -->
+    <button
+      class="btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center gap-1"
+      data-bs-toggle="modal"
+      data-bs-target="#filtersModal"
+    >
+      <i class="bi bi-funnel"></i>
+      Filters
+    </button>
   </div>
 
-  <h2 class="mb-0 position-absolute start-50 translate-middle-x">
-    Past Expenses
-  </h2>
+  <!-- TABLE -->
+  <div class="table-responsive">
+    <table class="table clean-table align-middle small text-nowrap mb-0">
+      <thead class="clean-head">
+        <tr>
+          <th>#</th>
+          <th *ngIf="isAdmin">User</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th (click)="sortByDate()" class="sortable">Expense Date</th>
+          <th>Receipt</th>
+          <th class="text-end">Amount</th>
+          <th>Status</th>
+          <th>Visit</th>
+          <th>Client</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
 
-</div>
+      <tbody>
+        <tr
+          *ngFor="let exp of filteredExpenses; let i = index"
+          class="clean-row"
+        >
+          <td>{{ i + 1 }}</td>
+          <td *ngIf="isAdmin">{{ exp.user_name }}</td>
+          <td>{{ exp.category }}</td>
 
-<div class="container d-flex gap-3 mb-3 justify-content-end">
-  
-  <select class="form-select w-auto" [(ngModel)]="selectedStatus">
-    <option value="">All Status</option>
-    <option *ngFor="let status of getUniqueStatuses()" [value]="status">
-      {{ status }}
-    </option>
-  </select>
+          <td class="text-truncate desc">
+            {{ exp.expense }}
+          </td>
 
+          <td>{{ exp.expense_date }}</td>
+          <td>{{ exp.receipt }}</td>
 
-  <select class="form-select w-auto" [(ngModel)]="selectedDate">
-    <option value="">All Dates</option>
-    <option *ngFor="let date of getUniqueDates()" [value]="date">
-      {{ date }}
-    </option>
-  </select>
-</div>
+          <td class="text-end amount">₹ {{ exp.amount }}</td>
 
-<div class="container d-flex justify-content-center">
-  <table class="table clean-table">
-    <thead class="clean-head">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">ExpenseDate</th>
-        <th scope="col">ExpenseDate</th>
-        <th scope="col">Category</th>
-        <th scope="col">Receipt Id</th>
-        <th scope="col">Amount</th>
-        <th scope="col">Status</th>
-        <th scope="col">Approved By</th>
-        <th scope="col">Approved At</th>
-        <th scope="col">View</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let exp of getFilteredExpenses(); let i = index" class="clean-row">
-        <th scope="row">{{ i + 1 }}</th>
-        <td>{{ exp.expense }}</td>
-        <td>{{ exp.expense_date }}</td>
-        <td>{{ exp.category }}</td>
-        <td>{{ exp.receipt }}</td>
-        <td>{{ exp.amount }}</td>
-        <td>
-          <span class="status-pill" [ngClass]="exp.status?.toLowerCase() || ''">
-            {{ exp.status }}
-          </span>
-        </td>
-        <td>{{ exp.approved_by }}</td>
-        <td>{{ exp.approved_at }}</td>
-        <td>
+          <!-- STATUS -->
+          <td>
+            <span
+              class="status-pill"
+              [ngClass]="{
+                'status-submitted': exp.status?.toLowerCase() === 'submitted',
+                'status-approved': exp.status?.toLowerCase() === 'approved',
+                'status-rejected': exp.status?.toLowerCase() === 'rejected',
+              }"
+            >
+              {{ exp.status }}
+            </span>
+          </td>
+
+          <!-- ✅ VISIT WITH ELLIPSIS + TOOLTIP -->
+          <td>
+            <div class="ellipsis-cell" [title]="exp.visit_name">
+              {{ exp.visit_name }}
+            </div>
+          </td>
+
+          <td>{{ exp.client_name }}</td>
+
+          <td class="text-center">
+            <button class="btn btn-sm view-btn" (click)="openPreview(exp)">
+              👁
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FILTER MODAL -->
+  <div class="modal fade" id="filtersModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <!-- HEADER -->
+        <div class="modal-header">
+          <h5 class="modal-title">Filters</h5>
           <button
-            class="btn btn-sm btn-light border view-btn"
-            (click)="openPreview(exp)"
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+
+        <!-- BODY -->
+        <div class="modal-body">
+          <div class="row g-3">
+            <!-- USER (ADMIN ONLY) -->
+            <div class="col-md-6" *ngIf="isAdmin">
+              <div class="filter-wrapper w-100">
+                <i class="bi bi-person-circle filter-icon"></i>
+                <select
+                  class="form-select form-select-sm filter-dropdown w-100"
+                  [(ngModel)]="filters.user"
+                  (ngModelChange)="onFilterChange()"
+                >
+                  <option value="">All Users</option>
+                  <option *ngFor="let u of getUnique('user_name')" [value]="u">
+                    {{ u }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- STATUS -->
+            <div class="col-md-6">
+              <div class="filter-wrapper w-100">
+                <i class="bi bi-funnel filter-icon"></i>
+                <select
+                  class="form-select form-select-sm filter-dropdown w-100"
+                  [(ngModel)]="filters.status"
+                  (ngModelChange)="onFilterChange()"
+                >
+                  <option value="">All Status</option>
+                  <option *ngFor="let s of getUnique('status')" [value]="s">
+                    {{ s }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- CATEGORY -->
+            <div class="col-md-6">
+              <div class="filter-wrapper w-100">
+                <i class="bi bi-tags filter-icon"></i>
+                <select
+                  class="form-select form-select-sm filter-dropdown w-100"
+                  [(ngModel)]="filters.category"
+                  (ngModelChange)="onFilterChange()"
+                >
+                  <option value="">All Categories</option>
+                  <option *ngFor="let c of getUnique('category')" [value]="c">
+                    {{ c }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- CLIENT -->
+            <div class="col-md-6">
+              <div class="filter-wrapper w-100">
+                <i class="bi bi-person filter-icon"></i>
+                <select
+                  class="form-select form-select-sm filter-dropdown w-100"
+                  [(ngModel)]="filters.client"
+                  (ngModelChange)="onFilterChange()"
+                >
+                  <option value="">All Clients</option>
+                  <option
+                    *ngFor="let c of getUnique('client_name')"
+                    [value]="c"
+                  >
+                    {{ c }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- VISIT -->
+            <div class="col-md-6">
+              <div class="filter-wrapper w-100">
+                <i class="bi bi-geo-alt filter-icon"></i>
+                <select
+                  class="form-select form-select-sm filter-dropdown w-100"
+                  [(ngModel)]="filters.visit"
+                  (ngModelChange)="onFilterChange()"
+                >
+                  <option value="">All Visits</option>
+                  <option *ngFor="let v of getUnique('visit_name')" [value]="v">
+                    {{ v }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- DATE RANGE -->
+            <div class="col-md-6">
+              <div class="filter-wrapper range-filter w-100">
+                <i class="bi bi-calendar3 filter-icon"></i>
+                <input
+                  type="date"
+                  class="form-control form-control-sm filter-input"
+                  [(ngModel)]="filters.dateFrom"
+                  (ngModelChange)="onFilterChange()"
+                />
+                <span class="range-separator">–</span>
+                <input
+                  type="date"
+                  class="form-control form-control-sm filter-input"
+                  [(ngModel)]="filters.dateTo"
+                  (ngModelChange)="onFilterChange()"
+                />
+              </div>
+            </div>
+
+            <!-- AMOUNT RANGE -->
+            <div class="col-md-6">
+              <div class="filter-wrapper range-filter w-100">
+                <i class="bi bi-currency-rupee filter-icon"></i>
+                <input
+                  type="number"
+                  class="form-control form-control-sm filter-input"
+                  placeholder="Min"
+                  [(ngModel)]="filters.amountMin"
+                  (ngModelChange)="onFilterChange()"
+                />
+                <span class="range-separator">–</span>
+                <input
+                  type="number"
+                  class="form-control form-control-sm filter-input"
+                  placeholder="Max"
+                  [(ngModel)]="filters.amountMax"
+                  (ngModelChange)="onFilterChange()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="modal-footer d-flex justify-content-between">
+          <!-- CLEAR -->
+          <button
+            class="btn btn-sm btn-outline-secondary rounded-pill"
+            (click)="clearFilters()"
           >
-            Open
+            Clear
           </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+
+          <!-- CLOSE
+          <button
+            class="btn btn-sm btn-primary rounded-pill"
+            data-bs-dismiss="modal"
+          >
+            Apply / Close
+          </button> -->
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

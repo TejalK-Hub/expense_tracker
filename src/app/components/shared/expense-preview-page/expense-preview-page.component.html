@@ -1,95 +1,360 @@
-<div class="position-absolute">
-  <app-back-button/>
+<div *ngIf="showPopup" class="custom-popup approve">
+  {{ successMessage }}
 </div>
 
-<div class="container mt-5" *ngIf="expense">
+<div *ngIf="showErrorPopup" class="custom-popup reject">
+  {{ errorMessage }}
+</div>
 
-  <!-- Print Button -->
-  <div class="d-flex justify-content-end gap-2 mb-3">
-    <button class="btn btn-outline-secondary" *ngIf="editable" (click)="editExpense()">
-      Edit
-    </button>
+<div class="container mt-4" *ngIf="expense">
+  <!-- SINGLE ROW -->
+  <div
+    class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"
+  >
+    <!-- Left -->
+    <div class="d-flex align-items-center gap-2">
+      <app-back-button></app-back-button>
+      <h5 class="mb-3 ms-4">Expense Preview</h5>
+    </div>
 
-    <button class="btn btn-primary"  (click)="printReceipt()">
-      Print Receipt
-    </button>
+    <!-- Right Actions -->
+    <div class="d-flex align-items-center gap-2">
+      <button
+        class="btn btn-sm btn-outline-success"
+        *ngIf="isAdmin && isSelfAdmin"
+        (click)="approveExpense()"
+      >
+        Approve
+      </button>
+
+      <button
+        class="btn btn-sm btn-outline-danger"
+        *ngIf="isAdmin && isSelfAdmin"
+        (click)="rejectExpense()"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        Reject
+      </button>
+
+      <button
+        class="btn btn-sm btn-outline-primary"
+        *ngIf="isRejected"
+        (click)="editExpense()"
+        data-bs-toggle="modal"
+        data-bs-target="#example1Modal"
+      >
+        Edit
+      </button>
+
+      <!-- --------------------------------------------------Print button-------------------------------------------------- -->
+      <!-- <button
+        class="btn btn-light print-btn"
+        (click)="printReceipt()"
+        title="Print Receipt"
+      >
+        <i class="bi bi-printer"></i>
+      </button> -->
+
+
+    </div>
   </div>
 
   <!-- Receipt -->
-  <div id="receipt" class="card shadow p-4 mx-auto" style="max-width:500px">
-
-    <!-- Header -->
-    <div class="text-center border-bottom pb-3 mb-3">
-      <h3 class="mb-0">Expense Receipt</h3>
-      <small class="text-muted">Company Expense Record</small>
+  <div
+    id="receipt"
+    class="lux-receipt"
+    [ngClass]="{
+      approved: expense.status === 'Approved',
+      rejected: expense.status === 'Rejected',
+      pending: expense.status === 'Submitted',
+    }"
+  >
+    <!-- Stamp -->
+    <div
+      class="stamp"
+      [ngClass]="{
+        approved: expense.status === 'Approved',
+        rejected: expense.status === 'Rejected',
+        pending: expense.status === 'Submitted',
+      }"
+    >
+      {{ expense.status || "-NA-" }}
     </div>
 
-    <!-- Info Table -->
-    <table class="table table-borderless mb-3">
-      <tr>
-        <th>Status</th>
-        <td class="text-end">{{ expense.status }}</td>
-      </tr>
+    <!-- Header -->
+    <div class="header">
+      <h2>Expense Receipt</h2>
+      <span>{{ expense.created_at || "-NA-" }}</span>
+    </div>
 
-      <tr>
-        <th>Category</th>
-        <td class="text-end">{{ expense.category }}</td>
-      </tr>
+    <!-- Rejection Reason -->
+    <div class="item mb-2" *ngIf="expense.status === 'Rejected'">
+      <label>Rejection Reason</label>
+      <div class="value">{{ expense.rejection_reason || "-NA-" }}</div>
+    </div>
+    <!-- Grid -->
+    <div class="grid">
+      <ng-container *ngIf="isAdmin">
+        <div class="item">
+          <label>User ID</label>
+          <div class="value">{{ expense.user_id || "-NA-" }}</div>
+        </div>
 
-      <tr>
-        <th>Amount</th>
-        <td class="text-end fw-bold">₹ {{ expense.amount }}</td>
-      </tr>
+        <div class="item">
+          <label>User Name</label>
+          <div class="value">{{ expense.user_name || "-NA-" }}</div>
+        </div>
+      </ng-container>
 
-      <tr>
-        <th>Receipt No.</th>
-        <td class="text-end">{{ expense.receipt }}</td>
-      </tr>
+      <div class="item">
+        <label>Status</label>
+        <div
+          class="status-badge"
+          [ngClass]="{
+            approved: expense.status === 'Approved',
+            rejected: expense.status === 'Rejected',
+            pending: expense.status === 'Submitted',
+          }"
+        >
+          {{ expense.status | titlecase }}
+        </div>
+      </div>
 
-      <tr>
-        <th>Visit</th>
-        <td class="text-end">{{ expense.visit }}</td>
-      </tr>
-    </table>
+      <div class="item">
+        <label>Category</label>
+        <div class="value">{{ expense.category || "-NA-" }}</div>
+      </div>
 
-    <!-- Description -->
-    <div class="mb-3">
-      <strong>Description</strong>
-      <div class="border rounded p-2 mt-1 bg-light">
-        {{ expense.expense }}
+      <div class="item highlight">
+        <label>Amount</label>
+        <div class="value">₹ {{ expense.amount || "-NA-" }}</div>
+      </div>
+
+      <div class="item">
+        <label>Receipt No</label>
+        <div class="value">{{ expense.receipt || "-NA-" }}</div>
+      </div>
+
+      <div class="item">
+        <label>Client</label>
+        <div class="value">{{ expense.client_name || "-NA-" }}</div>
+      </div>
+
+      <div class="item">
+        <label>Visit</label>
+        <div class="value text-truncate" [title]="expense.visit_name">
+          {{ expense.visit_name || "-NA-" }}
+        </div>
+      </div>
+
+      <div class="item">
+        <label>Date</label>
+        <div class="value">{{ expense.expense_date | date: "dd MMMM yyyy"  || "-NA-" }}</div>
+      </div>
+
+      <!-- Description -->
+      <div class="item">
+        <label>Description</label>
+        <div class="value">{{ expense.expense || "-NA-" }}</div>
       </div>
     </div>
 
-    <!-- Receipt Image -->
-    <div class="text-center mb-3">
-      <strong class="d-block mb-2">Receipt Image</strong>
+    <!-- Image -->
+    <!-- Image -->
+<div class="section text-center">
+  <label>Receipt Image</label>
 
-      <img
-        *ngIf="expense.receipt"
-        [src]="'assets/' + expense.receipt"
-        class="img-fluid border rounded"
-        style="max-height:200px"
-      />
+  <img
+    *ngIf="expense.receipt"
+    [src]="imgPath"
+    class="receipt-img clickable"
+    (click)="openImagePreview()"
+  />
 
-      <span *ngIf="!expense.receipt" class="text-muted">
-        No Receipt Uploaded
-      </span>
+  <div *ngIf="!expense.receipt" class="no-img">-NA-</div>
+</div>
+
+<!-- IMAGE PREVIEW OVERLAY -->
+<div class="image-overlay" *ngIf="showImagePreview" (click)="closeImagePreview()">
+  <img
+    [src]="imgPath"
+    class="zoomed-img"
+    (click)="$event.stopPropagation()"
+  />
+</div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div>
+        <label>Reviewed By</label>
+        <div class="value">{{ expense.approved_by || "-NA-" }}</div>
+      </div>
+
+      <div>
+        <label>Reviewed At</label>
+        <div class="value">{{ expense.approved_at || "-NA-" }}</div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- Approval -->
-    <div class="border-top pt-3">
-      <table class="table table-borderless mb-0">
-        <tr>
-          <th>Approved By</th>
-          <td class="text-end">{{ expense.approved_by }}</td>
-        </tr>
+<!-- Modal -->
 
-        <tr>
-          <th>Approved At</th>
-          <td class="text-end">{{ expense.approved_at }}</td>
-        </tr>
-      </table>
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Rejection Reason
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- <app-add-visit /> -->
+
+        <div class="mb-3">
+          <label class="form-label">
+            Visit Reason
+            <span class="required">*</span>
+          </label>
+          <select
+            class="form-select"
+            [(ngModel)]="selectedRejectionReason"
+            name="selectedRejectionReason"
+            (ngModelChange)="rejectExpense()"
+          >
+            <option value="" disabled hidden selected>
+              Select Rejection Reason
+            </option>
+            <option
+              *ngFor="let rejectionReason of rejectionReasons"
+              [value]="rejectionReason.name"
+            >
+              {{ rejectionReason.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label"> Rejection Description</label>
+
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="rejectionDescription"
+            name="rejectionDescription"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="submitRejection()"
+        >
+          Reject Expense
+        </button>
+      </div>
     </div>
+  </div>
+</div>
 
+<!-- -----------------------------------------------Edit modal---------------------------------------------------- -->
+
+<div
+  class="modal fade"
+  id="example1Modal"
+  tabindex="-1"
+  aria-labelledby="example1ModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="example1ModalLabel">
+          Expense Resubmission
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <!-- <app-add-visit />  -->
+
+        <div class="mb-3">
+          <label class="form-label">
+            Categories
+            <span class="required">*</span>
+          </label>
+          <select
+            class="form-select"
+            [(ngModel)]="selectedCategory"
+            name="selectedCategory"
+          >
+            <option value="" disabled hidden selected>
+              Select Category if you want to change
+            </option>
+            <option
+              *ngFor="let category of categories"
+              [value]="category.name"
+            >
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label"> Amount</label>
+
+          <input
+            class="form-control"
+            type="number"
+            [(ngModel)]="amount"
+            name="amount"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label"> Resubmission Description</label>
+
+          <input
+            class="form-control"
+            type="text"
+            [(ngModel)]="resubmissionDescription"
+            name="resubmissionDescription"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="resubmitExpense()"
+        >
+          Resubmit
+        </button>
+      </div>
+    </div>
   </div>
 </div>

@@ -79,9 +79,11 @@ export class ExpenseReviewComponent {
 
   //   return this.yearlyUserExpenses?.[year]?.[month] || [];
   // }
+onImgError(event: any) {
+  event.target.src = 'assets/default-user.png';
+}
 
-
-  openUserExpenses() {
+  openUserExpenses(user:any) {
     this.router.navigate(['/user-expense-review']);
   }
 }

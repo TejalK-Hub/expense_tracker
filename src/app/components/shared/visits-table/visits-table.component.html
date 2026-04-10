@@ -1,37 +1,209 @@
-<div class="container">
+<div class="container-fluid past-visits py-3">
+  <!-- HEADER -->
   <div
-    class="container p-3 d-flex align-items-center justify-content-between position-relative"
+    class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3"
   >
-    <div>
+    <div class="d-flex align-items-center gap-3">
       <app-back-button></app-back-button>
+
+      <h5 class="mb-3 fw-semibold">Past Visits</h5>
+
+      <!-- ADD BUTTON -->
     </div>
+    <div class="mb-3 text-end d-flex align-items-center gap-2">
+      <!-- FILTER BUTTON -->
+      <button
+        class="btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center gap-1 me-2"
+        data-bs-toggle="modal"
+        data-bs-target="#visitsFilterModal"
+      >
+        <i class="bi bi-funnel"></i>
+        Filters
+      </button>
 
-    <h2 class="mb-0 position-absolute start-50 translate-middle-x">
-      Past Visits
-    </h2>
+      <button
+        class="btn btn-sm view-btn"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        + Add Visit
+      </button>
+    </div>
   </div>
-  <table class="table clean-table visits-table">
-    <thead class="clean-head">
-      <tr>
-        <th scope="col">Sr.</th>
-        <th scope="col">VisitsId</th>
-        <th scope="col">StartDate</th>
-        <th scope="col">EndDate</th>
-        <th scope="col">CreatedAt</th>
-        <th scope="col">CliendId</th>
-      </tr>
-    </thead>
 
-    <tbody>
-      <tr *ngFor="let visit of visits; let i = index" class="clean-row">
-        <th scope="row">{{ i + 1 }}</th>
+  <!-- TABLE -->
+  <div class="table-responsive">
+    <table
+      class="table clean-table align-middle small text-nowrap mb-0 visits-table"
+    >
+      <thead class="clean-head">
+        <tr>
+          <th>#</th>
+          <!-- <th>Visit ID</th> -->
+          <th>Visit Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
 
-        <td>{{ visit.visit_reason_id }}</td>
-        <td>{{ visit.start_date | date: "EEEE, MMMM d, y h:mm a" }}</td>
-        <td>{{ visit.end_date | date: "EEEE, MMMM d, y h:mm a" }}</td>
-        <td>{{ visit.created_at | date: "EEEE, MMMM d, y h:mm a" }}</td>
-        <td>{{ visit.client_id }}</td>
-      </tr>
-    </tbody>
-  </table>
+          <th (click)="sortByDate()" class="sortable">
+            Created At
+            <span *ngIf="sortDirection === 'asc'">↑</span>
+            <span *ngIf="sortDirection === 'desc'">↓</span>
+          </th>
+
+          <!-- <th>Client ID</th> -->
+          <th>Client Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          *ngFor="let visit of filteredVisits; let i = index"
+          class="clean-row"
+        >
+          <td>{{ i + 1 }}</td>
+
+          <!-- <td>{{ visit.id }}</td> -->
+
+          <!-- ✅ ELLIPSIS + TOOLTIP -->
+          <td>
+            <div class="ellipsis-cell">
+              {{ visit.visit_name }}
+            </div>
+          </td>
+
+          <td>
+            {{ visit.start_date | date: "dd MMMM yyyy" }}
+            <!-- <span class="end">
+              {{ visit.end_date | date: "dd MMMM yyyy" }}
+            </span> -->
+          </td>
+          <td>{{ visit.end_date | date: "dd MMMM yyyy" }}</td>
+
+          <td>{{ visit.created_at | date: "dd MMMM yyyy" }}</td>
+
+          <!-- <td>{{ visit.client_id }}</td> -->
+
+          <td>
+            <div class="ellipsis-cell">
+              {{ visit.client }}
+            </div>
+          </td>
+          <td>{{ visit.agenda ? visit.agenda : "-NA-" }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content rounded-4">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-semibold text-center w-100">
+            Create a Visit
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+
+        <div class="modal-body">
+          <app-add-visit (visitCreated)="loadVisits()"></app-add-visit>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-------------------------------------------------------------------- FILTER MODAL --------------------------------------------------------------------->
+
+  <div class="modal fade" id="visitsFilterModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <!-- HEADER -->
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-semibold">Filters</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- BODY -->
+        <div class="modal-body pt-2">
+          <div class="row g-3">
+            <!-- VISIT NAME -->
+            <div class="col-md-6">
+              <div class="filter-wrapper w-100">
+                <i class="bi bi-geo-alt filter-icon"></i>
+                <select
+                  class="form-select form-select-sm filter-dropdown w-100"
+                  [(ngModel)]="filters.visitName"
+                  (ngModelChange)="applyFilters()"
+                >
+                  <option value="">All Visits</option>
+                  <option *ngFor="let v of getUnique('visit_name')" [value]="v">
+                    {{ v }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- CLIENT NAME -->
+            <div class="col-md-6">
+              <div class="filter-wrapper w-100">
+                <i class="bi bi-person filter-icon"></i>
+                <select
+                  class="form-select form-select-sm filter-dropdown w-100"
+                  [(ngModel)]="filters.client"
+                  (ngModelChange)="applyFilters()"
+                >
+                  <option value="">All Clients</option>
+                  <option *ngFor="let c of getUnique('client')" [value]="c">
+                    {{ c }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- DATE RANGE (START DATE ONLY) -->
+            <div class="col-md-6">
+              <div class="filter-wrapper range-filter w-100">
+                <i class="bi bi-calendar3 filter-icon"></i>
+                <input
+                  type="date"
+                  class="form-control form-control-sm filter-input"
+                  [(ngModel)]="filters.startFrom"
+                  (ngModelChange)="applyFilters()"
+                />
+                <span class="range-separator">–</span>
+                <input
+                  type="date"
+                  class="form-control form-control-sm filter-input"
+                  [(ngModel)]="filters.startTo"
+                  (ngModelChange)="applyFilters()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="modal-footer border-0 pt-2 d-flex justify-content-between">
+          <button
+            class="btn btn-sm  view-btn rounded-pill px-3"
+            (click)="clearFilters()"
+          >
+            Clear
+          </button>
+
+          <!-- <button
+            class="btn btn-sm btn-dark rounded-pill px-3"
+            data-bs-dismiss="modal"
+          >
+            Apply
+          </button> -->
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

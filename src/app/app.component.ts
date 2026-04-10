@@ -12,6 +12,7 @@ import { InputComponent } from './components/shared/input/input.component';
 import { AddExpensePageComponent } from './components/user-dashboard-component/add-expense-page/add-expense-page.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { AddExpenseFormComponent } from './components/user-dashboard-component/add-expense-form/add-expense-form.component';
+import { MainComponentComponent } from './main-component/main-component.component';
 
 
 @Component({
@@ -30,7 +31,8 @@ import { AddExpenseFormComponent } from './components/user-dashboard-component/a
     ExpenseTableComponent,
     ExpandableButtonComponent,
     AdminDashboardComponent,
-    AddExpenseFormComponent
+    AddExpenseFormComponent,
+    MainComponentComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

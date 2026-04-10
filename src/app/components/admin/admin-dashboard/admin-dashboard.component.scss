@@ -1,43 +1,68 @@
-.sidebar {
-  width: 180px;
-  padding: 20px 10px;
-  background: #f5f6f7;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.admin-dashboard {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* HEADER */
+.dashboard-title {
+  font-size: 22px;
+}
+
+/* ACTION CARDS */
+.action-card {
+  cursor: pointer;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+  transition: all 0.25s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* ICON */
+.card-icon {
+  width: 45px;
+  height: 45px;
   border-radius: 12px;
   display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-/* Main buttons */
-.menu-item ::ng-deep button {
-  width: 130px;
-  background: #1f8a6d;
+  align-items: center;
+  justify-content: center;
   color: white;
-  border-radius: 10px;
-  border: none;
-  padding: 6px 12px;
+  font-size: 18px;
+}
+
+/* USER COUNT */
+.user-count {
   font-size: 14px;
+  font-weight: 600;
+  color: #4f46e5;
 }
 
-/* Expanded options */
-.menu-item ::ng-deep .sub-btn {
-  background: #e9ecef;
-  color: #6c757d;
-  border-radius: 6px;
-  padding: 4px 10px;
+/* NOTE TEXT */
+.card-note {
   font-size: 12px;
-  margin-top: 4px;
+  color: #6b7280;
+  margin-top: 6px;
 }
 
+/* BUTTON ICON */
+.btn-hover-icon {
+  transition: 0.2s;
+}
 
+.btn-hover-icon:hover {
+  transform: translateY(-2px);
+}
 
-/* Table container */
+/* TABLE (keep your style) */
 .clean-table {
   border-collapse: separate;
   border-spacing: 0 10px;
 }
 
-/* Header */
 .clean-head th {
   font-weight: 500;
   color: #6b7280;
@@ -47,13 +72,11 @@
   padding: 12px 18px;
 }
 
-/* Rows look like cards */
 .clean-row {
   background: #f8fbff;
   border-radius: 10px;
 }
 
-/* Cells */
 .clean-row td,
 .clean-row th {
   border: none;
@@ -62,49 +85,6 @@
   color: #374151;
 }
 
-/* Amount column — light red */
-.pending-table .clean-row td:nth-child(4) {
-  color: #f87171;
-  font-weight: 500;
-}
-
-/* Rounded row effect */
-.clean-row td:first-child,
-.clean-row th:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-
-.clean-row td:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-/* Soft hover */
 .clean-row:hover {
   background: #f1f6ff;
-  transition: 0.2s ease;
-}
-
-
-
-button {
-  padding: 4px 12px;
-  border-radius: 6px;
-  border: 1px solid #ffc107;
-  background-color: #fff3cd;
-  color: #856404;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-button:hover {
-  background-color: #ffe69c;
-  border-color: #ffca2c;
-}
-
-button:active {
-  transform: scale(0.97);
 }

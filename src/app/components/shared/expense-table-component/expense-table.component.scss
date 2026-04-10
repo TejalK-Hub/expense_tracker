@@ -1,87 +1,197 @@
-/* Table container */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.past-expenses {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ---------- DROPDOWN UI ---------- */
+
+.filter-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.filter-dropdown {
+  border-radius: 999px;
+  padding: 6px 14px 6px 34px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-weight: 500;
+  min-width: 140px;
+  transition: all 0.25s ease;
+}
+
+.filter-dropdown:hover {
+  background: #ffffff;
+  border-color: #c7d2fe;
+}
+
+.filter-dropdown:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: #6366f1;
+  background: #fff;
+}
+
+/* ---------- TABLE ---------- */
+
 .clean-table {
   border-collapse: separate;
   border-spacing: 0 10px;
 }
 
-/* Header */
 .clean-head th {
   font-weight: 500;
   color: #6b7280;
   border: none;
-  font-size: 14px;
+  font-size: 13px;
   background: #f9fafb;
-  padding: 12px 18px;
+  padding: 12px 16px;
 }
 
-/* Rows look like cards */
 .clean-row {
   background: #f8fbff;
-  border-radius: 10px;
 }
 
-/* Cells */
-.clean-row td,
-.clean-row th {
+.clean-row td {
   border: none;
-  padding: 14px 18px;
-  vertical-align: middle;
+  padding: 14px 16px;
+  font-weight: 500;
   color: #374151;
 }
 
-/* Slight highlight on amount column (optional calm visual anchor) */
-.clean-row td:nth-child(5) {
-  color: #2563eb;
-  font-weight: 500;
-}
-
-/* Rounded row effect */
-.clean-row td:first-child,
-.clean-row th:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-
-.clean-row td:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-/* Soft hover */
 .clean-row:hover {
-  background: #f1f6ff;
-  transition: 0.2s ease;
+  background: #eef5ff;
 }
 
-/* Minimal button */
-.view-btn {
-  background: #f1f3f5;
-  border: none;
-  border-radius: 8px;
-  padding: 4px 12px;
-  font-size: 13px;
+/* ---------- ELLIPSIS ---------- */
+
+.ellipsis-cell {
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
 }
 
+/* ---------- AMOUNT ---------- */
 
-/* Status pill common */
+.amount {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ---------- STATUS ---------- */
+
 .status-pill {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px; // pill shape
-  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-submitted {
+  background: #e0e7ff;
+  color: #2e6a9c;
+}
+
+.status-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ---------- BUTTON ---------- */
+
+.view-btn {
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.view-btn:hover {
+  background: #111827;
+  color: #fff;
+}
+
+
+.range-filter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .filter-input {
+    width: 110px;
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+
+  .range-separator {
+    font-size: 12px;
+    color: #888;
+    margin: 0 2px;
+  }
+}
+
+
+
+/* Make wrapper take full width */
+.filter-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Fix icon alignment */
+.filter-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 14px;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+/* Full width pill */
+.filter-dropdown {
+  width: 100%;
+  border-radius: 999px;
+  padding: 6px 14px 6px 34px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
   font-weight: 500;
-  color: #1f2937; // dark text
 }
 
-/* Status-specific colors */
-.status-pill.submitted {
-  background-color: #97c3fd; // light blue
-}
+/* RANGE FIX */
+.range-filter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 30px; /* space for icon */
 
-.status-pill.approved {
-  background-color: #9df9c9; // light green
-}
+  .filter-input {
+    width: 100%;
+    border-radius: 20px;
+    padding: 4px 8px;
+  }
 
-.status-pill.rejected {
-  background-color: #fdc5c5; 
+  .range-separator {
+    font-size: 12px;
+    color: #888;
+  }
 }

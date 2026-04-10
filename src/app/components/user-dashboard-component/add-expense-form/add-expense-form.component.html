@@ -1,116 +1,178 @@
-<div class="position-absolute">
-  <app-back-button/>
-</div>
+<div class="container mt-4">
+  <!-- Header Row -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <app-back-button></app-back-button>
+    <h3 class="title mb-0">Add Expense</h3>
+    <div style="width: 40px"></div>
+    <!-- spacer for center alignment -->
+  </div>
 
-<div class="row justify-content-center mt-5">
-  <div class="container">
-    <div class="col-4 offset-4">
-      <div>
-
-        <h3 class="title text-center mb-4">Add Expense Form</h3>
-      </div>
-
-      <form class="border p-4 rounded shadow-sm bg-light">
-
-        <!--------------------------------------Add Category------------------------------------------>
-        <div class="mb-3">
-          <label class="form-label">Category</label>
+  <!-- Form Card -->
+  <div class="form-card">
+    <form [formGroup]="expenseForm">
+      <!-- GRID START -->
+      <div class="row g-3">
+        <!-- Category -->
+        <div class="col-md-6">
+          <label class="form-label"
+            >Category <span class="required">*</span></label
+          >
           <select
             class="form-select"
-            [(ngModel)]="selectedCategory"
-            name="selectedCategory"
+            formControlName="selectedCategory"
+            name="category"
+            placeholder="Category"
           >
-            <option value="" disabled hidden selected>Select Category</option>
-            <option *ngFor="let category of categories" [value]="category.name">
-              {{ category.name }}
+            <option value="" disabled>Select Category</option>
+            <option *ngFor="let c of categories" [value]="c.name">
+              {{ c.name }}
             </option>
           </select>
         </div>
 
-        <!--------------------------------------Add Date------------------------------------------>
-        <div class="mb-3">
-          <label class="form-label">Date</label>
+        <!-------------------------------------------------------- Visit ------------------------------------------------------------>
+        <div class="col-md-6">
+          <label class="form-label">
+            Visit <span class="required">*</span>
+          </label>
 
+          <div class="position-relative visit-dropdown">
+            <!-- SEARCH INPUT -->
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search Visit..."
+              [(ngModel)]="visitSearch"
+              [ngModelOptions]="{ standalone: true }"
+              (focus)="isVisitDropdownOpen = true"
+              (input)="onVisitSearchChange()"
+              autocomplete="off"
+            />
+
+            <!-- DROPDOWN -->
+            <div
+              class="dropdown-menu show w-100 mt-1 p-1"
+              *ngIf="isVisitDropdownOpen"
+              style="max-height: 220px; overflow-y: auto"
+            >
+              <!-- OPTIONS -->
+              <div
+                class="dropdown-item"
+                *ngFor="let v of filteredVisits"
+                (click)="selectVisit(v)"
+                style="cursor: pointer"
+              >
+                {{ v.visit_name }}
+              </div>
+
+              <!-- EMPTY STATE -->
+              <div
+                *ngIf="filteredVisits.length === 0"
+                class="text-muted small px-2 py-1"
+              >
+                No visits found
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!----------------------------------------------------------------- Date ----------------------------------------------------->
+        <div class="col-md-6">
+          <label class="form-label">Date <span class="required">*</span></label>
           <input
-            class="form-control"
             type="date"
-            [(ngModel)]="date"
+            class="form-control"
+            formControlName="date"
             name="date"
+            [min]="startDate"
+            [max]="endDate"
           />
         </div>
 
-        <!--------------------------------------Add Amount------------------------------------------>
-        <div class="mb-3">
-          <label class="form-label">Amount</label>
+        <!-- Amount -->
+        <div class="col-md-6">
+          <label class="form-label">
+            Amount <span class="required">*</span>
+          </label>
 
+          <div class="input-group">
+            <span class="input-group-text">₹</span>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="amount"
+              min="0"
+              (keydown)="blockInvalidKeys($event)"
+            />
+          </div>
+        </div>
+
+        <!-- Receipt -->
+        <div class="col-md-6">
+          <label class="form-label"
+            >Receipt No <span class="required">*</span></label
+          >
           <input
-            class="form-control"
             type="text"
-            [(ngModel)]="amount"
-            name="amount"
+            class="form-control"
+            formControlName="receiptNo"
+            name="receiptNo"
           />
         </div>
 
-        <!--------------------------------------Add Receipt No------------------------------------------>
-        <div class="mb-3">
-          <label class="form-label">Receipt No.</label>
-
-          <input
-            class="form-control"
-            type="text"
-            [(ngModel)]="receiptNo"
-            name="receiptId"
-          />
-        </div>
-
-        <!--------------------------------------Add Visit Id------------------------------------------>
-        <div class="mb-3">
-          <label class="form-label">Visit Name</label>
-
-          <input
-            class="form-control"
-            type="text"
-            [(ngModel)]="visit"
-            name="visit"
-          />
-        </div>
-
-        <!--------------------------------------Add Description------------------------------------------>
-        <div class="mb-3">
+        <!-- Description -->
+        <div class="col-md-6">
           <label class="form-label">Description</label>
-
           <input
-            class="form-control"
             type="text"
-            [(ngModel)]="description"
+            class="form-control"
+            formControlName="description"
             name="description"
           />
         </div>
 
-        <!--------------------------------------Add Expense Receipt------------------------------------------>
+        <!-- FILE (FULL WIDTH) -->
+        <div class="col-12">
+          <label class="form-label"
+            >Upload Bill <span class="required">*</span></label
+          >
 
-        <div class="mb-3">
-          <label class="form-label" for="bill">Upload Bill:</label>
-          <input
-            type="file"
-            #fileInput
-            (change)="fileOnChange($event)"
-            name="bill"
-            class="form-control"
-          />
+          <div class="file-box">
+            <input
+              type="file"
+              #fileInput
+              (change)="fileOnChange($event)"
+              accept="image/*"
+              class="form-control"
+            />
+
+            <!-- Preview -->
+            <div *ngIf="filePreview" class="preview">
+              <img [src]="filePreview" />
+              <p class="file-name">
+                {{ expenseForm.get("selectedFile")?.value?.name }}
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
+      <!-- GRID END -->
 
-        <!--------------------------------------Submit------------------------------------------>
-
-        <button class="btn btn-primary w-100 mt-3" type="button" (click)="onSubmit()">
-          Save
+      <!-- BUTTONS -->
+      <div class="mt-4 d-flex gap-2">
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          (click)="onSubmit()"
+          [disabled]="loading"
+        >
+          {{ loading ? "Saving..." : "Save" }}
         </button>
 
-        <button class="btn btn-secondary w-100 mt-2" type="button" (click)="onClear()">
+        <button type="button" class="btn btn-light w-100" (click)="onClear()">
           Cancel
         </button>
-
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 </div>

@@ -1,9 +1,99 @@
 /* You can add global styles to this file, and also import other style files */
 @import "bootstrap/scss/bootstrap";
+@import 'ngx-toastr/toastr';
 
 @for $i from 0 through 100 {
   .c-width-#{$i} {
     // The #{"%"} is necessary to interpolate the percentage symbol correctly.
     width: #{$i}#{"%"} !important; 
   }
+}
+
+
+.custom-popup.approve{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #198754; // green
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  font-size: 0.9rem;
+  z-index: 9999;
+  animation: fadeInOut 5s ease forwards;
+}
+
+
+
+.custom-popup.reject{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ca0f2b; // green
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  font-size: 0.9rem;
+  z-index: 9999;
+  animation: fadeInOut 5s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+
+
+
+
+/* AMOUNT INPUT */
+/* Chrome, Safari, Edge */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+
+//--------------------------------------------------------------------- Filter Styles ---------------------------------------------------------------------
+
+.filter-wrapper {
+  position: relative;
+}
+
+.filter-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.filter-dropdown,
+.filter-input {
+  padding-left: 30px;
+  border-radius: 999px;
+}
+
+.range-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.range-separator {
+  font-size: 12px;
+  color: #6b7280;
 }

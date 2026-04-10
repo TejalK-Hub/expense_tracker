@@ -1,50 +1,224 @@
-<form (ngSubmit)="signup()">
-  <div class="container text-center mt-5">
-    <h2>Expense Tracking</h2>
-    <div
-      class="container p-3 d-flex align-items-center justify-content-between position-relative"
-    >
+<div class="container-fluid min-vh-100 d-flex p-0">
+  <!-- LEFT PANEL -->
+  <div
+    class="d-none d-md-flex col-md-6 flex-column justify-content-center align-items-center text-white left-panel"
+  >
+    <img src="sampu.png" alt="Logo" class="mb-4" style="height: 60px" />
+    <h2 class="fw-bold">Expense Tracker</h2>
+    <p class="mt-2 text-center px-4">
+      Create your account and start tracking your expenses efficiently.
+    </p>
+  </div>
 
-    <!-- Back Button -->
-      <div>
-        <app-back-button></app-back-button>
+  <!-- RIGHT PANEL -->
+  <div
+    class="col-12 col-md-6 d-flex justify-content-center align-items-center right-panel"
+  >
+    <div
+      class="glass-card p-4 rounded-4 shadow-lg w-100"
+      style="max-width: 420px"
+    >
+      <div class="text-center mb-4">
+        <h4 class="fw-bold">Create Account</h4>
+        <p class="text-muted small">Quick & secure signup</p>
       </div>
 
-      <p class="mb-0 position-absolute start-50 translate-middle-x">Sign Up</p>
-    </div>
+      <form #signupForm="ngForm" (ngSubmit)="signup(signupForm)">
+        <!-- NAME -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Full Name</label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            name="name"
+            [(ngModel)]="name"
+            #nameCtrl="ngModel"
+            required
+            minlength="3"
+            pattern="^[A-Za-z ]{3,}$"
+            placeholder="Deepak Kumar"
+            [ngClass]="{
+              'is-invalid':
+                nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched),
+            }"
+          />
 
-    <div class="mb-3">
-      <label>Name</label>
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="name"
-        placeholder="Deepak Kumar"
-        name="name"
-      />
-    </div>
+          <div
+            *ngIf="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)"
+            class="invalid-feedback d-block"
+          >
+            <div *ngIf="nameCtrl.errors?.['required']">Name is required</div>
+            <div *ngIf="nameCtrl.errors?.['pattern']">
+              Only letters, min 3 characters
+            </div>
+          </div>
+        </div>
 
-    <div class="mb-3">
-      <label>Email</label>
-      <input
-        type="email"
-        class="form-control"
-        [(ngModel)]="email"
-        placeholder="abc@mail.com"
-        name="email"
-      />
-    </div>
+        <!-- EMAIL -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Email</label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            name="email"
+            [(ngModel)]="email"
+            #emailCtrl="ngModel"
+            required
+            pattern="^[a-zA-Z0-9]+([._%+-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$"
+            placeholder="abc@mail.com"
+            [ngClass]="{
+              'is-invalid':
+                emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched),
+            }"
+          />
 
-    <div class="mb-3">
-      <label>Password</label>
-      <input
-        type="password"
-        class="form-control"
-        [(ngModel)]="password"
-        name="password"
-      />
-    </div>
+          <div
+            *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
+            class="invalid-feedback d-block"
+          >
+            <div *ngIf="emailCtrl.errors?.['required']">Email is required</div>
+            <div *ngIf="emailCtrl.errors?.['pattern']">Enter valid email</div>
+          </div>
+        </div>
 
-    <button class="btn btn-primary w-100" type="submit">SignUp</button>
+        <!-- PASSWORD -->
+        <div class="mb-3 position-relative">
+          <label class="form-label fw-semibold">Password</label>
+
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control form-control-lg pe-5"
+            name="password"
+            [(ngModel)]="password"
+            (input)="checkStrength()"
+            #passwordCtrl="ngModel"
+            required
+            minlength="6"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+            placeholder="Strong password"
+            [ngClass]="{
+              'is-invalid':
+                passwordCtrl.invalid &&
+                (passwordCtrl.dirty || passwordCtrl.touched),
+            }"
+          />
+
+          <!-- EYE ICON -->
+          <span
+            class="position-absolute top-50 end-0 translate-middle-y m-3"
+            (click)="togglePassword()"
+            style="cursor: pointer"
+          >
+            <i
+              class="bi"
+              [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+            ></i>
+          </span>
+
+          <div
+            *ngIf="
+              passwordCtrl.invalid &&
+              (passwordCtrl.dirty || passwordCtrl.touched)
+            "
+            class="invalid-feedback d-block"
+          >
+            <div *ngIf="passwordCtrl.errors?.['required']">
+              Password is required
+            </div>
+            <div *ngIf="passwordCtrl.errors?.['minlength']">
+              Minimum 6 characters
+            </div>
+            <div *ngIf="passwordCtrl.errors?.['pattern']">
+              Must include uppercase, lowercase & number
+            </div>
+          </div>
+
+          <div class="mt-2" *ngIf="password">
+            <div class="progress" style="height: 6px">
+              <div
+                class="progress-bar"
+                [ngClass]="strengthClass"
+                [style.width.%]="strength * 20"
+              ></div>
+            </div>
+            <small
+              class="fw-semibold"
+              [ngClass]="{
+                'text-danger': strength <= 2,
+                'text-warning': strength === 3 || strength === 4,
+                'text-success': strength === 5,
+              }"
+            >
+              {{ strengthText }}
+            </small>
+          </div>
+        </div>
+
+        <!-- RE-ENTER PASSWORD -->
+        <!-- CONFIRM PASSWORD -->
+        <div class="mb-3 position-relative">
+          <label class="form-label fw-semibold">Confirm Password</label>
+
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control form-control-lg pe-5"
+            name="confirmPassword"
+            [(ngModel)]="confirmPassword"
+            #confirmPasswordCtrl="ngModel"
+            required
+            placeholder="Re-enter password"
+            [ngClass]="{
+              'is-invalid':
+                (confirmPasswordCtrl.invalid &&
+                  (confirmPasswordCtrl.dirty || confirmPasswordCtrl.touched)) ||
+                (confirmPassword && password !== confirmPassword),
+            }"
+          />
+
+          <!-- EYE ICON (same toggle) -->
+          <span
+            class="position-absolute top-50 end-0 translate-middle-y m-3"
+            (click)="togglePassword()"
+            style="cursor: pointer"
+          >
+            <i
+              class="bi"
+              [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+            ></i>
+          </span>
+
+          <!-- ERRORS -->
+          <div
+            *ngIf="confirmPasswordCtrl.dirty || confirmPasswordCtrl.touched"
+            class="invalid-feedback d-block"
+          >
+            <div *ngIf="confirmPasswordCtrl.errors?.['required']">
+              Confirm password is required
+            </div>
+
+            <div *ngIf="confirmPassword && password !== confirmPassword">
+              Passwords do not match
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTTON -->
+        <button
+          class="btn w-100 py-2 fw-semibold login-btn"
+          type="submit"
+          [disabled]="signupForm.invalid || password !== confirmPassword"
+        >
+          Create Account
+        </button>
+      </form>
+
+      <!-- FOOTER -->
+      <div class="text-center mt-3">
+        <span class="text-muted small">Already have an account?</span>
+        <span class="fw-semibold ms-1 register-link" (click)="goToLogin()"
+          >Login</span
+        >
+      </div>
+    </div>
   </div>
-</form>
+</div>

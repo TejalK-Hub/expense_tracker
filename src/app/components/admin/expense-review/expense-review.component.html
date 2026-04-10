@@ -1,7 +1,8 @@
 <div class="container">
-
-  <div class="container p-3 d-flex align-items-center justify-content-between position-relative">
-
+  <!-- HEADER -->
+  <div
+    class="container p-3 d-flex align-items-center justify-content-between position-relative"
+  >
     <div>
       <app-back-button></app-back-button>
     </div>
@@ -9,40 +10,46 @@
     <h2 class="mb-0 position-absolute start-50 translate-middle-x">
       Users List
     </h2>
-
   </div>
 
-  <div class="d-flex justify-content-center my-4 p-component-overlay-container">
-    <input
-      type="month"
-      class="form-control w-auto"
-      [(ngModel)]="date"
-      (change)="dateOnChange($event)"
-      [max]="maxMonth"
-    />
-  </div>
+  <!-- GRID -->
+  <div class="row g-4 mt-2">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let user of users">
+      <div class="user-card text-center p-3" (click)="openUserExpenses(user)">
+        <!-- PROFILE -->
+        <!-- <div class="avatar-wrapper mb-2">
+          <img
+            [src]="user.profile_image || 'assets/default-user.png'"
+            (error)="onImgError($event)"
+            class="user-avatar"
+            alt="profile"
+          />
+        </div> -->
 
-  <div class="d-flex justify-content-center">
-
-    <ol class="list-group user-list">
-
-      <li
-        class="list-group-item user-card d-flex align-items-center gap-3"
-        *ngFor="let user of users"
-        (click)="openUserExpenses()"
-      >
-
-        <img src="expn.png" class="user-avatar" alt="expense image" />
-
-        <div class="d-flex flex-column">
-          <span class="user-name">{{ user.name }}</span>
-          <span class="user-expense">Total: ₹{{ user.expense }}</span>
+        <!-- PROFILE -->
+        <div class="avatar-wrapper mb-2">
+          <div class="avatar-skeleton">
+            <i class="bi bi-person"></i>
+          </div>
         </div>
 
-      </li>
+        <!-- NAME -->
+        <div class="user-name">{{ user.name }}</div>
 
-    </ol>
+        <!-- EMAIL -->
+        <div class="user-email">{{ user.email }}</div>
 
+        <!-- ROLE -->
+        <div
+          class="role-badge"
+          [ngClass]="{
+            'admin-role': user.role === 'Admin',
+            'employee-role': user.role !== 'Admin',
+          }"
+        >
+          {{ user.role }}
+        </div>
+      </div>
+    </div>
   </div>
-
 </div>

@@ -7,6 +7,7 @@ import { ButtonComponent } from '../shared/button/button.component';
 import { Router } from '@angular/router';
 import { PendingExpenseTableComponent } from './pending-expense-table/pending-expense-table.component';
 import { AuthServiceService } from '../../service/auth-service.service';
+import { ExpensesService } from '../../service/expenses.service';
 
 @Component({
   selector: 'app-user-dashboard-component',
@@ -23,13 +24,98 @@ import { AuthServiceService } from '../../service/auth-service.service';
   styleUrl: './user-dashboard-component.component.scss',
 })
 export class UserDashboardComponentComponent {
-  constructor(private route: Router, private authService: AuthServiceService) {}
+  constructor(private route: Router, private authService: AuthServiceService, private expenseService: ExpensesService) { }
 
   Amount = 400;
-  summary_current_month: any = {
-    expenses: 100,
-    expenses_amt: 2500,
-  };
+  current_month = '';
+  summary_current_month: any;
+
+  ngOnInit() {
+    const now = new Date();
+
+    this.current_month = now.toLocaleString('default', {
+      month: 'long',
+      year: 'numeric'
+    });
+
+    this.expenseService.fetchExpense().subscribe((res: any) => {
+      const expenses = res.data;
+
+      this.summary_current_month = this.calculateSummary(expenses);
+      console.log("Computed Summary:", this.summary_current_month);
+    });
+  }
+
+
+  //-----------------------------------------------------------------Cards Summary Calculation Logic---------------------------------------------------------
+
+  calculateSummary(expenses: any[]) {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const summary = {
+      submitted: { count: 0, amount: 0 },
+      approved: { count: 0, amount: 0 },
+      rejected: { count: 0, amount: 0 },
+      total_count: 0,
+      total_amount: 0
+    };
+
+    expenses.forEach(exp => {
+
+      const expDate = new Date(exp.expense_date);
+
+      // ✅ Filter only current month
+      if (
+        expDate.getMonth() !== currentMonth ||
+        expDate.getFullYear() !== currentYear
+      ) {
+        return;
+      }
+
+      const status = exp.status?.toLowerCase();
+
+      // ✅ Extract numeric amount
+      const amount = this.extractAmount(exp.amount);
+
+      if (status === 'submitted') {
+        summary.submitted.count++;
+        summary.submitted.amount += amount;
+      }
+
+      else if (status === 'approved') {
+        summary.approved.count++;
+        summary.approved.amount += amount;
+      }
+
+      else if (status === 'rejected') {
+        summary.rejected.count++;
+        summary.rejected.amount += amount;
+      }
+
+      // ✅ Totals
+      summary.total_count++;
+      summary.total_amount += amount;
+
+    });
+
+    return summary;
+  }
+
+
+  //-----------------------------------------------------------------Normalize Data---------------------------------------------------------
+
+  extractAmount(amount: string): number {
+    if (!amount) return 0;
+    return parseFloat(amount.replace(/[^\d.]/g, '')) || 0;
+  }
+
+
+
+
+
+
 
   viewVisits() {
     this.route.navigate(['/visits']);
@@ -56,7 +142,7 @@ export class UserDashboardComponentComponent {
   // }
 
 
-  logout(){
+  logout() {
     this.route.navigate(['']);
     this.authService.logout();
   }

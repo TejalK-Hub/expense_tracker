@@ -42,6 +42,10 @@ export class AuthServiceService {
     this.userId = id;
     this.userRole = role;
 
+    console.log('token: ', token);
+    console.log('userId: ', id.toString());
+    console.log('userRole: ', role);
+
     // Persist session
     localStorage.setItem('token', token);
     localStorage.setItem('userId', id.toString());

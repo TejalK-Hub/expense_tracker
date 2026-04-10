@@ -1,71 +1,109 @@
-<div class="container d-flex flex-column gap-4 pt-5 align-items-center">
-  <div class="w-100 d-flex align-items-center mb-4">
-    <button type="button" class="btn btn-secondary" (click)="logout()">
-      Logout
+<div class="container-fluid py-3 admin-dashboard">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-center mb-4">
+    <h4 class="fw-semibold dashboard-title">
+      Admin Dashboard
+    </h4>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="row g-3 mb-4">
+
+    <!-- USERS CARD -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100 action-card p-3" (click)="listUsers()">
+        <div class="d-flex align-items-center justify-content-between">
+
+          <div>
+            <div class="text-muted small">Manage</div>
+            <div class="fw-semibold fs-5">Users</div>
+
+            <!-- COUNT -->
+            <div class="user-count mt-1">
+              {{ userCount || 0 }} Users
+            </div>
+
+            <!-- NOTE -->
+            <div class="card-note">
+              Click here to view user list →
+            </div>
+          </div>
+
+          <div class="card-icon bg-primary">
+            <i class="bi bi-people-fill"></i>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- GRAFANA -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100 action-card p-3" (click)="grafanaReports()">
+        <div class="d-flex align-items-center justify-content-between">
+
+          <div>
+            <div class="text-muted small">Analytics</div>
+            <div class="fw-semibold fs-5">Grafana Reports</div>
+
+            <div class="card-note">
+              Click here to go to Grafana →
+            </div>
+          </div>
+
+          <div class="card-icon bg-dark">
+            <i class="bi bi-bar-chart-fill"></i>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+
+    <button
+      class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon overflow-hidden"
+      (click)="viewVisits()"
+    >
+      <i class="bi bi-geo-alt"></i>
+      <span>Visits</span>
     </button>
 
-    <h3 class="mx-auto mb-0">Admin Dashboard</h3>
+    <div class="dropdown">
+      <button
+        class="btn btn-dark dropdown-toggle px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2 btn-hover-icon"
+        data-bs-toggle="dropdown"
+      >
+        <i class="bi bi-receipt"></i>
+        <span>Expense</span>
+      </button>
+
+      <ul class="dropdown-menu shadow border-0 rounded-3">
+        <li>
+          <button class="dropdown-item" (click)="handleRouting(1)">
+            ➕ Add Expense
+          </button>
+        </li>
+        <li>
+          <button class="dropdown-item" (click)="handleRouting(2)">
+            ⚙️ Review Expense
+          </button>
+        </li>
+      </ul>
+    </div>
+
   </div>
 
-  <div class="d-flex">
-    <app-button
-      mainIcon="./expn.png"
-      mainLabel="Users"
-      class="menu-item w-50"
-      (click)="listUsers()"
-    />
-
-    <app-button
-    mainIcon="./expn.png"
-    mainLabel="Grafana Reports"
-    class="menu-item w-50"
-    (click)="grafanaReports()"
-    />
-
-    <app-expandable-button
-      class="menu-item w-50"
-      [mainIcon]="'./expn.png'"
-      mainLabel="Expense"
-      one="Add"
-      two="Review"
-      (optionClick)="handleRouting($event)"
-    />
+  <!-- PENDING TABLE -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <h5 class="mb-3 fw-semibold text-dark">Pending Expenses</h5>
+      <app-pending-expense-table></app-pending-expense-table>
+    </div>
   </div>
-  <!--     
-    three="Review"
-    [isAdmin]="true" -->
 
-  <div class="container mt-5">
-    <h4 class="mb-3 text-center">Pending Expenses</h4>
-    <table class="table clean-table pending-table">
-      <thead class="clean-head">
-        <tr>
-          <th scope="col">User</th>
-          <th scope="col">Emp id</th>
-          <th scope="col">Expense</th>
-          <th scope="col">ExpenseDate</th>
-          <th scope="col">Category</th>
-          <th scope="col">Amount</th>
-          <th scope="col">Visit</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let exp of tableData" class="clean-row">
-          <th scope="row">{{ exp.employee_name }}</th>
-          <th>{{ exp.id }}</th>
-          <th>{{ exp.expense }}</th>
-          <td>{{ exp.expense_date }}</td>
-          <td>{{ exp.category }}</td>
-          <td>₹{{ exp.amount }}</td>
-          <td>{{ exp.visit }}</td>
-          <td>
-            <button (click)="toggleStatus(exp,'approve')">Approve</button>
-            <button (click)="toggleStatus(exp,'reject')">Reject</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 </div>

@@ -16,6 +16,8 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   // role restriction
   const requiredRole = route.data?.['role'];
+  console.log("Required Role: ", requiredRole);
+  console.log("User Role: ", auth.userRole);
 
   if (requiredRole && auth.userRole !== requiredRole) {
     router.navigate(['/']);

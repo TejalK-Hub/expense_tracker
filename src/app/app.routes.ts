@@ -12,22 +12,25 @@ import { AddVisitComponent } from './components/shared/add-visit/add-visit.compo
 import { RegisterComponent } from './components/register/register.component';
 import { ExpenseReviewComponent } from './components/admin/expense-review/expense-review.component';
 import { authGuard } from './guard/auth.guard';
+import { MainComponentComponent } from './main-component/main-component.component';
 
 export const routes: Routes = [
 
     {path: '', component: LoginPageComponentComponent},
     {path: 'signup', component: RegisterComponent},
 
-
-    {path: 'manage-expense', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'Employee' }},
-    {path: 'review-expense', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'Employee' }},
+{path:'',component:MainComponentComponent,children:[
+    {path: 'manage-expense', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'employee' }},
+    {path: 'review-expense', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'employee' }},
 
     // {path: 'add-expense2', component: AddExpensePageComponent, canActivate: [authGuard], data: { role: 'Employee' }},
-    {path: 'user-dashboard', component: UserDashboardComponentComponent, canActivate: [authGuard], data: { role: 'Employee' }},
-    {path: 'visits', component: VisitsTableComponent, canActivate: [authGuard], data: { role: 'Employee' }},
+    {path: 'user-dashboard', component: UserDashboardComponentComponent, canActivate: [authGuard], data: { role: 'employee' }},
+    // {path: 'user-dashboard', component: UserDashboardComponentComponent, canActivate: [authGuard], data: { role: 'employee' }},
     
+    // {path: 'visits', component: VisitsTableComponent, canActivate: [authGuard], data: { role: 'employee' }},
+    {path: 'visits', component: VisitsTableComponent},
     
-    {path: 'add-visit', component: AddVisitComponent, canActivate: [authGuard]},
+    {path: 'add-visit', component: AddVisitComponent, canActivate: [authGuard], data: { role: 'employee' }},
     {path: 'add-expense', component: AddExpenseFormComponent, canActivate: [authGuard]},
     {path: 'expense-preview', component: ExpensePreviewPageComponent, canActivate: [authGuard]},
     
@@ -36,13 +39,16 @@ export const routes: Routes = [
 
     
 
-    {path: 'admin-dashboard', component: AdminDashboardComponent},
+
+    
+
+    {path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [authGuard], data: { role: 'Admin' }},
     // {path: 'users', component: UserListComponent},
     // {path: 'admin-add-expense', component: AddExpensePageComponent, canActivate: [authGuard], data: { role: 'Admin' }},
     // {path: 'admin-manage-expense', component: ExpenseTableComponent},
-    {path: 'admin-review-expense', component: ExpenseReviewComponent},
-    {path: 'user-list', component: UserListComponent},
-    {path: 'user-expense-review', component: ExpenseTableComponent},
+    {path: 'admin-review-expense', component: ExpenseReviewComponent, canActivate: [authGuard], data: { role: 'Admin' }},
+    {path: 'user-list', component: UserListComponent, canActivate: [authGuard], data: { role: 'Admin' }},
+    {path: 'user-expense-review', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'Admin' }},
 
 
 
@@ -109,5 +115,5 @@ export const routes: Routes = [
 
 
 
-
+]}
 ];

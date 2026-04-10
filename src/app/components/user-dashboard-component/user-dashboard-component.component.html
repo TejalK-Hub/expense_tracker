@@ -1,122 +1,163 @@
-<!-- <div class="d-grid gap-2 col-6 mx-auto">
-  <button type="button" class="btn btn-light border shadow-sm align-items-center justify-content-center mt-4">
-    <img src="./expn.png" alt="Icon 1" height="50" class="me-2">
-    Button 1
-  </button>
-  <button type="button" class="btn btn-light border shadow-sm d-flex align-items-center justify-content-center mt-4">
-    <img src="./expn.png" alt="Icon 2" height="50" class="me-2">
-    Button 2
-  </button>
-  <button type="button" class="btn btn-light border shadow-sm d-flex align-items-center justify-content-center mt-4">
-    <img src="./expn.png" alt="Icon 2" height="50" class="me-2">
-    Button 3232323
-  </button>
-</div> -->
-
-<div class="row">
-  <div
-    class="container p-3 d-flex align-items-center justify-content-between position-relative"
-  >
-    <div>
-      <button type="button" class="btn btn-secondary" (click)="logout()">
-        Logout
-      </button>
-    </div>
-
-    <h2 class="mb-0 position-absolute start-50 translate-middle-x">
-      User Dashboard
-    </h2>
+<div class="container-fluid py-3 user-dashboard">
+  <!-- HEADER -->
+  <div class="d-flex justify-content-center mb-4">
+    <h4 class="fw-semibold dashboard-title">User Dashboard</h4>
   </div>
 
-  <div class="container">
-    <div class="d-flex justify-content-evenly">
-      <!-- <app-dashboard-block
-        header="Total Expense"
-        title="CurrentMonth - Feb 2026"
-        [content]="'₹' + summary_current_month.expenses_amt"
-      />
-      <app-dashboard-block
-        header="Expense Count (Quantity)"
-        title="CurrentMonth - Feb 2026"
-        [content]="summary_current_month.expenses"
-      /> -->
+  <!-- SUMMARY CARDS -->
+  <div class="row g-3 mb-4">
+    <!-- TOTAL EXPENSE -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm action-card compact-card p-3">
+        <!-- TOP ROW -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <div class="text-muted small">Total Expense</div>
+            <div class="fw-semibold text-secondary small">
+              {{ current_month }}
+            </div>
+          </div>
 
-      <!-- <div class="card" style="width: 18rem">
-        <div class="card-body">
-          <h5 class="card-title">Total Expense</h5>
-          <h6 class="card-subtitle mb-2 text-body-secondary">
-            Current Month - Fab 2026
-          </h6>
-          <p class="card-text">{{ summary_current_month.expenses }}</p>
+          <div class="text-end">
+            <div class="total-value">
+              ₹ {{ summary_current_month.total_amount }}
+            </div>
+            <div class="total-label">Total</div>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <div class="d-flex justify-content-evenly">
-          <div class="card" style="width: 18rem">
-            <div class="card-body">
-              <h5 class="card-title">Total Amount</h5>
-              <h6 class="card-subtitle mb-2 text-body-secondary">
-                Current Month - Fab 2026
-              </h6>
-              <p class="card-text">
-                {{ summary_current_month.expenses_amt }} INR
-              </p>
+        <!-- STATUS ROW (INLINE GRID) -->
+        <div class="status-grid">
+          <div class="status-box submitted">
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+              <div class="label">Submitted</div>
+              <div class="value">
+                ₹ {{ summary_current_month.submitted.amount }}
+              </div>
+            </div>
+          </div>
+
+          <div class="status-box approved">
+            <i class="bi bi-check-circle"></i>
+            <div>
+              <div class="label">Approved</div>
+              <div class="value">
+                ₹ {{ summary_current_month.approved.amount }}
+              </div>
+            </div>
+          </div>
+
+          <div class="status-box rejected">
+            <i class="bi bi-x-circle"></i>
+            <div>
+              <div class="label">Rejected</div>
+              <div class="value">
+                ₹ {{ summary_current_month.rejected.amount }}
+              </div>
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
 
-    <div
-      class="container d-flex justify-content-center align-items-center gap-4 pt-5 pb-5"
+    <!-- EXPENSE COUNT -->
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm action-card compact-card p-3">
+        <!-- TOP ROW -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <div class="text-muted small">Expense Count</div>
+            <div class="fw-semibold text-secondary small">
+              {{ current_month }}
+            </div>
+          </div>
+
+          <div class="text-end">
+            <div class="total-value">
+              {{ summary_current_month.total_count }}
+            </div>
+            <div class="total-label">Total</div>
+          </div>
+        </div>
+
+        <!-- STATUS ROW -->
+        <div class="status-grid">
+          <div class="status-box submitted">
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+              <div class="label">Submitted</div>
+              <div class="value">
+                {{ summary_current_month.submitted.count }}
+              </div>
+            </div>
+          </div>
+
+          <div class="status-box approved">
+            <i class="bi bi-check-circle"></i>
+            <div>
+              <div class="label">Approved</div>
+              <div class="value">
+                {{ summary_current_month.approved.count }}
+              </div>
+            </div>
+          </div>
+
+          <div class="status-box rejected">
+            <i class="bi bi-x-circle"></i>
+            <div>
+              <div class="label">Rejected</div>
+              <div class="value">
+                {{ summary_current_month.rejected.count }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+    <!-- VISITS -->
+    <button
+      class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon"
+      (click)="viewVisits()"
     >
-      <app-button mainIcon="./expn.png" mainLabel="Summary" (click)="viewVisits()"/>
+      <i class="bi bi-geo-alt"></i>
+      <span>Visits</span>
+    </button>
 
-
-<!-- --------------------------------------------------Depricated Visits Approach----------------------------------------- -->
-      
-      <!-- <app-expandable-button
-        [mainIcon]="'./expn.png'"
-        mainLabel="Visits"
-        one="Add"
-        two="View"
-        (optionClick)="handleVisit($event)"
-      /> -->
-
-      <app-expandable-button
-        [mainIcon]="'./expn.png'"
-        mainLabel="Expense"
-        one="Add"
-        two="Manage"
-        (optionClick)="handleExpense($event)"
-      />
-    </div>
-
-    <!-- <app-dashboard-block>
-        <div
-        class="d-flex flex-column border"
-        style="width: fit-content; height: fit-content"
+    <!-- EXPENSE DROPDOWN -->
+    <div class="dropdown">
+      <button
+        class="btn btn-dark dropdown-toggle px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2 btn-hover-icon"
+        data-bs-toggle="dropdown"
       >
-        <span>Total Expense</span>
-        <span> {{ Amount }}</span>
-      </div>
-    </app-dashboard-block>
+        <i class="bi bi-receipt"></i>
+        <span>Expense</span>
+      </button>
 
-    <app-dashboard-block>
-      <div class="d-flex" style="width: fit-content; height: fit-content">
-        <button class="btn btn-light border shadow-sm">
-          <img [src]="'./expn.png'" style="width: clamp(10px, 3vw, 30px)" />
-          <span>Total Expense</span>
-        </button>
-        <span> {{Amount}}</span>
-      </div>
-    </app-dashboard-block> -->
+      <ul class="dropdown-menu shadow border-0 rounded-3">
+        <li>
+          <button class="dropdown-item" (click)="handleExpense(1)">
+            ➕ Add Expense
+          </button>
+        </li>
+        <li>
+          <button class="dropdown-item" (click)="handleExpense(2)">
+            ⚙️ Manage Expense
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-    <div class="container">
-      <h4>Pending Expenses</h4>
-
-      <app-pending-expense-table />
+  <!-- PENDING TABLE -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <h5 class="mb-3 fw-semibold text-dark">Pending Expenses</h5>
+      <app-pending-expense-table></app-pending-expense-table>
     </div>
   </div>
 </div>

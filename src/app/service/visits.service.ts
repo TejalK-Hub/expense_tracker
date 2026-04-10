@@ -1,30 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
+import { AuthServiceService } from './auth-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VisitsService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthServiceService) { }
 
-  visits: any[]=[];
+  visits: any[] = [];
 
-  fetchVisits(){
-    this.http.get(`${environment.apiBaseUrl}/internal/visits`).subscribe(
-      {next: (res:any) => {this.visits = res.data},
-      error: (err) => {console.log(err)}}
-    );
+  //----------------------------------------------------Dummy API-------------------------------------------
+  fetchVisits(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/visits`, { headers: { Authorization: `Bearer ${this.authService.getToken()}` } });
   }
 
-  getVisits(){
+  fetchActiveVisits(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/visits`);
+  }
+
+  getVisits() {
 
     return this.visits
   }
 
-  addVisit(visit: any){
+  addVisit(visit: any): Observable<any> {
     return this.http.post(`${environment.apiBaseUrl}/internal/visits`, visit);
   }
+
+  fetchVisitReasons(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/internal/visit_reason`);
+  }
+
+
 
 }

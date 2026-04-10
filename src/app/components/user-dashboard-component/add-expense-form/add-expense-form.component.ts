@@ -1,142 +1,279 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { ButtonComponent } from '../../shared/button/button.component';
-import { InputComponent } from '../../shared/input/input.component';
-import { DropDownButtonComponent } from '../../shared/drop-down-button/drop-down-button.component';
-import { AddReceiptComponent } from '../add-receipt/add-receipt.component';
-import { FormsModule } from '@angular/forms';
+import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
+import {
+  FormsModule,
+  FormGroup,
+  FormBuilder,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ExpensesService } from '../../../service/expenses.service';
+import { ToastrService } from 'ngx-toastr';
+
 import { AuthServiceService } from '../../../service/auth-service.service';
+import { ExpensesService } from '../../../service/expenses.service';
+import { SharedServicesService } from '../../../service/shared-services.service';
+import { VisitsService } from '../../../service/visits.service';
+
 import { CategoryOption } from '../../shared/shared/category-options-drop-down-model';
+import { VisitsOption } from '../../shared/shared/visits-drop-down';
 import { BackButtonComponent } from '../../back-button/back-button.component';
-import { expand } from 'rxjs';
 
 @Component({
   selector: 'app-add-expense-form',
   standalone: true,
-  imports: [
-    ButtonComponent,
-    InputComponent,
-    DropDownButtonComponent,
-    AddReceiptComponent,
-    FormsModule,
-    CommonModule,
-    BackButtonComponent
-  ],
+  imports: [BackButtonComponent, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './add-expense-form.component.html',
   styleUrl: './add-expense-form.component.scss',
 })
 export class AddExpenseFormComponent {
-  constructor(
-    private expensesService: ExpensesService,
-    private router: Router,
-    private authService: AuthServiceService
-  ) { }
-
 
   @ViewChild('fileInput') fileInput!: ElementRef;
-  //---------------------------------------------------------Form Properties----------------------------------------------------------
 
-  submitted: boolean = false;
-  loading: boolean = false;
-  selectedFile: File | null = null;
+  // ===== STATE =====
+  expenseForm!: FormGroup;
+  loading = false;
 
+  selectedVisitInfo: any;
 
-  selectedCategory: string = '';
-  categories: CategoryOption[] = [
-    { name: 'Travel', id: 1 },
-    { name: 'Food', id: 2 },
-    { name: 'Stay', id: 8 },
-    { name: 'Other', id: 5 },
-  ];
+  filePreview: string | ArrayBuffer | null = null;
 
+  startDate = '';
+  endDate = '';
 
-  description: string = '';
-  amount: string = '';
-  date: string = '';
-  receiptNo: string = '';
-  visit: string = '';
+  // ===== SEARCH DROPDOWN STATE =====
+  visitSearch = '';
+  filteredVisits: VisitsOption[] = [];
+  isVisitDropdownOpen = false;
 
+  // ===== DATA =====
+  categories: CategoryOption[] = [];
+  activeVisits: VisitsOption[] = [];
 
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthServiceService,
+    private expensesService: ExpensesService,
+    private sharedService: SharedServicesService,
+    private visitService: VisitsService,
+    private toastr: ToastrService,
+  ) { }
 
-  //------------------------------------------------------------Functions-----------------------------------------------------------------
+  // ===== INIT =====
+  ngOnInit() {
+    this.expenseFormInit();
 
-  fileOnChange(event: any) {
-    console.log('File selected:', event.target.files);
-    this.selectedFile = event.target.files[0] ?? null;
+    this.fetchVisits();
+    this.fetchCategories();
+
+    this.expenseForm.get('selectedVisit')?.valueChanges.subscribe(() => {
+      this.onVisitChange();
+    });
   }
 
-  onSubmit() {
+  // ===== FORM INIT =====
+  expenseFormInit() {
+    this.expenseForm = this.fb.group({
+      selectedCategory: ['', Validators.required],
+      selectedVisit: ['', Validators.required],
+      date: ['', Validators.required],
+      selectedFile: [null, Validators.required],
+      amount: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+      receiptNo: ['', Validators.required],
+      description: ['']
+    });
+  }
 
-    this.router.navigate(['/user-dashboard'], { replaceUrl: true });
+  // ===== FETCH VISITS (WITH 90-DAY FILTER) =====
+  fetchVisits() {
+    this.visitService.fetchVisits().subscribe((res) => {
+      const allVisits = res.data || [];
 
-    if (!this.selectedFile) {
-      console.error('No file selected');
+      const today = new Date();
+      const past90Days = new Date();
+      past90Days.setDate(today.getDate() - 90);
+
+      this.activeVisits = allVisits.filter((visit: any) => {
+        if (!visit.start_date) return false;
+
+        const visitDate = new Date(visit.start_date);
+        return visitDate >= past90Days && visitDate <= today;
+      });
+
+      // initialize filtered list
+      this.filteredVisits = [...this.activeVisits];
+
+      console.log('Filtered Visits (last 90 days): ', this.activeVisits);
+    });
+  }
+
+  fetchCategories() {
+    this.sharedService.fetchCategories().subscribe(res => {
+      this.categories = res.data || [];
+    });
+  }
+
+  // ===== SEARCH FILTER =====
+  onVisitSearchChange() {
+    const search = this.visitSearch.toLowerCase();
+
+    this.filteredVisits = this.activeVisits.filter(v =>
+      v.visit_name.toLowerCase().includes(search)
+    );
+  }
+
+  // ===== SELECT VISIT =====
+  selectVisit(visit: VisitsOption) {
+    this.expenseForm.patchValue({
+      selectedVisit: visit.visit_name
+    });
+
+    this.visitSearch = visit.visit_name;
+    this.isVisitDropdownOpen = false;
+
+    this.onVisitChange();
+  }
+
+  // ===== CLOSE DROPDOWN ON OUTSIDE CLICK =====
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: any) {
+    const clickedInside = event.target.closest('.visit-dropdown');
+    if (!clickedInside) {
+      this.isVisitDropdownOpen = false;
+    }
+  }
+
+  // ===== VISIT CHANGE =====
+  onVisitChange() {
+    this.selectedVisitInfo = this.activeVisits.find(
+      (v) => v.visit_name === this.expenseForm.get('selectedVisit')?.value
+    );
+
+    if (!this.selectedVisitInfo) return;
+
+    const visitStart = new Date(this.selectedVisitInfo.start_date);
+    const visitEnd = new Date(this.selectedVisitInfo.end_date);
+    const today = new Date();
+
+    // ===== START DATE (unchanged) =====
+    this.startDate = visitStart.toISOString().split('T')[0];
+
+    // ===== END DATE (min of visitEnd and today) =====
+    const finalEndDate = visitEnd < today ? visitEnd : today;
+
+    this.endDate = finalEndDate.toISOString().split('T')[0];
+  }
+
+  // ===== FILE =====
+  fileOnChange(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      this.toastr.error('Only image files allowed');
+      this.resetFile();
       return;
     }
 
-    if (
-      !this.description ||
-      !this.amount ||
-      !this.date ||
-      !this.receiptNo ||
-      !this.visit
-    ) {
-      console.error('Please fill all required fields');
-      // return;
+    this.expenseForm.patchValue({
+      selectedFile: file
+    });
+
+    const reader = new FileReader();
+    reader.onload = () => (this.filePreview = reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  resetFile() {
+    this.expenseForm.patchValue({ selectedFile: null });
+    this.filePreview = null;
+    if (this.fileInput) this.fileInput.nativeElement.value = '';
+  }
+
+  // ===== VALIDATION =====
+  private showError(message: string): boolean {
+    this.toastr.warning(message);
+    return false;
+  }
+
+  validateForm(): boolean {
+    if (!this.expenseForm.get('selectedCategory')?.value) return this.showError('Category is required');
+    if (!this.expenseForm.get('selectedVisit')?.value) return this.showError('Visit is required');
+    if (!this.expenseForm.get('date')?.value) return this.showError('Date is required');
+
+    const amount = this.expenseForm.get('amount')?.value;
+    if (!amount || Number(amount) <= 0) return this.showError('Enter valid amount');
+
+    if (!this.expenseForm.get('receiptNo')?.value) return this.showError('Receipt number is required');
+    if (!this.expenseForm.get('selectedFile')?.value) return this.showError('Receipt image is required');
+
+    return true;
+  }
+
+  // ===== AMOUNT VALIDATION =====
+  blockInvalidKeys(event: KeyboardEvent) {
+    const invalidKeys = ['-', '+', 'e', 'E'];
+    if (invalidKeys.includes(event.key)) {
+      event.preventDefault();
     }
+  }
 
+  // ===== SUBMIT =====
+  onSubmit() {
+    if (!this.validateForm()) return;
 
-    //-----------------------------------------Populating the form data to be sent to the backend---------------------------------------------
+    this.loading = true;
+
+    const formValues = this.expenseForm.value;
     const formData = new FormData();
-    const receiptId = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+
     formData.append(
       'category_id',
-      (this.categories.find(c => c.name == this.selectedCategory)?.id ?? '').toString()
+      (this.categories.find((c) => c.name === formValues.selectedCategory)?.id ?? '').toString()
     );
-    formData.append('date', this.date);
 
-    formData.append('bill', this.selectedFile);
+    formData.append(
+      'visit_id',
+      String(
+        this.activeVisits.find((v) => v.visit_name === formValues.selectedVisit)?.id ?? 0
+      )
+    );
 
-    formData.append('amount', this.amount.toString());
-    formData.append('receipt_id', `TESTING_${this.receiptNo}`);
-    formData.append('visit_id', this.visit);
-    formData.append('description', this.description);
-    // formData.append('user_id', this.authService.userId?.toString() ?? '0');
-
-
-
-    formData.forEach((value, key) => {
-      console.log(key, ' :: ', value);
-    });
+    formData.append('date', formValues.date);
+    formData.append('bill', formValues.selectedFile!);
+    formData.append('amount', formValues.amount);
+    formData.append('receipt_id', `TESTING_${formValues.receiptNo}`);
+    formData.append('description', formValues.description || '');
 
     this.expensesService.addExpense(formData).subscribe({
-      next: (response) => {
-        console.log('Expense Added Successfully:', response);
+      next: () => {
+        this.toastr.success('Expense submitted successfully');
+        this.onClear();
+        this.loading = false;
       },
       error: (err) => {
-        // console.error('Error adding expense:', err);
+        this.toastr.error(err?.error?.message || 'Something went wrong');
+        this.loading = false;
       },
     });
   }
 
-
+  // ===== CLEAR =====
   onClear() {
-    this.selectedCategory = '';
-    this.description = '';
-    this.amount = '';
-    this.date = '';
-    this.receiptNo = '';
-    this.visit = '';
-    if (this.selectedFile) {
-      this.fileInput.nativeElement.value = '';
-    }
-  }
+    this.expenseForm.reset();
 
-  editExpense(category: string, expense_date: string, amount: string, receipt: string,  visit: number, expense: string, bill_path: string, id: number, status: "Rejected") {
-    this.amount = amount;
-    this.date = expense_date;
-  }
+    this.expenseForm.patchValue({
+      selectedCategory: '',
+      selectedVisit: '',
+    });
 
+    this.visitSearch = '';
+    this.filteredVisits = [...this.activeVisits];
+
+    this.startDate = '';
+    this.endDate = '';
+
+    this.resetFile();
+  }
 }

@@ -1,44 +1,102 @@
-<form (ngSubmit)="login()">
-  <div class="container text-center mt-5">
-    <h2>Expense Tracking</h2>
-    <p>Login to continue.</p>
+<div class="container-fluid min-vh-100 d-flex p-0">
 
-    <div class="mb-3">
-      <label>Email</label>
-      <input
-        type="email"
-        class="form-control"
-        [(ngModel)]="email"
-        placeholder="abc@mail.com"
-        name="email"
-      />
-    </div>
-
-    <div class="mb-3">
-      <label>Password</label>
-      <input
-        type="password"
-        class="form-control"
-        [(ngModel)]="password"
-        name="password"
-      />
-    </div>
-
-    <button class="btn btn-primary w-100" type="submit">Login</button>
-
-    <div *ngIf="errorMsg" class="text-danger mt-3">
-      {{ errorMsg }}
-    </div>
+  <!-- LEFT PANEL -->
+  <div class="d-none d-md-flex col-md-6 flex-column justify-content-center align-items-center text-white left-panel">
+    <img src="sampu.png" alt="Logo" class="mb-4" style="height:60px;" />
+    <h2 class="fw-bold">Expense Tracker</h2>
+    <p class="mt-2 text-center px-4">
+      Manage your expenses smartly, track every rupee, and stay financially organized.
+    </p>
   </div>
-</form>
 
-<div class="text-center mt-3">
-  <span
-    class="text-primary fw-semibold text-decoration-underline"
-    role="button"
-    (click)="register()"
-  >
-    Register
-  </span>
+  <!-- RIGHT PANEL -->
+  <div class="col-12 col-md-6 d-flex justify-content-center align-items-center right-panel">
+
+    <div class="glass-card p-4 rounded-4 shadow-lg w-100" style="max-width:420px;">
+
+      <div class="text-center mb-4">
+        <h4 class="fw-bold">Welcome Back</h4>
+        <p class="text-muted small">Login to your account</p>
+      </div>
+
+      <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+
+        <!-- EMAIL -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Email</label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            name="email"
+            [(ngModel)]="email"
+            #emailCtrl="ngModel"
+            required
+            pattern="^[a-zA-Z0-9]+([._%+-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$"
+            placeholder="abc@mail.com"
+            [ngClass]="{'is-invalid': emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)}"
+          />
+
+          <div *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="invalid-feedback d-block">
+            <div *ngIf="emailCtrl.errors?.['required']">Email is required</div>
+            <div *ngIf="emailCtrl.errors?.['pattern']">Enter valid email</div>
+          </div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="mb-3 position-relative">
+          <label class="form-label fw-semibold">Password</label>
+
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control form-control-lg pe-5"
+            name="password"
+            [(ngModel)]="password"
+            #passwordCtrl="ngModel"
+            required
+            minlength="1"
+            placeholder="Enter password"
+            [ngClass]="{'is-invalid': passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)}"
+          />
+
+          <!-- EYE -->
+          <span
+            class="position-absolute top-50 end-0 translate-middle-y m-3"
+            (click)="togglePassword()"
+            style="cursor:pointer;"
+          >
+            <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </span>
+
+          <div *ngIf="passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)" class="invalid-feedback d-block">
+            <div *ngIf="passwordCtrl.errors?.['required']">Password is required</div>
+            <div *ngIf="passwordCtrl.errors?.['minlength']">Minimum 6 characters</div>
+          </div>
+        </div>
+
+        <!-- BUTTON -->
+        <button
+          class="btn w-100 py-2 fw-semibold login-btn"
+          type="submit"
+          [disabled]="loginForm.invalid"
+        >
+          Login
+        </button>
+
+        <!-- ERROR -->
+        <div *ngIf="errorMsg" class="alert alert-danger mt-3 py-2 text-center small">
+          {{ errorMsg }}
+        </div>
+
+      </form>
+
+      <!-- FOOTER -->
+      <div class="text-center mt-3">
+        <span class="text-muted small">No account?</span>
+        <span class="fw-semibold ms-1 register-link" (click)="register()">Register</span>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
-<!-- <div (click)="register()" style="cursor: pointer">Register</div> -->

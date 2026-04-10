@@ -1,78 +1,114 @@
-<div class="position-absolute">
-  <app-back-button/>
-</div>
+<div class="container mt-4">
 
-<div class="row justify-content-center mt-5">
-  <div class="container">
-    <div class="col-4 offset-4 border rounded p-4 shadow-sm bg-light">
-      <h3 class="title text-center mb-4">Add Visits Form</h3>
+  <!-- SUCCESS POPUP -->
+  <div *ngIf="showPopup" class="custom-popup">
+    Your Visit Has Been Added Successfully!
+  </div>
 
-      <form>
-        
-        <!--------------------------------------Add Date------------------------------------------>
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Start Date</label>
+  <!-- HEADER -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <!-- <app-back-button></app-back-button> -->
+    <!-- <h3 class="title mb-0">Add Visit</h3> -->
+    <div style="width: 40px;"></div>
+  </div>
 
+  <!-- FORM CARD -->
+  <div class="form-card">
+    <form [formGroup]="visitForm">
+
+      <!-- GRID START -->
+      <div class="row g-3">
+
+        <!-- Start Date -->
+        <div class="col-md-6">
+          <label class="form-label">
+            Start Date <span class="required">*</span>
+          </label>
           <input
-            class="form-control"
             type="date"
-            [(ngModel)]="s_date"
-            name="s_date"
+            class="form-control"
+            formControlName="start_date"
           />
         </div>
 
-        <!--------------------------------------Add Date------------------------------------------>
-        <div class="mb-3">
-          <label class="form-label fw-semibold">End Date</label>
-
+        <!-- End Date -->
+        <div class="col-md-6">
+          <label class="form-label">End Date</label>
           <input
-            class="form-control"
             type="date"
-            [(ngModel)]="e_date"
-            name="e_date"
-          />
-        </div>
-
-        <!--------------------------------------Add Amount------------------------------------------>
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Client Name</label>
-
-          <input
             class="form-control"
-            type="text"
-            [(ngModel)]="cli_name"
-            name="cli_name"
+            formControlName="end_date"
+            [min]="visitForm.get('start_date')?.value"
           />
+
+          <div
+            *ngIf="visitForm.errors?.['invalidDate'] && visitForm.touched"
+            class="text-danger small mt-1"
+          >
+            End date cannot be before start date
+          </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Agenda</label>
-
-          <input
-            class="form-control"
-            type="text"
-            [(ngModel)]="agenda"
-            name="agenda"
-          />
+        <!-- Client -->
+        <div class="col-md-6">
+          <label class="form-label">
+            Client <span class="required">*</span>
+          </label>
+          <select class="form-select" formControlName="client_id">
+            <option value="" disabled>Select Client</option>
+            <option *ngFor="let client of clients" [value]="client.id">
+              {{ client.name }}
+            </option>
+          </select>
         </div>
 
-        <!--------------------------------------Submit------------------------------------------>
+        <!-- Visit Reason -->
+        <div class="col-md-6">
+          <label class="form-label">
+            Visit Reason <span class="required">*</span>
+          </label>
+          <select class="form-select" formControlName="visit_reason_id">
+            <option value="" disabled>Select Visit Reason</option>
+            <option
+              *ngFor="let visitReason of visitReasons"
+              [value]="visitReason.id"
+            >
+              {{ visitReason.name }}
+            </option>
+          </select>
+        </div>
 
+        <!-- Agenda (Full Width like description) -->
+        <div class="col-12">
+          <label class="form-label">Agenda</label>
+          <textarea 
+            class="form-control text-area"
+            formControlName="agenda"
+          ></textarea>
+        </div>
+
+      </div>
+      <!-- GRID END -->
+
+      <!-- BUTTONS -->
+      <div class="mt-4 d-flex gap-2">
         <button
-          class="form-control mt-3 btn btn-primary"
           type="button"
+          class="btn btn-primary w-100"
           (click)="onSubmit()"
         >
           Save
         </button>
 
         <button
-          class="form-control mt-2 btn btn-outline-secondary"
           type="button"
+          class="btn btn-light w-100"
+          (click)="clearFields()"
         >
           Cancel
         </button>
-      </form>
-    </div>
+      </div>
+
+    </form>
   </div>
 </div>

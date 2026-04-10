@@ -1,42 +1,166 @@
+import { Input } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExpensesService } from '../../../service/expenses.service';
 import { AuthServiceService } from '../../../service/auth-service.service';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-pending-expense-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './pending-expense-table.component.html',
   styleUrl: './pending-expense-table.component.scss'
 })
 export class PendingExpenseTableComponent implements OnInit {
 
-  constructor(private expensesService: ExpensesService, private authService: AuthServiceService) { }
+  filteredExpenses: any[] = [];
 
-  role: string = '';
+  filters = {
+    category: '',
+    client: '',
+    visit: '',
+    dateFrom: '',
+    dateTo: '',
+    amountMin: null as number | null,
+    amountMax: null as number | null
+  };
+
+  private debounceTimer: any;
+
+
+  constructor(private expensesService: ExpensesService, private authService: AuthServiceService, private router: Router) { }
+
+  isAdmin: boolean = false;
+  @Input() expenses: any[] = [];
+
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   ngOnInit() {
+    this.isAdmin = this.authService.userRole?.toLowerCase() === 'admin';
     // console.log("------------------------------Initialized------------------------------");
-    this.expensesService.fetchExpense();
-    this.expensesService.expenses.forEach((expense: any) => {
-      console.log("Expense:", expense);
-    });
-    this.role = this.authService.userRole?.toLowerCase().trim() ?? '';
+    if (this.isAdmin) {
+      this.expensesService.fetchAdminPending().subscribe(res => {
+        this.expenses = this.normalizeExpenses(res.data);
+        this.applyFilters();
+        console.log("Pending Table For Admin: ", res.data);
+      });
+    } else {
+
+
+      this.expensesService.fetchEmployeePending().subscribe({
+        next: (res) => {
+          this.expenses = this.normalizeExpenses(res.data);
+          this.applyFilters();
+          console.log("Pending expense table content: ", this.expenses)
+        },
+        error: (err: string) => {
+          console.log("Pending Expense error: ", err);
+        }
+      });
+
+    }
+    // this.expensesService.expenses.forEach((expense: any) => {
+    //   console.log("Expense:", expense);
+    // });
+    // this.role = this.authService.userRole?.toLowerCase().trim() ?? '';
   }
-  
 
 
-  //-------------------------------------------Toggle Button Status------------------------------------
-  // statusList = ['Pending', 'Approved', 'Rejected'];
-  // crntIndx = 0;
 
-  // status = this.statusList[this.crntIndx];
+  //-------------------------------------------Filters Logic------------------------------------
+  normalizeExpenses(data: any[]) {
+    return data.map((e: any) => ({
+      ...e,
+      amount_value: this.extractAmount(e.amount)
+    }));
+  }
 
-  // toggleStatus(){
-  //   this.crntIndx = (this.crntIndx + 1) % this.statusList.length;
-  //   this.status = this.statusList[this.crntIndx];
-  // }
+  extractAmount(amount: string): number {
+    if (!amount) return 0;
+    return parseFloat(amount.replace(/[^\d.]/g, '')) || 0;
+  }
+
+
+
+  onFilterChange() {
+    clearTimeout(this.debounceTimer);
+
+    this.debounceTimer = setTimeout(() => {
+      this.applyFilters();
+    }, 300);
+  }
+
+
+
+  applyFilters() {
+    const f = this.filters;
+
+    this.filteredExpenses = this.expenses.filter(exp => {
+
+      const categoryMatch =
+        !f.category || exp.category === f.category;
+
+      const clientMatch =
+        !f.client || exp.client_name === f.client;
+
+      const visitMatch =
+        !f.visit || exp.visit_name === f.visit;
+
+      const dateMatch =
+        (!f.dateFrom || exp.expense_date >= f.dateFrom) &&
+        (!f.dateTo || exp.expense_date <= f.dateTo);
+
+      const amountMatch =
+        (f.amountMin === null || exp.amount_value >= f.amountMin) &&
+        (f.amountMax === null || exp.amount_value <= f.amountMax);
+
+      return (
+        categoryMatch &&
+        clientMatch &&
+        visitMatch &&
+        dateMatch &&
+        amountMatch
+      );
+    });
+  }
+
+
+
+
+  clearFilters() {
+    this.filters = {
+      category: '',
+      client: '',
+      visit: '',
+      dateFrom: '',
+      dateTo: '',
+      amountMin: null,
+      amountMax: null
+    };
+
+    this.applyFilters();
+  }
+
+
+
+
+  getUnique(field: string) {
+    return [...new Set(this.expenses.map(e => e[field]).filter(Boolean))];
+  }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -59,123 +183,40 @@ export class PendingExpenseTableComponent implements OnInit {
 
   }
 
+  // --------------------------------------------- Column Sorting -------------------------------------------------------------
 
-  get expenses() {
-    return this.expensesService.expenses;
+  sortByDate() {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+
+    this.filteredExpenses.sort((a: any, b: any) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+
+      return this.sortDirection === 'asc'
+        ? dateA - dateB
+        : dateB - dateA;
+    });
   }
 
-  getPendingExpenses() {
 
-    return this.expenses.filter((exp: any) =>
-      exp.status.toLowerCase().trim() === 'Submitted'.toLowerCase().trim())
+  // get expenses() {
+  //   return this.expensesService.expenses;
+  // }
 
+  // getPendingExpenses() {
+
+  //   return this.expenses.filter((exp: any) =>
+  //     exp.status.toLowerCase().trim() === 'Submitted'.toLowerCase().trim())
+
+  // }
+
+
+  // --------------------------------------------- OPEN PREVIEW -------------------------------------------------------------
+
+  openPreview(exp: any) {
+    this.expensesService.setSelectedExpense(exp);
+    console.log("------------> This is the expense obj: ", exp);
+    this.router.navigate(['/expense-preview']);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // pendingExpenses = [
-  //   {
-  //     expense: 'Client Lunch',
-  //     date: '2026-01-12',
-  //     category: 'Meals & Ent.',
-  //     receipt: 'lunch_0112.pdf',
-  //     amount: 68.4,
-  //     visit: 'Client A',
-  //   },
-  //   {
-  //     expense: 'Uber Ride',
-  //     date: '2026-01-13',
-  //     category: 'Travel',
-  //     receipt: 'uber_0113.png',
-  //     amount: 24.75,
-  //     visit: 'HQ Visit',
-  //   },
-  //   {
-  //     expense: 'Hotel Stay',
-  //     date: '2026-01-10',
-  //     category: 'Accommodation',
-  //     receipt: 'hotel_0110.pdf',
-  //     amount: 312.0,
-  //     visit: 'NYC Trip',
-  //   },
-  //   {
-  //     expense: 'Office Supplies',
-  //     date: '2026-01-09',
-  //     category: 'Supplies',
-  //     receipt: 'staples_0109.pdf',
-  //     amount: 89.15,
-  //     visit: '',
-  //   },
-  //   {
-  //     expense: 'Flight Ticket',
-  //     date: '2026-01-05',
-  //     category: 'Travel',
-  //     receipt: 'flight_0105.pdf',
-  //     amount: 540.6,
-  //     visit: 'SF Visit',
-  //   },
-  //   {
-  //     expense: 'Team Dinner',
-  //     date: '2026-01-14',
-  //     category: 'Meals & Ent.',
-  //     receipt: 'dinner_0114.jpg',
-  //     amount: 156.9,
-  //     visit: 'Team Meet',
-  //   },
-  //   {
-  //     expense: 'Taxi Fare',
-  //     date: '2026-01-08',
-  //     category: 'Travel',
-  //     receipt: 'taxi_0108.png',
-  //     amount: 32.5,
-  //     visit: 'Airport Run',
-  //   },
-  //   {
-  //     expense: 'Conference Fee',
-  //     date: '2026-01-02',
-  //     category: 'Training',
-  //     receipt: 'conf_0102.pdf',
-  //     amount: 799.0,
-  //     visit: 'TechConf',
-  //   },
-  // ];
 
 }

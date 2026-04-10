@@ -1,35 +1,98 @@
-.user-list {
-  width: 40%;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+.container {
+  font-family: 'Poppins', sans-serif;
 }
 
+/* CARD */
 .user-card {
-  border-radius: 12px;
-  background: #cbb8f3;
-  margin-bottom: 12px;
-  padding: 14px 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s ease;
   cursor: pointer;
-  transition: all 0.2s ease;
+  height: 100%;
 }
 
 .user-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+/* AVATAR */
+.avatar-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 .user-avatar {
-  width: 45px;
-  height: 45px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   object-fit: cover;
+  border: 3px solid #eef2ff;
 }
 
+/* TEXT */
 .user-name {
   font-weight: 600;
-  color: #ffffff;
   font-size: 15px;
+  color: #111827;
 }
 
-.user-expense {
-  font-size: 13px;
-  color: #f3f3f3;
+.user-email {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+  word-break: break-all;
+}
+
+/* ROLE BADGES */
+.role-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+}
+
+/* ADMIN → highlighted */
+.admin-role {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+}
+
+/* EMPLOYEE → subtle */
+.employee-role {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+
+
+/* AVATAR SKELETON */
+.avatar-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-skeleton {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 28px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+  transition: 0.2s ease;
+}
+
+/* subtle hover polish */
+.user-card:hover .avatar-skeleton {
+  background: linear-gradient(145deg, #e0e7ff, #c7d2fe);
+  color: #4f46e5;
 }
