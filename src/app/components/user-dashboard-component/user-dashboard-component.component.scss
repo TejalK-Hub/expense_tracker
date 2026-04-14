@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 .user-dashboard {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 /* HEADER */
@@ -19,7 +19,7 @@
 
 .action-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 /* ICON */
@@ -87,12 +87,17 @@
 
 .clean-row:hover {
   background: #f1f6ff;
+  background-color: pink;
 }
-
-
 
 //----------------------------------------------------------------card styling---------------------------------------------------
 /* -------- STATUS LIST (NEW CLEAN STYLE) -------- */
+
+.sub-value {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.85;
+}
 
 .status-list {
   display: flex;
@@ -157,12 +162,12 @@
   color: #6b7280;
 }
 
-
-
 /* -------- HOVER EFFECT -------- */
 
 .status-item {
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
   cursor: default;
 }
 
@@ -180,8 +185,6 @@
 .status-item.rejected:hover {
   background-color: #fee2e2;
 }
-
-
 
 /* COMPACT CARD */
 .compact-card {

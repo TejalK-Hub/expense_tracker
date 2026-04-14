@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 .past-expenses {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 /* ---------- DROPDOWN UI ---------- */
@@ -128,7 +128,6 @@
   color: #fff;
 }
 
-
 .range-filter {
   display: flex;
   align-items: center;
@@ -146,8 +145,6 @@
     margin: 0 2px;
   }
 }
-
-
 
 /* Make wrapper take full width */
 .filter-wrapper {
@@ -193,5 +190,34 @@
   .range-separator {
     font-size: 12px;
     color: #888;
+  }
+}
+
+///* ---------- TABLE ---------- */
+
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 12px;
+  font-weight: 500;
+
+  i {
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  &:hover {
+    background: #e0e7ff;
   }
 }

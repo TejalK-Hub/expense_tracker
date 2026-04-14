@@ -112,12 +112,12 @@ export class ExpensePreviewPageComponent {
   }
 
   openImagePreview() {
-  this.showImagePreview = true;
-}
+    this.showImagePreview = true;
+  }
 
-closeImagePreview() {
-  this.showImagePreview = false;
-}
+  closeImagePreview() {
+    this.showImagePreview = false;
+  }
 
   // ------------------------------------------------------Service Calls------------------------------------------------------
 
@@ -175,6 +175,16 @@ closeImagePreview() {
 
   }
 
+
+  // Confirmation popup for approval
+  confirmApprove() {
+    const confirmed = window.confirm('Do you want to approve this expense?');
+
+    if (confirmed) {
+      this.approveExpense();
+    }
+  }
+
   rejectExpense() {
     // console.log("Reject");
     this.body = {
@@ -205,7 +215,7 @@ closeImagePreview() {
   editExpense() {
     // console.log("Editable: ",this.selectedCategory);
     this.fetchCategories();
-    
+
   }
   resubmitExpense() {
 

@@ -20,12 +20,12 @@
     <!-- Right Actions -->
     <div class="d-flex align-items-center gap-2">
       <button
-        class="btn btn-sm btn-outline-success"
-        *ngIf="isAdmin && isSelfAdmin"
-        (click)="approveExpense()"
-      >
-        Approve
-      </button>
+  class="btn btn-sm btn-outline-success"
+  *ngIf="isAdmin && isSelfAdmin"
+  (click)="confirmApprove()"
+>
+  Approve
+</button>
 
       <button
         class="btn btn-sm btn-outline-danger"
@@ -149,8 +149,8 @@
       </div>
 
       <div class="item">
-        <label>Date</label>
-        <div class="value">{{ expense.expense_date | date: "dd MMMM yyyy"  || "-NA-" }}</div>
+        <label>Expense Date</label>
+        <div class="value">{{ (expense.expense_date | date: "dd MMMM yyyy") || "-NA-" }}</div>
       </div>
 
       <!-- Description -->

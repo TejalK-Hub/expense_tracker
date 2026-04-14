@@ -66,7 +66,7 @@ export class RegisterComponent {
     this.authService.signup(this.name, this.email, this.password).subscribe({
       next: () => {
         this.toastr.success('Account created successfully');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: () => {
         this.toastr.error('Signup failed');

@@ -19,6 +19,43 @@
     </button>
   </div>
 
+<!-- ACTIVE FILTERS -->
+<div class="active-filters mb-2" *ngIf="hasActiveFilters()">
+
+  <span class="filter-chip" *ngIf="filters.status">
+    {{ filters.status }}
+    <i class="bi bi-x" (click)="removeFilter('status')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.category">
+    {{ filters.category }}
+    <i class="bi bi-x" (click)="removeFilter('category')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.client">
+    {{ filters.client }}
+    <i class="bi bi-x" (click)="removeFilter('client')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.visit">
+    {{ filters.visit }}
+    <i class="bi bi-x" (click)="removeFilter('visit')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.dateFrom || filters.dateTo">
+    {{ filters.dateFrom || '...' }} → {{ filters.dateTo || '...' }}
+    <i class="bi bi-x" (click)="removeFilter('date')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.amountMin !== null || filters.amountMax !== null">
+    ₹{{ filters.amountMin || 0 }} → ₹{{ filters.amountMax || '∞' }}
+    <i class="bi bi-x" (click)="removeFilter('amount')"></i>
+  </span>
+
+</div>
+
+
+
   <!-- TABLE -->
   <div class="table-responsive">
     <table class="table clean-table align-middle small text-nowrap mb-0">

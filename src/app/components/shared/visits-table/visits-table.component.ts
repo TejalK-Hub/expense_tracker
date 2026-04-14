@@ -21,82 +21,146 @@ export class VisitsTableComponent {
 
   filteredVisits: any[] = [];
 
-filters = {
-  visitName: '',
-  client: '',
-  startFrom: '',
-  startTo: ''
-};
-
-  constructor(private visitService: VisitsService){}
-  
-  ngOnInit(){
-    this.loadVisits();
-  }
-
-  loadVisits(){
-  this.visitService.fetchVisits().subscribe((res) => {
-    this.visits = res.data;
-    this.filteredVisits = [...this.visits];
-  });
-}
-
-
-
-
-
-applyFilters() {
-  this.filteredVisits = this.visits.filter((v: any) => {
-
-    const matchVisit =
-      !this.filters.visitName || v.visit_name === this.filters.visitName;
-
-    const matchClient =
-      !this.filters.client || v.client === this.filters.client;
-
-    const startDate = new Date(v.start_date).getTime();
-
-    const from = this.filters.startFrom
-      ? new Date(this.filters.startFrom).getTime()
-      : null;
-
-    const to = this.filters.startTo
-      ? new Date(this.filters.startTo).getTime()
-      : null;
-
-    const matchDate =
-      (!from || startDate >= from) &&
-      (!to || startDate <= to);
-
-    return matchVisit && matchClient && matchDate;
-  });
-}
-
-
-
-
-clearFilters() {
-  this.filters = {
+  filters = {
     visitName: '',
     client: '',
     startFrom: '',
     startTo: ''
   };
 
-  this.filteredVisits = [...this.visits];
-}
+  private readonly FILTER_KEY = 'visits_filters_v1';
+
+  constructor(private visitService: VisitsService) { }
+
+  ngOnInit() {
+    this.loadFilters();
+    this.loadVisits();
+  }
+
+  loadVisits() {
+    this.visitService.fetchVisits().subscribe((res) => {
+      this.visits = res.data;
+      this.applyFilters();
+    });
+  }
 
 
-getUnique(field: string): string[] {
-  return [...new Set(this.visits.map(v => v[field]).filter(Boolean))];
-}
+
+
+  saveFilters() {
+    localStorage.setItem(this.FILTER_KEY, JSON.stringify(this.filters));
+  }
+
+  loadFilters() {
+    const saved = localStorage.getItem(this.FILTER_KEY);
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+
+        this.filters = {
+          ...this.filters,
+          ...parsed
+        };
+
+      } catch {
+        this.clearFilters();
+      }
+    }
+  }
 
 
 
-  sortByDate() {
-    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  applyFilters() {
+    this.saveFilters();
 
-    this.visits.sort((a: any, b: any) => {
+    this.filteredVisits = this.visits.filter((v: any) => {
+
+      const matchVisit =
+        !this.filters.visitName || v.visit_name === this.filters.visitName;
+
+      const matchClient =
+        !this.filters.client || v.client === this.filters.client;
+
+      const startDate = new Date(v.start_date).getTime();
+
+      const from = this.filters.startFrom
+        ? new Date(this.filters.startFrom).getTime()
+        : null;
+
+      const to = this.filters.startTo
+        ? new Date(this.filters.startTo).getTime()
+        : null;
+
+      const matchDate =
+        (!from || startDate >= from) &&
+        (!to || startDate <= to);
+
+      return matchVisit && matchClient && matchDate;
+    });
+
+    this.applySorting();
+  }
+
+
+
+  // Active Filters
+
+  hasActiveFilters(): boolean {
+    const f = this.filters;
+
+    return !!(
+      f.visitName ||
+      f.client ||
+      f.startFrom ||
+      f.startTo
+    );
+  }
+
+
+
+  removeFilter(type: string) {
+
+    switch (type) {
+      case 'visitName':
+        this.filters.visitName = '';
+        break;
+
+      case 'client':
+        this.filters.client = '';
+        break;
+
+      case 'date':
+        this.filters.startFrom = '';
+        this.filters.startTo = '';
+        break;
+    }
+
+    this.saveFilters();
+    this.applyFilters();
+  }
+
+  clearFilters() {
+    this.filters = {
+      visitName: '',
+      client: '',
+      startFrom: '',
+      startTo: ''
+    };
+    localStorage.removeItem(this.FILTER_KEY);
+    this.filteredVisits = [...this.visits];
+    this.applyFilters();
+  }
+
+
+  getUnique(field: string): string[] {
+    return [...new Set(this.visits.map(v => v[field]).filter(Boolean))];
+  }
+
+
+
+  applySorting() {
+    this.filteredVisits.sort((a: any, b: any) => {
       const dateA = new Date(a.created_at).getTime();
       const dateB = new Date(b.created_at).getTime();
 
@@ -104,6 +168,11 @@ getUnique(field: string): string[] {
         ? dateA - dateB
         : dateB - dateA;
     });
+  }
+
+  sortByDate() {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    this.applySorting();
   }
 
 }

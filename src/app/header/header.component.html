@@ -1,27 +1,29 @@
 <div class="header d-flex justify-content-between align-items-center px-4 py-2">
-
   <!-- Left -->
   <div class="d-flex align-items-center gap-2 brand">
-    <i class="bi bi-wallet2 fs-4"></i>
-    <span class="fw-bold fs-5">Expense Tracker</span>
+    <!-- <i class="bi bi-wallet2 fs-4"></i> -->
+    <img src="Logo.png" alt="Logo" class="logo" width="50px" height="50px" />
+    <span class="fw-bold fs-5">Samprama Expense Tracker</span>
   </div>
 
   <!-- Right -->
   <div class="d-flex align-items-center gap-3">
-
     <!-- ROLE BADGE -->
     <span
       class="role-badge"
       [ngClass]="{
-        'admin': userRole === 'Admin',
-        'employee': userRole === 'employee'
+        admin: userRole === 'Admin',
+        employee: userRole === 'employee',
       }"
     >
       {{ userRole }}
     </span>
 
     <!-- Profile -->
-    <div class="profile d-flex align-items-center gap-2" (click)="goToProfile()">
+    <div
+      class="profile d-flex align-items-center gap-2"
+      (click)="goToProfile()"
+    >
       <div class="avatar">
         {{ userInitial }}
       </div>
@@ -37,5 +39,4 @@
       <span>Logout</span>
     </button>
   </div>
-
 </div>

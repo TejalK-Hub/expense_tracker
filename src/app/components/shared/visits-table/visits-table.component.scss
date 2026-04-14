@@ -113,3 +113,37 @@
   font-size: 12px;
   color: #6b7280;
 }
+
+
+
+
+//ACTIVE FILTER BADGE
+
+
+/* ACTIVE FILTERS */
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 12px;
+  font-weight: 500;
+
+  i {
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  &:hover {
+    background: #e0e7ff;
+  }
+}

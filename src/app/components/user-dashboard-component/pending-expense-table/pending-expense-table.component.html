@@ -1,12 +1,47 @@
 <!-- initial -->
 <button
-  class="btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center gap-1"
+  class="btn btn-sm rounded-pill d-flex align-items-center gap-1"
+  [ngClass]="
+    hasActiveFilters() ? 'btn-primary text-white' : 'btn-outline-primary'
+  "
   data-bs-toggle="modal"
   data-bs-target="#pendingFiltersModal"
 >
   <i class="bi bi-funnel"></i>
   Filters
 </button>
+
+<!-- ACTIVE FILTER BADGES -->
+<div class="active-filters mb-2" *ngIf="hasActiveFilters()">
+  <span class="filter-chip" *ngIf="filters.category">
+    {{ filters.category }}
+    <i class="bi bi-x" (click)="removeFilter('category')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.client">
+    {{ filters.client }}
+    <i class="bi bi-x" (click)="removeFilter('client')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.visit">
+    {{ filters.visit }}
+    <i class="bi bi-x" (click)="removeFilter('visit')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.dateFrom || filters.dateTo">
+    {{ filters.dateFrom || "..." }} → {{ filters.dateTo || "..." }}
+    <i class="bi bi-x" (click)="removeFilter('date')"></i>
+  </span>
+
+  <span
+    class="filter-chip"
+    *ngIf="filters.amountMin !== null || filters.amountMax !== null"
+  >
+    ₹{{ filters.amountMin || 0 }} → ₹{{ filters.amountMax || "∞" }}
+    <i class="bi bi-x" (click)="removeFilter('amount')"></i>
+  </span>
+</div>
+
 <div class="container-fluid past-expenses">
   <div class="table-responsive table-container">
     <table class="table pending-table align-middle small text-nowrap mb-0">
@@ -210,7 +245,12 @@
         <!-- FOOTER -->
         <div class="modal-footer border-0 pt-2 d-flex justify-content-between">
           <button
-            class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+            class="btn btn-sm rounded-pill px-3"
+            [ngClass]="
+              hasActiveFilters()
+                ? 'btn-outline-danger'
+                : 'btn-outline-secondary'
+            "
             (click)="clearFilters()"
           >
             Clear

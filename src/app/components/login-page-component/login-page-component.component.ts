@@ -39,8 +39,10 @@ export class LoginPageComponentComponent {
         this.authService.setVariables(
           response.token,
           response.user.id,
+          response.user.name,
           response.user.role
         );
+        console.log('Login successful, token stored:', response);
 
         this.toastr.success('Login successful');
 

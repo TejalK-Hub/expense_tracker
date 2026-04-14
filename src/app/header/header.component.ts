@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
 
- userName: string = 'User';
+userName: string = 'User';
 userInitial: string = 'U';
 userRole: string = 'Employee'; // default
 

@@ -10,6 +10,7 @@ export class AuthServiceService {
   userToken: string | null = null;
   userId: number | null = null;
   userRole: string | null = null;
+  userName: string | null = null;
   tokenExpiration: Date | null = null;
 
   constructor(private http: HttpClient) {
@@ -18,11 +19,13 @@ export class AuthServiceService {
     const token = localStorage.getItem('token');
     const id = localStorage.getItem('userId');
     const role = localStorage.getItem('userRole');
+    const userName = localStorage.getItem('userName');
 
-    if (token && id && role) {
+    if (token && id && role && userName) {
       this.userToken = token;
       this.userId = Number(id);
       this.userRole = role;
+      this.userName = userName;
     }
   }
 
@@ -36,11 +39,12 @@ export class AuthServiceService {
     return this.http.post(`${environment.apiBaseUrl}/auth/signup`, { name, email, password });
   }
 
-  setVariables(token: string, id: number, role: string) {
+  setVariables(token: string, id: number, name: string, role: string) {
 
     this.userToken = token;
     this.userId = id;
     this.userRole = role;
+    this.userName = name;
 
     console.log('token: ', token);
     console.log('userId: ', id.toString());
@@ -50,6 +54,7 @@ export class AuthServiceService {
     localStorage.setItem('token', token);
     localStorage.setItem('userId', id.toString());
     localStorage.setItem('userRole', role);
+    localStorage.setItem('userName', name);
 
   }
 
@@ -61,10 +66,12 @@ export class AuthServiceService {
     this.userToken = null;
     this.userId = null;
     this.userRole = null;
+    this.userName = null;
 
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
 
   }
 

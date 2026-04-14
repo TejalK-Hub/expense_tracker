@@ -13,7 +13,10 @@
     <div class="mb-3 text-end d-flex align-items-center gap-2">
       <!-- FILTER BUTTON -->
       <button
-        class="btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center gap-1 me-2"
+        class="btn btn-sm rounded-pill d-flex align-items-center gap-1 me-2"
+        [ngClass]="
+          hasActiveFilters() ? 'btn-primary text-white' : 'btn-outline-primary'
+        "
         data-bs-toggle="modal"
         data-bs-target="#visitsFilterModal"
       >
@@ -29,6 +32,25 @@
         + Add Visit
       </button>
     </div>
+  </div>
+
+  <!-- ACTIVE FILTERS BADGE -->
+  <!-- ACTIVE FILTERS -->
+  <div class="active-filters mb-2" *ngIf="hasActiveFilters()">
+    <span class="filter-chip" *ngIf="filters.visitName">
+      {{ filters.visitName }}
+      <i class="bi bi-x" (click)="removeFilter('visitName')"></i>
+    </span>
+
+    <span class="filter-chip" *ngIf="filters.client">
+      {{ filters.client }}
+      <i class="bi bi-x" (click)="removeFilter('client')"></i>
+    </span>
+
+    <span class="filter-chip" *ngIf="filters.startFrom || filters.startTo">
+      {{ filters.startFrom || "..." }} → {{ filters.startTo || "..." }}
+      <i class="bi bi-x" (click)="removeFilter('date')"></i>
+    </span>
   </div>
 
   <!-- TABLE -->
@@ -190,7 +212,12 @@
         <!-- FOOTER -->
         <div class="modal-footer border-0 pt-2 d-flex justify-content-between">
           <button
-            class="btn btn-sm  view-btn rounded-pill px-3"
+            class="btn btn-sm rounded-pill px-3"
+            [ngClass]="
+              hasActiveFilters()
+                ? 'btn-outline-danger'
+                : 'btn-outline-secondary'
+            "
             (click)="clearFilters()"
           >
             Clear

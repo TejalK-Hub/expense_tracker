@@ -104,6 +104,44 @@ export class UserDashboardComponentComponent {
   }
 
 
+  //------------------------------Click on Card to go to Filtered Expense Table---------------------------------------
+
+
+  goToMonthlyExpenses() {
+    const now = new Date();
+
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const format = (d: Date) => d.toISOString().split('T')[0];
+
+    this.route.navigate(['/manage-expense'], {
+      queryParams: {
+        dateFrom: format(start),
+        dateTo: format(end)
+      }
+    });
+  }
+
+
+  goToFilteredExpenses(status: string) {
+    const now = new Date();
+
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const format = (d: Date) => d.toISOString().split('T')[0];
+
+    this.route.navigate(['/manage-expense'], {
+      queryParams: {
+        status: status,
+        dateFrom: format(start),
+        dateTo: format(end)
+      }
+    });
+  }
+
+
   //-----------------------------------------------------------------Normalize Data---------------------------------------------------------
 
   extractAmount(amount: string): number {

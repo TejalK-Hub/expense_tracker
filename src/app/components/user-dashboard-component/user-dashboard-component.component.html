@@ -6,109 +6,84 @@
 
   <!-- SUMMARY CARDS -->
   <div class="row g-3 mb-4">
-    <!-- TOTAL EXPENSE -->
-    <div class="col-md-6">
-      <div class="card border-0 shadow-sm action-card compact-card p-3">
-        <!-- TOP ROW -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <div>
-            <div class="text-muted small">Total Expense</div>
-            <div class="fw-semibold text-secondary small">
-              {{ current_month }}
-            </div>
-          </div>
-
-          <div class="text-end">
-            <div class="total-value">
-              ₹ {{ summary_current_month.total_amount }}
-            </div>
-            <div class="total-label">Total</div>
-          </div>
-        </div>
-
-        <!-- STATUS ROW (INLINE GRID) -->
-        <div class="status-grid">
-          <div class="status-box submitted">
-            <i class="bi bi-hourglass-split"></i>
+    <!-- MERGED SUMMARY CARD -->
+    <div class="row g-3 mb-4">
+      <div class="col-12">
+        <div
+          class="card border-0 shadow-sm action-card compact-card p-3"
+          (click)="goToMonthlyExpenses()"
+          style="cursor: pointer"
+        >
+          <!-- TOP ROW -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
-              <div class="label">Submitted</div>
-              <div class="value">
-                ₹ {{ summary_current_month.submitted.amount }}
+              <div class="text-muted small">Expense Summary</div>
+              <div class="fw-semibold text-secondary small">
+                {{ current_month }}
+              </div>
+            </div>
+
+            <div class="text-end">
+              <div class="total-value">
+                ₹ {{ summary_current_month?.total_amount || 0 }}
+              </div>
+              <div class="total-label">
+                {{ summary_current_month?.total_count || 0 }} entries
               </div>
             </div>
           </div>
 
-          <div class="status-box approved">
-            <i class="bi bi-check-circle"></i>
-            <div>
-              <div class="label">Approved</div>
-              <div class="value">
-                ₹ {{ summary_current_month.approved.amount }}
+          <!-- STATUS GRID -->
+          <div class="status-grid">
+            <!-- SUBMITTED -->
+            <div
+              class="status-box submitted"
+              (click)="
+                goToFilteredExpenses('submitted'); $event.stopPropagation()
+              "
+            >
+              <i class="bi bi-hourglass-split"></i>
+              <div>
+                <div class="label">Submitted</div>
+                <div class="value">
+                  {{ summary_current_month?.submitted?.count || 0 }}
+                </div>
+                <div class="sub-value">
+                  ₹ {{ summary_current_month?.submitted?.amount || 0 }}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="status-box rejected">
-            <i class="bi bi-x-circle"></i>
-            <div>
-              <div class="label">Rejected</div>
-              <div class="value">
-                ₹ {{ summary_current_month.rejected.amount }}
+            <!-- APPROVED -->
+            <div
+              class="status-box approved"
+              (click)="
+                goToFilteredExpenses('approved'); $event.stopPropagation()
+              "
+            >
+              <i class="bi bi-check-circle"></i>
+              <div>
+                <div class="label">Approved</div>
+                <div class="value">
+                  {{ summary_current_month?.approved?.count || 0 }}
+                </div>
+                <div class="sub-value">
+                  ₹ {{ summary_current_month?.approved?.amount || 0 }}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- EXPENSE COUNT -->
-    <div class="col-md-6">
-      <div class="card border-0 shadow-sm action-card compact-card p-3">
-        <!-- TOP ROW -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <div>
-            <div class="text-muted small">Expense Count</div>
-            <div class="fw-semibold text-secondary small">
-              {{ current_month }}
-            </div>
-          </div>
-
-          <div class="text-end">
-            <div class="total-value">
-              {{ summary_current_month.total_count }}
-            </div>
-            <div class="total-label">Total</div>
-          </div>
-        </div>
-
-        <!-- STATUS ROW -->
-        <div class="status-grid">
-          <div class="status-box submitted">
-            <i class="bi bi-hourglass-split"></i>
-            <div>
-              <div class="label">Submitted</div>
-              <div class="value">
-                {{ summary_current_month.submitted.count }}
-              </div>
-            </div>
-          </div>
-
-          <div class="status-box approved">
-            <i class="bi bi-check-circle"></i>
-            <div>
-              <div class="label">Approved</div>
-              <div class="value">
-                {{ summary_current_month.approved.count }}
-              </div>
-            </div>
-          </div>
-
-          <div class="status-box rejected">
-            <i class="bi bi-x-circle"></i>
-            <div>
-              <div class="label">Rejected</div>
-              <div class="value">
-                {{ summary_current_month.rejected.count }}
+            <!-- REJECTED -->
+            <div class="status-box rejected" (click)="goToFilteredExpenses('rejected'); $event.stopPropagation()">
+              <i class="bi bi-x-circle"></i>
+              <div>
+                <div class="label">Rejected</div>
+                <div class="value">
+                  {{ summary_current_month?.rejected?.count || 0 }}
+                </div>
+                <div class="sub-value">
+                  ₹ {{ summary_current_month?.rejected?.amount || 0 }}
+                </div>
               </div>
             </div>
           </div>
