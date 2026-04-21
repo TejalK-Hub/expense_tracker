@@ -3,6 +3,18 @@ const pool = require('../config/db');
 // CREATE EXPENSE
 const createExpense = async (data) => {
 
+    data.category_id = Number(data.category_id);
+    data.visit_id = Number(data.visit_id);
+    data.amount = Number(data.amount);
+
+    if (isNaN(data.category_id) || isNaN(data.visit_id) || isNaN(data.amount)) {
+    throw new Error('Invalid numeric values provided');
+    }
+
+    if (!data.receipt_id) {
+    throw new Error('Receipt ID is required');
+    }
+
     if (!data.visit_id || !data.date || !data.category_id || !data.amount) {
         throw new Error('Missing required expense fields');
     }
@@ -59,6 +71,10 @@ const createExpense = async (data) => {
     );
 
     const client = clientResult.rows[0] || {};
+
+    if (!Array.isArray(data.bill_paths)) {
+    data.bill_paths = [];
+    }
 
     const query = `
         INSERT INTO expenses
@@ -134,7 +150,12 @@ const getExpensesByVisit = async (visitId, userId) => {
     `;
 
     const result = await pool.query(query, [visitId, userId]);
-    return result.rows;
+    result.rows = result.rows.map(r => ({
+    ...r,
+    bill_paths: r.bill_paths || []
+}));
+
+return result.rows;
 };
 
 // USER EXPENSE LIST
@@ -171,7 +192,12 @@ const getUserExpenses = async (userId) => {
         // AND TO_CHAR(e.date,'YYYY-MM') = TO_CHAR(CURRENT_DATE,'YYYY-MM')
 
     const result = await pool.query(query, [userId]);
-    return result.rows;
+    result.rows = result.rows.map(r => ({
+    ...r,
+    bill_paths: r.bill_paths || []
+}));
+
+return result.rows;
 };
 
 // UPDATE EXPENSE 
@@ -350,7 +376,12 @@ const getUserAllExpenses = async (userId) => {
     `;
 
     const result = await pool.query(query, [userId]);
-    return result.rows;
+    result.rows = result.rows.map(r => ({
+    ...r,
+    bill_paths: r.bill_paths || []
+}));
+
+return result.rows;
 };
 
 const getUserMonthlySummary = async (userId) => {

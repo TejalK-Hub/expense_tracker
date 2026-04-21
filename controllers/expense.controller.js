@@ -4,21 +4,29 @@ const service = require('../services/expense.service');
 // CREATE EXPENSE (user_id from token)
 const createExpense = async (req, res) => {
     try {
+
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'At least one bill image is required'
+            });
+        }
+
         const data = {
             ...req.body,
-            user_id: req.user.id,  
-            bill_paths: req.files ? req.files.map(f => f.path) : []
+            user_id: req.user.id,
+            bill_paths: req.files.map(f => f.path)
         };
 
         const result = await service.createExpense(data);
-        console.log('REQ BODY:', req.body);
+
         res.json({ success: true, data: result });
 
     } catch (error) {
         console.error(error);
         res.status(400).json({
-        success: false,
-        message: error.message
+            success: false,
+            message: error.message
         });
     }
 };
@@ -69,7 +77,9 @@ const updateExpense = async (req, res) => {
 
         const payload = {
             ...req.body,
-            bill_paths: req.files ? req.files.map(f => f.path) : undefined
+            bill_paths: (req.files && req.files.length > 0)
+            ? req.files.map(f => f.path)
+            : undefined
         };
 
 const data = await service.updateExpense(id, userId, payload);
