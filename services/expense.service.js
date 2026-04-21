@@ -166,9 +166,9 @@ const getUserExpenses = async (userId) => {
         LEFT JOIN users approver ON approver.id = e.approved_by
         WHERE e.user_id = $1
         AND LOWER(es.name) = 'submitted'
-        AND TO_CHAR(e.date,'YYYY-MM') = TO_CHAR(CURRENT_DATE,'YYYY-MM')
         ORDER BY e.created_at DESC
-    `;
+        `;
+        // AND TO_CHAR(e.date,'YYYY-MM') = TO_CHAR(CURRENT_DATE,'YYYY-MM')
 
     const result = await pool.query(query, [userId]);
     return result.rows;
