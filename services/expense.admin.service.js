@@ -3,7 +3,7 @@ const pool = require('../config/db');
 
 // ADMIN LIST ( Pending)
 
-const getAllExpenses = async (filters) => {
+    const getAllExpenses = async (filters) => {
 
     let conditions = [];
     let values = [];
@@ -62,7 +62,7 @@ const getAllExpenses = async (filters) => {
             TO_CHAR(e.created_at,'YYYY-MM-DD HH24:MI') AS created_at,
 
 
-            e.bill_path,
+            e.bill_paths,
             ec.name AS category,
             es.name AS status,
 
@@ -218,7 +218,7 @@ const getAllExpensesFull = async () => {
 
             TO_CHAR(e.created_at,'YYYY-MM-DD HH24:MI') AS created_at,
 
-            e.bill_path,
+            e.bill_paths,
             ec.name AS category,
             es.name AS status,
 
