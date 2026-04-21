@@ -1,0 +1,80 @@
+.past-expenses {
+  font-family: "Poppins", sans-serif;
+}
+
+/* TABLE */
+.clean-table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.clean-head th {
+  font-weight: 500;
+  color: #6b7280;
+  border: none;
+  font-size: 13px;
+  background: #f9fafb;
+  padding: 12px 16px;
+}
+
+.clean-row {
+  background: #f8fbff;
+}
+
+.clean-row td {
+  border: none;
+  padding: 14px 16px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.clean-row:hover {
+  background: #eef5ff;
+}
+
+/* BUTTON */
+.view-btn {
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 12px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.view-btn:hover {
+  background: #111827;
+  color: #fff;
+}
+
+/* FORM */
+.form-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 13px;
+  padding: 8px 10px;
+}
+
+.form-control:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.1);
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: #6366f1;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #4f46e5;
+}
+
+.btn-light {
+  background: #f1f5f9;
+}

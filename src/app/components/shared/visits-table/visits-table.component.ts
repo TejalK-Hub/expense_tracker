@@ -5,6 +5,7 @@ import { BackButtonComponent } from '../../back-button/back-button.component';
 import { AddVisitComponent } from '../add-visit/add-visit.component';
 import { FormsModule } from '@angular/forms';
 
+
 @Component({
   selector: 'app-visits-table',
   standalone: true,
@@ -28,6 +29,11 @@ export class VisitsTableComponent {
     startTo: ''
   };
 
+  // ===== VISIT SEARCH DROPDOWN =====
+  visitSearch = '';
+  filteredVisitNames: string[] = [];
+  isVisitDropdownOpen = false;
+
   private readonly FILTER_KEY = 'visits_filters_v1';
 
   constructor(private visitService: VisitsService) { }
@@ -40,6 +46,9 @@ export class VisitsTableComponent {
   loadVisits() {
     this.visitService.fetchVisits().subscribe((res) => {
       this.visits = res.data;
+
+      this.filteredVisitNames = this.getUnique('visit_name'); // ✅ important
+
       this.applyFilters();
     });
   }
@@ -62,6 +71,7 @@ export class VisitsTableComponent {
           ...this.filters,
           ...parsed
         };
+        this.visitSearch = this.filters.visitName || '';
 
       } catch {
         this.clearFilters();
@@ -102,6 +112,27 @@ export class VisitsTableComponent {
     this.applySorting();
   }
 
+
+  // ----------------- VISIT SEARCH -----------------
+  onVisitSearchChange() {
+    const search = this.visitSearch.toLowerCase();
+
+    this.filteredVisitNames = this.getUnique('visit_name').filter(v =>
+      v.toLowerCase().includes(search)
+    );
+  }
+
+  selectVisit(value: string) {
+    this.filters.visitName = value;
+    this.visitSearch = value;
+    this.isVisitDropdownOpen = false;
+    this.applyFilters();
+  }
+
+  openVisitDropdown() {
+    this.isVisitDropdownOpen = true;
+    this.filteredVisitNames = this.getUnique('visit_name'); // show full list
+  }
 
 
   // Active Filters
@@ -158,6 +189,7 @@ export class VisitsTableComponent {
   }
 
 
+//--------------------- SORTING ---------------------
 
   applySorting() {
     this.filteredVisits.sort((a: any, b: any) => {

@@ -3,58 +3,82 @@
   <div
     class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3"
   >
-    <div class="d-flex align-items-center gap-3">
+    <div class="d-flex align-items-center justify-content-center gap-3">
       <app-back-button></app-back-button>
       <h5 class="mb-3 fw-semibold">Past Expenses</h5>
     </div>
 
-    <!-- FILTER BUTTON -->
-    <button
-      class="btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center gap-1"
-      data-bs-toggle="modal"
-      data-bs-target="#filtersModal"
-    >
-      <i class="bi bi-funnel"></i>
-      Filters
-    </button>
+    <!-- RIGHT SIDE BUTTONS -->
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <!-- FILTER BUTTON -->
+      <button
+        class="btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center gap-1"
+        data-bs-toggle="modal"
+        data-bs-target="#filtersModal"
+        [ngClass]="
+          hasActiveFilters() ? 'btn-primary text-white' : 'btn-outline-primary'
+        "
+      >
+        <i class="bi bi-funnel"></i>
+        Filters
+      </button>
+
+      <!-- ✅ ADD EXPENSE BUTTON -->
+      <button
+        class="btn btn-sm view-btn"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        + Add Expense
+      </button>
+    </div>
   </div>
 
-<!-- ACTIVE FILTERS -->
-<div class="active-filters mb-2" *ngIf="hasActiveFilters()">
+  <!-- ACTIVE FILTERS -->
+  <div class="active-filters mb-2" *ngIf="hasActiveFilters()">
+    <span class="filter-chip" *ngIf="filters.userId">
+      User: {{ getUserNameById(filters.userId) }}
+      <i class="bi bi-x" (click)="removeFilter('user')"></i>
+    </span>
 
-  <span class="filter-chip" *ngIf="filters.status">
-    {{ filters.status }}
-    <i class="bi bi-x" (click)="removeFilter('status')"></i>
-  </span>
+    <span class="filter-chip" *ngIf="filters.user">
+      {{ filters.user }}
+      <i class="bi bi-x" (click)="removeFilter('user')"></i>
+    </span>
 
-  <span class="filter-chip" *ngIf="filters.category">
-    {{ filters.category }}
-    <i class="bi bi-x" (click)="removeFilter('category')"></i>
-  </span>
+    <span class="filter-chip" *ngIf="filters.status">
+      {{ filters.status }}
+      <i class="bi bi-x" (click)="removeFilter('status')"></i>
+    </span>
 
-  <span class="filter-chip" *ngIf="filters.client">
-    {{ filters.client }}
-    <i class="bi bi-x" (click)="removeFilter('client')"></i>
-  </span>
+    <span class="filter-chip" *ngIf="filters.category">
+      {{ filters.category }}
+      <i class="bi bi-x" (click)="removeFilter('category')"></i>
+    </span>
 
-  <span class="filter-chip" *ngIf="filters.visit">
-    {{ filters.visit }}
-    <i class="bi bi-x" (click)="removeFilter('visit')"></i>
-  </span>
+    <span class="filter-chip" *ngIf="filters.client">
+      {{ filters.client }}
+      <i class="bi bi-x" (click)="removeFilter('client')"></i>
+    </span>
 
-  <span class="filter-chip" *ngIf="filters.dateFrom || filters.dateTo">
-    {{ filters.dateFrom || '...' }} → {{ filters.dateTo || '...' }}
-    <i class="bi bi-x" (click)="removeFilter('date')"></i>
-  </span>
+    <span class="filter-chip" *ngIf="filters.visit">
+      {{ filters.visit }}
+      <i class="bi bi-x" (click)="removeFilter('visit')"></i>
+    </span>
 
-  <span class="filter-chip" *ngIf="filters.amountMin !== null || filters.amountMax !== null">
-    ₹{{ filters.amountMin || 0 }} → ₹{{ filters.amountMax || '∞' }}
-    <i class="bi bi-x" (click)="removeFilter('amount')"></i>
-  </span>
+    <span class="filter-chip" *ngIf="filters.dateFrom || filters.dateTo">
+      {{ filters.dateFrom || "..." }} → {{ filters.dateTo || "..." }}
+      <i class="bi bi-x" (click)="removeFilter('date')"></i>
+    </span>
 
-</div>
-
-
+    <span
+      class="filter-chip"
+      *ngIf="filters.amountMin !== null || filters.amountMax !== null"
+    >
+      ₹{{ filters.amountMin || 0 }} → ₹{{ filters.amountMax || "∞" }}
+      <i class="bi bi-x" (click)="removeFilter('amount')"></i>
+    </span>
+  </div>
 
   <!-- TABLE -->
   <div class="table-responsive">
@@ -103,7 +127,7 @@
                 'status-rejected': exp.status?.toLowerCase() === 'rejected',
               }"
             >
-              {{ exp.status }}
+              {{ exp.status == "Submitted" ? "Pending" : exp.status }}
             </span>
           </td>
 
@@ -124,6 +148,31 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- ADD EXPENSE FORM MODAL -->
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content rounded-4">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-semibold text-center w-100">
+            Create an Expense
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+
+        <div class="modal-body">
+          <!-- <app-add-expense-form></app-add-expense-form> -->
+          <app-add-expense-form (expenseCreated)="onExpenseCreated()">
+          </app-add-expense-form>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- FILTER MODAL -->
@@ -171,7 +220,7 @@
                 >
                   <option value="">All Status</option>
                   <option *ngFor="let s of getUnique('status')" [value]="s">
-                    {{ s }}
+                    {{ s == "Submitted" ? "Pending" : s }}
                   </option>
                 </select>
               </div>
@@ -218,16 +267,49 @@
             <div class="col-md-6">
               <div class="filter-wrapper w-100">
                 <i class="bi bi-geo-alt filter-icon"></i>
-                <select
-                  class="form-select form-select-sm filter-dropdown w-100"
-                  [(ngModel)]="filters.visit"
-                  (ngModelChange)="onFilterChange()"
+                <div
+                  class="filter-wrapper w-100 position-relative visit-dropdown"
                 >
-                  <option value="">All Visits</option>
-                  <option *ngFor="let v of getUnique('visit_name')" [value]="v">
-                    {{ v }}
-                  </option>
-                </select>
+                  <i class="bi bi-geo-alt filter-icon"></i>
+
+                  <input
+                    type="text"
+                    class="form-control form-control-sm filter-input"
+                    placeholder="Search Visit..."
+                    [(ngModel)]="visitSearch"
+                    (focus)="
+                      isVisitDropdownOpen = true;
+                      filteredVisitsList = getUnique('visit_name')
+                    "
+                    (input)="onVisitSearchChange()"
+                  />
+
+                  <!-- DROPDOWN -->
+                  <div
+                    class="dropdown-menu w-100 shadow-sm show mt-1"
+                    *ngIf="isVisitDropdownOpen"
+                    style="max-height: 200px; overflow-y: auto"
+                  >
+                    <button class="dropdown-item" (click)="selectVisit('')">
+                      All Visits
+                    </button>
+
+                    <button
+                      class="dropdown-item"
+                      *ngFor="let v of filteredVisitsList"
+                      (click)="selectVisit(v)"
+                    >
+                      {{ v }}
+                    </button>
+
+                    <div
+                      class="dropdown-item text-muted"
+                      *ngIf="filteredVisitsList.length === 0"
+                    >
+                      No results found
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -280,6 +362,11 @@
           <!-- CLEAR -->
           <button
             class="btn btn-sm btn-outline-secondary rounded-pill"
+            [ngClass]="
+              hasActiveFilters()
+                ? 'btn-outline-danger'
+                : 'btn-outline-secondary'
+            "
             (click)="clearFilters()"
           >
             Clear

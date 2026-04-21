@@ -15,6 +15,9 @@ import { VisitsService } from '../../../service/visits.service';
 
 import { Router } from '@angular/router';
 
+import { ToastrService } from 'ngx-toastr';
+
+
 @Component({
   selector: 'app-add-visit',
   standalone: true,
@@ -41,6 +44,8 @@ export class AddVisitComponent {
     private authService: AuthServiceService,
     private sharedService: SharedServicesService,
     private visitService: VisitsService,
+
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -102,11 +107,9 @@ export class AddVisitComponent {
     this.visitService.addVisit(body).subscribe({
       next: (res) => {
         this.visitCreated.emit();
-        this.showPopup = true;
+        this.toastr.success('Visit added successfully!');
 
-        setTimeout(() => {
-          this.showPopup = false;
-        }, 3000);
+        
 
         this.visitForm.reset();
 

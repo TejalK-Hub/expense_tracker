@@ -1,0 +1,129 @@
+<div class="container-fluid past-expenses py-3">
+  <!-- HEADER -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-items-center gap-3">
+      <app-back-button></app-back-button>
+      <h5 class="mb-0 fw-semibold">Clients</h5>
+    </div>
+
+    <!-- ADD CLIENT -->
+    <button
+      class="btn btn-sm view-btn"
+      data-bs-toggle="modal"
+      data-bs-target="#clientModal"
+    >
+      + Add Client
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-responsive">
+    <table class="table clean-table align-middle small text-nowrap">
+      <thead class="clean-head">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>City</th>
+          <th>Contact</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let c of clients; let i = index" class="clean-row">
+          <td>{{ i + 1 }}</td>
+          <td>{{ c.name }}</td>
+          <td>{{ c.city }}</td>
+          <td>{{ c.contact }}</td>
+          <td>{{ c.email }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ADD CLIENT MODAL -->
+  <div class="modal fade" id="clientModal" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content rounded-4">
+
+        <!-- HEADER -->
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-semibold w-100 text-center">
+            Add Client
+          </h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- BODY -->
+        <div class="modal-body">
+          <form>
+            <div class="row g-3">
+
+              <div class="col-12">
+                <label class="form-label">Name *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="clientForm.name"
+                  name="name"
+                />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">City *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="clientForm.city"
+                  name="city"
+                />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Contact *</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="clientForm.contact"
+                  name="contact"
+                />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Email *</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  [(ngModel)]="clientForm.email"
+                  name="email"
+                />
+              </div>
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="mt-4 d-flex gap-2">
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                (click)="saveClient()"
+              >
+                Save
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-light w-100"
+                (click)="resetForm()"
+              >
+                Cancel
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

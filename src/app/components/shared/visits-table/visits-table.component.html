@@ -157,16 +157,40 @@
             <div class="col-md-6">
               <div class="filter-wrapper w-100">
                 <i class="bi bi-geo-alt filter-icon"></i>
-                <select
-                  class="form-select form-select-sm filter-dropdown w-100"
-                  [(ngModel)]="filters.visitName"
-                  (ngModelChange)="applyFilters()"
+                <div
+                  class="filter-wrapper w-100 position-relative visit-dropdown"
                 >
-                  <option value="">All Visits</option>
-                  <option *ngFor="let v of getUnique('visit_name')" [value]="v">
-                    {{ v }}
-                  </option>
-                </select>
+                  <i class="bi bi-geo-alt filter-icon"></i>
+
+                  <!-- INPUT -->
+                  <input
+                    type="text"
+                    class="form-control form-control-sm filter-input"
+                    placeholder="Search Visit"
+                    [(ngModel)]="visitSearch"
+                    (focus)="openVisitDropdown()"
+                    (input)="onVisitSearchChange()"
+                  />
+
+                  <!-- DROPDOWN -->
+                  <div
+                    class="dropdown-menu show w-100 mt-1"
+                    *ngIf="isVisitDropdownOpen"
+                    style="max-height: 200px; overflow-y: auto"
+                  >
+                    <button class="dropdown-item" (click)="selectVisit('')">
+                      All Visits
+                    </button>
+
+                    <button
+                      class="dropdown-item"
+                      *ngFor="let v of filteredVisitNames"
+                      (click)="selectVisit(v)"
+                    >
+                      {{ v }}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
