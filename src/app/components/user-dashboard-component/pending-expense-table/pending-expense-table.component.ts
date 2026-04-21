@@ -1,4 +1,4 @@
-import { Input } from '@angular/core';
+import { HostListener, Input } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExpensesService } from '../../../service/expenses.service';
@@ -27,6 +27,12 @@ export class PendingExpenseTableComponent implements OnInit {
     amountMax: null as number | null
   };
 
+
+  // ===== VISIT SEARCH DROPDOWN STATE =====
+  visitSearch = '';
+  filteredVisitsList: string[] = [];
+  isVisitDropdownOpen = false;
+
   private debounceTimer: any;
   private readonly FILTER_KEY = 'pending_expense_filters_v1';
 
@@ -34,7 +40,7 @@ export class PendingExpenseTableComponent implements OnInit {
     private expensesService: ExpensesService,
     private authService: AuthServiceService,
     private router: Router
-  ) {}
+  ) { }
 
   isAdmin: boolean = false;
   @Input() expenses: any[] = [];
@@ -44,17 +50,21 @@ export class PendingExpenseTableComponent implements OnInit {
   ngOnInit() {
     this.isAdmin = this.authService.userRole?.toLowerCase() === 'admin';
 
+    this.filteredVisitsList = this.getUnique('visit_name');
+
     this.loadFilters();
 
     if (this.isAdmin) {
       this.expensesService.fetchAdminPending().subscribe(res => {
         this.expenses = this.normalizeExpenses(res.data);
+        this.filteredVisitsList = this.getUnique('visit_name'); 
         this.applyFilters();
       });
     } else {
       this.expensesService.fetchEmployeePending().subscribe({
         next: (res) => {
           this.expenses = this.normalizeExpenses(res.data);
+          this.filteredVisitsList = this.getUnique('visit_name'); 
           this.applyFilters();
         },
         error: (err: string) => {
@@ -73,6 +83,7 @@ export class PendingExpenseTableComponent implements OnInit {
   loadFilters() {
     const saved = localStorage.getItem(this.FILTER_KEY);
 
+    this.filteredVisitsList = this.getUnique('visit_name'); 
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -84,9 +95,37 @@ export class PendingExpenseTableComponent implements OnInit {
           amountMax: parsed.amountMax !== null ? Number(parsed.amountMax) : null
         };
 
+        // this.visitSearch = this.filters.visit || '';
+
       } catch {
         this.clearFilters();
       }
+    }
+  }
+
+
+  // ---------------- VISIT SEARCH ----------------
+  onVisitSearchChange() {
+    const search = this.visitSearch.toLowerCase();
+
+    this.filteredVisitsList = this.getUnique('visit_name').filter(v =>
+      v.toLowerCase().includes(search)
+    );
+  }
+
+  selectVisit(value: string) {
+    this.filters.visit = value;
+    this.visitSearch = value;
+    this.isVisitDropdownOpen = false;
+    this.onFilterChange();
+  }
+
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: any) {
+    const clickedInside = event.target.closest('.visit-dropdown');
+    if (!clickedInside) {
+      this.isVisitDropdownOpen = false;
     }
   }
 
@@ -215,6 +254,7 @@ export class PendingExpenseTableComponent implements OnInit {
   // ---------------- UTIL ----------------
 
   getUnique(field: string) {
+    console.log("Unique values for " + field + ": ", [...new Set(this.expenses.map(e => e[field]))]);
     return [...new Set(this.expenses.map(e => e[field]).filter(Boolean))];
   }
 

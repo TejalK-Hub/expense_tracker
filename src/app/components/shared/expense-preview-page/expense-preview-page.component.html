@@ -20,12 +20,12 @@
     <!-- Right Actions -->
     <div class="d-flex align-items-center gap-2">
       <button
-  class="btn btn-sm btn-outline-success"
-  *ngIf="isAdmin && isSelfAdmin"
-  (click)="confirmApprove()"
->
-  Approve
-</button>
+        class="btn btn-sm btn-outline-success"
+        *ngIf="isAdmin && isSelfAdmin"
+        (click)="confirmApprove()"
+      >
+        Approve
+      </button>
 
       <button
         class="btn btn-sm btn-outline-danger"
@@ -47,6 +47,16 @@
         Edit
       </button>
 
+      <!-- DELETE BUTTON VISIBLE ONLY WHEN EXPENSE IS IN SUBMITTED STATE AND NOT APPROVED OR REJECTED -->
+      <button
+        class="btn btn-sm btn-outline-dark delete-btn"
+        *ngIf="isDeletable"
+      >
+        <!-- (click)="deleteExpense()" -->
+        <i class="bi bi-trash"></i>
+        Delete
+      </button>
+
       <!-- --------------------------------------------------Print button-------------------------------------------------- -->
       <!-- <button
         class="btn btn-light print-btn"
@@ -55,8 +65,6 @@
       >
         <i class="bi bi-printer"></i>
       </button> -->
-
-
     </div>
   </div>
 
@@ -117,7 +125,11 @@
             pending: expense.status === 'Submitted',
           }"
         >
-          {{ expense.status | titlecase }}
+          {{
+            expense.status == "Submitted"
+              ? "Pending"
+              : (expense.status | titlecase)
+          }}
         </div>
       </div>
 
@@ -150,7 +162,9 @@
 
       <div class="item">
         <label>Expense Date</label>
-        <div class="value">{{ (expense.expense_date | date: "dd MMMM yyyy") || "-NA-" }}</div>
+        <div class="value">
+          {{ (expense.expense_date | date: "dd MMMM yyyy") || "-NA-" }}
+        </div>
       </div>
 
       <!-- Description -->
@@ -160,29 +174,39 @@
       </div>
     </div>
 
-    <!-- Image -->
-    <!-- Image -->
-<div class="section text-center">
-  <label>Receipt Image</label>
+    <!-- IMAGE -->
+    <div class="section text-center">
+      <label>Receipt Images</label>
 
-  <img
-    *ngIf="expense.receipt"
-    [src]="imgPath"
-    class="receipt-img clickable"
-    (click)="openImagePreview()"
-  />
+      <div
+        *ngIf="imagePaths.length > 0; else noImage"
+        class="d-flex justify-content-center gap-2 flex-wrap"
+      >
+        <img
+          *ngFor="let img of imagePaths"
+          [src]="img"
+          class="receipt-img clickable"
+          (click)="openImagePreview(img)"
+        />
+      </div>
 
-  <div *ngIf="!expense.receipt" class="no-img">-NA-</div>
-</div>
+      <ng-template #noImage>
+        <div class="no-img">-NA-</div>
+      </ng-template>
+    </div>
 
-<!-- IMAGE PREVIEW OVERLAY -->
-<div class="image-overlay" *ngIf="showImagePreview" (click)="closeImagePreview()">
-  <img
-    [src]="imgPath"
-    class="zoomed-img"
-    (click)="$event.stopPropagation()"
-  />
-</div>
+    <!-- IMAGE PREVIEW OVERLAY -->
+    <div
+      class="image-overlay"
+      *ngIf="showImagePreview"
+      (click)="closeImagePreview()"
+    >
+      <img
+        [src]="previewImage"
+        class="zoomed-img"
+        (click)="$event.stopPropagation()"
+      />
+    </div>
 
     <!-- Footer -->
     <div class="footer">
@@ -312,10 +336,7 @@
             <option value="" disabled hidden selected>
               Select Category if you want to change
             </option>
-            <option
-              *ngFor="let category of categories"
-              [value]="category.name"
-            >
+            <option *ngFor="let category of categories" [value]="category.name">
               {{ category.name }}
             </option>
           </select>

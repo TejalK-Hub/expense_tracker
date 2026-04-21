@@ -40,8 +40,8 @@ export class ExpensesService {
 
   }
 
-  resubmit(id: number, body: any): Observable<any>  {
-    return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${id}`, body, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } });
+  resubmit(expense_id: number, body: any): Observable<any>  {
+    return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${expense_id}`, body, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } });
   }
 
   // fetchAdminPending() {
@@ -66,7 +66,7 @@ export class ExpensesService {
 
 
 
-  // ------------------------------------------------------Users Manage Expenses------------------------------------------------------
+  // ------------------------------------------------------User: Manage Expenses------------------------------------------------------
 
   fetchExpense(): Observable<any> {
     return this.httpClient.get(`${environment.apiBaseUrl}/expenses/user/all`, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } })

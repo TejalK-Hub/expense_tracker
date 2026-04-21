@@ -174,14 +174,10 @@
   }
 }
 
-
-
-
 /* ❌ REMOVE WATERMARK */
 .stamp {
   display: none !important;
 }
-
 
 /* 🎨 BACKGROUND HUE BASED ON STATUS */
 .lux-receipt.approved {
@@ -192,14 +188,12 @@
 .lux-receipt.rejected {
   // background: linear-gradient(145deg, #ffffff, #fef2f2);
   background: #ffe8eb;
-
 }
 
 .lux-receipt.pending {
   // background: linear-gradient(145deg, #ffffff, #f3f4f6);
   background: #e8efff;
 }
-
 
 /* 🟢 STATUS BADGE (MATCH IMAGE STYLE) */
 .status-badge {
@@ -224,12 +218,9 @@
 
 /* Rejected */
 .status-badge.rejected {
-   background: #fee2e2;
+  background: #fee2e2;
   color: #991b1b;
 }
-
-
-
 
 //-------------------------------------------------------IMAGE PREVIEW------------------------------------------------------
 
@@ -270,11 +261,43 @@
 
 /* ANIMATIONS */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes zoomIn {
-  from { transform: scale(0.9); }
-  to { transform: scale(1); }
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+//-------------------------------------------------------RIGHT ACTION BUTTONS------------------------------------------------------
+/* DELETE BUTTON */
+.delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 12px;
+  transition: all 0.2s ease;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.delete-btn i {
+  font-size: 13px;
+}
+
+/* Hover (soft red hint, not aggressive) */
+.delete-btn:hover {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
 }

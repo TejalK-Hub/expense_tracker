@@ -28,6 +28,8 @@ export class ExpensePreviewPageComponent {
 
   isRejected: boolean = false;
 
+  isDeletable: boolean = false;
+
   showImagePreview = false;
 
   // -------------------------------------------------------Alerts---------------------------------------------------------
@@ -52,8 +54,9 @@ export class ExpensePreviewPageComponent {
 
   // ----------------------------------------------modal properties------------------------------------------------
   apiBaseUrl: string = environment.apiBaseUrl;
-  imgName: string = '';
-  imgPath!: string;
+  // imgName: string = '';
+  imagePaths: string[] = [];
+  previewImage: string = '';
 
   // ----------------------------------------------api params------------------------------------------------
   body: any = {};
@@ -68,22 +71,26 @@ export class ExpensePreviewPageComponent {
   ngOnInit() {
 
     this.expense = this.expenseService.getSelectedExpense();
-    console.log("Expense Preview: (BEFORE) ", this.expense);
+    this.initialChecks();
+    this.getRejectionReason();
+    this.getImagePath();
+    this.deletable();
+    // If user refreshes page → redirect back safely
+    if (!this.expense) {
+      console.log("No expense selected, redirecting back to manage expense page.");
+      this.router.navigate(['/manage-expense']);
+    }
 
-    // this.expense.status = 'nothing';
-    // this.expense.expense_date = 'yesterday';
+    console.log("Selected expense: ", this.expense);
 
-    // console.log("Expense Preview: (AFTER) ", this.expense);
-
-    console.log("Self Admin:: ", this.authService.userId, this.expense.user_id);
+  }
 
 
-    // ------------------------------------------------------Initial Checks------------------------------------------------------
-
+  // ------------------------------------------------------Initial Checks------------------------------------------------------
+  initialChecks() {
     if (this.authService.userRole?.toLowerCase() == 'admin') {
       this.isAdmin = true;
     }
-
 
     if (this.expense.status === 'Rejected') {
 
@@ -94,32 +101,27 @@ export class ExpensePreviewPageComponent {
       this.isSelfAdmin = false;
     }
 
+  }
 
-
-    this.getRejectionReason();
-
-
-    // ------------------------------------------------------Image Preview------------------------------------------------------
-    this.getImagePath();
-
-
-
-
-    // If user refreshes page → redirect back safely
-    if (!this.expense) {
-      this.router.navigate(['/manage-expense']);
+  deletable() {
+    if (this.expense.status === 'Submitted' && !this.expense.approved_at) {
+      this.isDeletable = true;
     }
   }
 
-  openImagePreview() {
+
+  openImagePreview(img: string) {
+    if (!img) return;
+    this.previewImage = img;
     this.showImagePreview = true;
   }
 
   closeImagePreview() {
     this.showImagePreview = false;
+    this.previewImage = '';
   }
 
-  // ------------------------------------------------------Service Calls------------------------------------------------------
+  // ------------------------------------------------------Service Calls (Initialization)------------------------------------------------------
 
 
   getRejectionReason() {
@@ -130,10 +132,29 @@ export class ExpensePreviewPageComponent {
   }
 
   getImagePath() {
-    this.imgName = this.expense.bill_path.replace("\\", "/");
-    this.imgPath = this.apiBaseUrl + '/' + this.imgName;
-    console.log("The IMAGE: ", this.imgPath);
+    if (!this.expense?.bill_paths || this.expense.bill_paths.length === 0) {
+      this.imagePaths = [];
+      return;
+    }
+
+    // HANDLE BOTH string AND array
+    const paths = Array.isArray(this.expense.bill_paths)
+      ? this.expense.bill_paths
+      : [this.expense.bill_paths];
+
+    this.imagePaths = paths.map((p: string) => {
+      const normalized = p?.replace(/\\/g, '/')?.trim();
+      return `${this.apiBaseUrl}/${normalized}`;
+    });
   }
+
+
+  // getImagePath() {
+  //   this.imgName = this.expense.bill_paths.replace("\\", "/");
+  //   console.log("Image name now: ", this.imgName);
+  //   this.imgPath = this.apiBaseUrl + '/' + this.imgName;
+  //   console.log("The IMAGE: ", this.imgPath);
+  // }
 
   fetchCategories() {
     this.sharedService.fetchCategories().subscribe(res => {
@@ -143,7 +164,7 @@ export class ExpensePreviewPageComponent {
   }
 
 
-
+  // ------------------------------------------------------Admin Expense Actions------------------------------------------------------
   approveExpense() {
     try {
       console.log("Approve");
@@ -210,6 +231,11 @@ export class ExpensePreviewPageComponent {
     });
 
   }
+
+
+
+
+  // ------------------------------------------------------Employee Expense Actions------------------------------------------------------
 
 
   editExpense() {

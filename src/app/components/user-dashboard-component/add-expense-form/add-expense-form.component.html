@@ -1,7 +1,6 @@
 <div class="container mt-4">
   <!-- Header Row -->
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <app-back-button></app-back-button>
+  <div class="d-flex align-items-center justify-content-center mb-3">
     <h3 class="title mb-0">Add Expense</h3>
     <div style="width: 40px"></div>
     <!-- spacer for center alignment -->
@@ -133,9 +132,9 @@
 
         <!-- FILE (FULL WIDTH) -->
         <div class="col-12">
-          <label class="form-label"
-            >Upload Bill <span class="required">*</span></label
-          >
+          <label class="form-label">
+            Upload Bills <span class="required">*</span>
+          </label>
 
           <div class="file-box">
             <input
@@ -143,15 +142,30 @@
               #fileInput
               (change)="fileOnChange($event)"
               accept="image/*"
+              multiple
               class="form-control"
             />
 
-            <!-- Preview -->
-            <div *ngIf="filePreview" class="preview">
-              <img [src]="filePreview" />
-              <p class="file-name">
-                {{ expenseForm.get("selectedFile")?.value?.name }}
-              </p>
+            <!-- PREVIEW GRID -->
+            <div *ngIf="filePreviews.length" class="preview-grid">
+              <div
+                class="preview-item"
+                *ngFor="let img of filePreviews; let i = index"
+              >
+                <img [src]="img" />
+
+                <div class="file-name">
+                  {{ selectedFiles[i].name }}
+                </div>
+
+                <button
+                  type="button"
+                  class="remove-btn"
+                  (click)="removeFile(i)"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           </div>
         </div>

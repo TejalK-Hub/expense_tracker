@@ -256,3 +256,27 @@
   background-color: #fee2e2;
   transform: translateY(-1px);
 }
+
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  background: #0b0f17;
+  min-height: 100vh;
+}
+
+/* LEFT SIDE */
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* RIGHT SIDE */
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

@@ -1,18 +1,20 @@
 import { Routes } from '@angular/router';
 import { ExpenseTableComponent } from './components/shared/expense-table-component/expense-table.component';
-import { UserListComponent } from './components/admin/users-component/user-list/user-list.component';
 // import { AddExpensePageComponent } from './components/user-dashboard-component/add-expense-page/add-expense-page.component';
 import { UserDashboardComponentComponent } from './components/user-dashboard-component/user-dashboard-component.component';
-import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { LoginPageComponentComponent } from './components/login-page-component/login-page-component.component';
 import { VisitsTableComponent } from './components/shared/visits-table/visits-table.component';
 import { ExpensePreviewPageComponent } from './components/shared/expense-preview-page/expense-preview-page.component';
 import { AddExpenseFormComponent } from './components/user-dashboard-component/add-expense-form/add-expense-form.component';
 import { AddVisitComponent } from './components/shared/add-visit/add-visit.component';
 import { RegisterComponent } from './components/register/register.component';
-import { ExpenseReviewComponent } from './components/admin/expense-review/expense-review.component';
 import { authGuard } from './guard/auth.guard';
 import { MainComponentComponent } from './main-component/main-component.component';
+
+import { UserListComponent } from './components/admin/users-component/user-list/user-list.component';
+import { ExpenseReviewComponent } from './components/admin/expense-review/expense-review.component';
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { ClientComponent } from './components/admin/client/client.component';
 
 export const routes: Routes = [
 
@@ -49,6 +51,8 @@ export const routes: Routes = [
     {path: 'admin-review-expense', component: ExpenseReviewComponent, canActivate: [authGuard], data: { role: 'Admin' }},
     {path: 'user-list', component: UserListComponent, canActivate: [authGuard], data: { role: 'Admin' }},
     {path: 'user-expense-review', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'Admin' }},
+    {path: 'clients', component: ClientComponent, canActivate: [authGuard], data: { role: 'Admin' }},
+    
 
 
 

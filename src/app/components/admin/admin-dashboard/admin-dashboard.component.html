@@ -1,69 +1,188 @@
 <div class="container-fluid py-3 admin-dashboard">
-
   <!-- HEADER -->
   <div class="d-flex justify-content-center mb-4">
-    <h4 class="fw-semibold dashboard-title">
-      Admin Dashboard
-    </h4>
+    <h4 class="fw-semibold dashboard-title">Admin Dashboard</h4>
   </div>
 
   <!-- SUMMARY CARDS -->
   <div class="row g-3 mb-4">
+    <!-- SUMMARY CARD (ADMIN) -->
+    <!-- SUMMARY CARD (ADMIN) -->
+    <div class="row g-3 mb-4">
+      <div class="col-12">
+        <div
+          class="card border-0 shadow-sm action-card compact-card p-3"
+          (click)="goToMonthlyExpenses()"
+          style="cursor: pointer"
+        >
+          <!-- TOP ROW -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <div class="text-muted small">Expense Summary</div>
+              <div class="fw-semibold text-secondary small">
+                {{ current_period_label }}
+              </div>
+            </div>
+
+            <!-- USER FILTER -->
+            <div style="min-width: 180px" (click)="$event.stopPropagation()">
+              <select
+                class="form-select form-select-sm"
+                [(ngModel)]="selectedUserId"
+                (change)="onUserChange()"
+              >
+                <option [ngValue]="null">All Users</option>
+                <option *ngFor="let u of usersList" [ngValue]="u.id">
+                  {{ u.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TOTAL -->
+          <div class="text-end mb-2">
+            <div class="total-value">
+              {{
+                summary_current_period?.total_amount || 0
+                  | currency: "INR" : "symbol" : "1.2-2"
+              }}
+            </div>
+            <div class="total-label">
+              {{ summary_current_period?.total_count || 0 }} entries
+            </div>
+          </div>
+
+          <!-- STATUS GRID -->
+          <div class="status-grid">
+            <!-- SUBMITTED -->
+            <div
+              class="status-box submitted"
+              (click)="
+                goToFilteredExpenses('submitted'); $event.stopPropagation()
+              "
+            >
+              <i class="bi bi-hourglass-split"></i>
+              <div>
+                <div class="label">Submitted</div>
+                <div class="value">
+                  {{ summary_current_period?.submitted?.count || 0 }}
+                </div>
+                <div class="sub-value">
+                  {{
+                    summary_current_period?.submitted?.amount || 0
+                      | currency: "INR" : "symbol" : "1.2-2"
+                  }}
+                </div>
+              </div>
+            </div>
+
+            <!-- APPROVED -->
+            <div
+              class="status-box approved"
+              (click)="
+                goToFilteredExpenses('approved'); $event.stopPropagation()
+              "
+            >
+              <i class="bi bi-check-circle"></i>
+              <div>
+                <div class="label">Approved</div>
+                <div class="value">
+                  {{ summary_current_period?.approved?.count || 0 }}
+                </div>
+                <div class="sub-value">
+                  {{
+                    summary_current_period?.approved?.amount || 0
+                      | currency: "INR" : "symbol" : "1.2-2"
+                  }}
+                </div>
+              </div>
+            </div>
+
+            <!-- REJECTED -->
+            <div
+              class="status-box rejected"
+              (click)="
+                goToFilteredExpenses('rejected'); $event.stopPropagation()
+              "
+            >
+              <i class="bi bi-x-circle"></i>
+              <div>
+                <div class="label">Rejected</div>
+                <div class="value">
+                  {{ summary_current_period?.rejected?.count || 0 }}
+                </div>
+                <div class="sub-value">
+                  {{
+                    summary_current_period?.rejected?.amount || 0
+                      | currency: "INR" : "symbol" : "1.2-2"
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- USERS CARD -->
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm h-100 action-card p-3" (click)="listUsers()">
+      <div
+        class="card border-0 shadow-sm h-100 action-card p-3"
+        (click)="listUsers()"
+      >
         <div class="d-flex align-items-center justify-content-between">
-
           <div>
             <div class="text-muted small">Manage</div>
             <div class="fw-semibold fs-5">Users</div>
 
             <!-- COUNT -->
-            <div class="user-count mt-1">
-              {{ userCount || 0 }} Users
-            </div>
+            <div class="user-count mt-1">{{ userCount || 0 }} Users</div>
 
             <!-- NOTE -->
-            <div class="card-note">
-              Click here to view user list →
-            </div>
+            <div class="card-note">Click here to view user list →</div>
           </div>
 
           <div class="card-icon bg-primary">
             <i class="bi bi-people-fill"></i>
           </div>
-
         </div>
       </div>
     </div>
 
     <!-- GRAFANA -->
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm h-100 action-card p-3" (click)="grafanaReports()">
+      <div
+        class="card border-0 shadow-sm h-100 action-card p-3"
+        (click)="grafanaReports()"
+      >
         <div class="d-flex align-items-center justify-content-between">
-
           <div>
             <div class="text-muted small">Analytics</div>
             <div class="fw-semibold fs-5">Grafana Reports</div>
 
-            <div class="card-note">
-              Click here to go to Grafana →
-            </div>
+            <div class="card-note">Click here to go to Grafana →</div>
           </div>
 
           <div class="card-icon bg-dark">
             <i class="bi bi-bar-chart-fill"></i>
           </div>
-
         </div>
       </div>
     </div>
-
   </div>
 
   <!-- ACTION BUTTONS -->
   <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+    <button
+      class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon overflow-hidden"
+      (click)="viewClients()"
+    >
+      <!-- <i class="bi bi-person"></i>        simple client -->
+      <!-- <i class="bi bi-person-badge"></i>  client with identity -->
+      <i class="bi bi-people"></i>
+      <!-- <i class="bi bi-building"></i>      company/client org -->
+      <span>Clients</span>
+    </button>
 
     <button
       class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon overflow-hidden"
@@ -95,7 +214,6 @@
         </li>
       </ul>
     </div>
-
   </div>
 
   <!-- PENDING TABLE -->
@@ -105,5 +223,4 @@
       <app-pending-expense-table></app-pending-expense-table>
     </div>
   </div>
-
 </div>
