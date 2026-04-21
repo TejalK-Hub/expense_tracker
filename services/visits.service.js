@@ -12,6 +12,7 @@ const baseQuery = `
         TO_CHAR(v.end_date, 'YYYY-MM-DD') AS end_date, 
         v.agenda, 
         v.amount,
+        v.client_site,
         CASE 
             WHEN v.end_date >= CURRENT_DATE THEN 'Active'
             ELSE 'Completed'
@@ -69,6 +70,7 @@ const getSelfActiveVisits = async (user) => {
         SELECT 
             id,
             visit_name,
+            client_site,
             TO_CHAR(start_date, 'YYYY-MM-DD') AS start_date,
             TO_CHAR(end_date, 'YYYY-MM-DD') AS end_date
         FROM visits
@@ -90,6 +92,7 @@ const getActiveVisitsByUser = async (user) => {
     SELECT 
         id,
         visit_name,
+        client_site,
         TO_CHAR(start_date,'YYYY-MM-DD') AS start_date,
         TO_CHAR(end_date,'YYYY-MM-DD') AS end_date
     FROM visits

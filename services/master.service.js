@@ -113,7 +113,11 @@ const create = async (table, data) => {
         const clientName = client.rows[0].name;
         const reasonName = reason.rows[0].name;
 
-        data.visit_name = `${clientName}_${data.start_date}_${reasonName}`;
+        if (!data.client_site) {
+        throw new Error('client_site is required');
+        }
+
+        data.visit_name = `${clientName}_${data.start_date}_${reasonName}_${data.client_site || 'NA'}`;
     }
 
     const columns = Object.keys(data);
