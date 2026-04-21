@@ -62,7 +62,7 @@ const createExpense = async (data) => {
 
     const query = `
         INSERT INTO expenses
-        (user_id, visit_id, date, category_id, amount, description, bill_path, status_id, receipt_id)
+        (user_id, visit_id, date, category_id, amount, description, bill_paths, status_id, receipt_id)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
         RETURNING 
             id,
@@ -73,7 +73,7 @@ const createExpense = async (data) => {
             visit_id AS visit,
             category_id,
             status_id,
-            bill_path,
+            bill_paths,
             created_at
         `;
 
@@ -84,12 +84,13 @@ const createExpense = async (data) => {
         data.category_id,
         data.amount,
         data.description,
-        data.bill_path,
+        data.bill_paths || [],
         2,
         data.receipt_id
     ];
 
     const result = await pool.query(query, values);
+    result.rows[0].bill_paths = result.rows[0].bill_paths || [];
 
     result.rows[0].visit_name = visit.visit_name;
     result.rows[0].visit_start_date = visit.start_date.toISOString().slice(0,10);
@@ -116,7 +117,7 @@ const getExpensesByVisit = async (visitId, userId) => {
             c.name AS client_name,
             c.id AS client_id,
             TO_CHAR(e.created_at,'YYYY-MM-DD HH24:MI') AS created_at,
-            e.bill_path,
+            e.bill_paths,
             ec.name AS category,
             es.name AS status,
             approver.name AS approved_by,
@@ -152,7 +153,7 @@ const getUserExpenses = async (userId) => {
             c.name AS client_name,
             c.id AS client_id,
             TO_CHAR(e.created_at,'YYYY-MM-DD HH24:MI') AS created_at,
-            e.bill_path,
+            e.bill_paths,
             ec.name AS category,
             es.name AS status,
             approver.name AS approved_by,
@@ -249,6 +250,11 @@ const updateExpense = async (id, userId, data) => {
         values.push(data.status_id);
     }
 
+    if (data.bill_paths !== undefined) {
+    fields.push(`bill_paths = $${index++}`);
+    values.push(data.bill_paths);
+    }
+
     if (!fields.length) {
         throw new Error('No fields to update');
     }
@@ -268,12 +274,13 @@ const updateExpense = async (id, userId, data) => {
             receipt_id AS receipt,
             CONCAT('INR ', amount) AS amount,
             visit_id AS visit,
-            bill_path,
+            bill_paths,
             status_id,
             created_at
     `;
 
     const result = await pool.query(query, values);
+    result.rows[0].bill_paths = result.rows[0].bill_paths || [];
 
     const clientResult = await pool.query(
         `SELECT id, name FROM clients WHERE id = $1`,
@@ -299,7 +306,7 @@ const getUserAllExpenses = async (userId) => {
             TO_CHAR(e.date,'YYYY-MM-DD') AS expense_date,
             TO_CHAR(e.created_at,'YYYY-MM-DD HH24:MI') AS created_at,
             e.receipt_id AS receipt,
-            e.bill_path,
+            e.bill_paths,
             CONCAT('INR ', e.amount) AS amount,
 
             e.visit_id AS visit,

@@ -21,13 +21,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // USER APIs
-router.post('/', upload.single('bill'), controller.createExpense);
+router.post('/', upload.array('bills', 10), controller.createExpense);
 
 router.get('/visit/:visitId', controller.getExpensesByVisit);
 
 router.get('/user', controller.getUserExpenses);
 
-router.put('/:id', controller.updateExpense);
+router.put('/:id', upload.array('bills', 10), controller.updateExpense);
 
 router.get('/user/all', controller.getUserAllExpenses);
 

@@ -7,7 +7,7 @@ const createExpense = async (req, res) => {
         const data = {
             ...req.body,
             user_id: req.user.id,  
-            bill_path: req.file ? req.file.path : null
+            bill_paths: req.files ? req.files.map(f => f.path) : []
         };
 
         const result = await service.createExpense(data);
@@ -67,7 +67,12 @@ const updateExpense = async (req, res) => {
         const { id } = req.params;
         const userId = req.user.id;
 
-        const data = await service.updateExpense(id, userId, req.body);
+        const payload = {
+            ...req.body,
+            bill_paths: req.files ? req.files.map(f => f.path) : undefined
+        };
+
+const data = await service.updateExpense(id, userId, payload);
 
         res.json({ success: true, data });
 
