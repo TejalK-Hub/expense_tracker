@@ -1,5 +1,4 @@
 <div class="container mt-4">
-
   <!-- SUCCESS POPUP -->
   <div *ngIf="showPopup" class="custom-popup">
     Your Visit Has Been Added Successfully!
@@ -9,16 +8,14 @@
   <div class="d-flex align-items-center justify-content-between mb-3">
     <!-- <app-back-button></app-back-button> -->
     <!-- <h3 class="title mb-0">Add Visit</h3> -->
-    <div style="width: 40px;"></div>
+    <div style="width: 40px"></div>
   </div>
 
   <!-- FORM CARD -->
   <div class="form-card">
     <form [formGroup]="visitForm">
-
       <!-- GRID START -->
       <div class="row g-3">
-
         <!-- Start Date -->
         <div class="col-md-6">
           <label class="form-label">
@@ -62,6 +59,17 @@
           </select>
         </div>
 
+        <!-- Client Branch (READ ONLY PLACEHOLDER) -->
+        <div class="col-md-6">
+          <label class="form-label"> Client Branch </label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="client_site"
+            readonly
+          />
+        </div>
+
         <!-- Visit Reason -->
         <div class="col-md-6">
           <label class="form-label">
@@ -81,12 +89,11 @@
         <!-- Agenda (Full Width like description) -->
         <div class="col-12">
           <label class="form-label">Agenda</label>
-          <textarea 
+          <textarea
             class="form-control text-area"
             formControlName="agenda"
           ></textarea>
         </div>
-
       </div>
       <!-- GRID END -->
 
@@ -108,7 +115,6 @@
           Cancel
         </button>
       </div>
-
     </form>
   </div>
 </div>

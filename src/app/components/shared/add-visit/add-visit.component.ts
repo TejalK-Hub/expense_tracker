@@ -40,7 +40,7 @@ export class AddVisitComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    
+
     private authService: AuthServiceService,
     private sharedService: SharedServicesService,
     private visitService: VisitsService,
@@ -55,7 +55,8 @@ export class AddVisitComponent {
       end_date: [''],
       client_id: ['', Validators.required],
       visit_reason_id: ['', Validators.required],
-      agenda: ['']
+      agenda: [''],
+      client_site: [{ value: 'NA', disabled: true }]
     }, {
       validators: this.dateValidator // ✅ attach validator here
     });
@@ -95,21 +96,22 @@ export class AddVisitComponent {
 
     const formValues = this.visitForm.value;
 
-    const body = {
-      user_id: this.authService.userId,
-      visit_reason_id: Number(formValues.visit_reason_id),
-      client_id: Number(formValues.client_id),
-      start_date: formValues.start_date,
-      end_date: formValues.end_date,
-      agenda: formValues.agenda
-    };
+        const body = {
+          // user_id: this.authService.userId,
+          visit_reason_id: Number(formValues.visit_reason_id),
+          client_id: Number(formValues.client_id),
+          start_date: formValues.start_date,
+          end_date: formValues.end_date,
+          agenda: formValues.agenda,
+          client_site: 'NA'
+        };
 
     this.visitService.addVisit(body).subscribe({
       next: (res) => {
         this.visitCreated.emit();
         this.toastr.success('Visit added successfully!');
 
-        
+
 
         this.visitForm.reset();
 

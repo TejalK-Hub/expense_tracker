@@ -25,6 +25,7 @@ export class VisitsTableComponent {
   filters = {
     visitName: '',
     client: '',
+    client_branch: '',
     startFrom: '',
     startTo: ''
   };
@@ -175,6 +176,7 @@ export class VisitsTableComponent {
     this.filters = {
       visitName: '',
       client: '',
+      client_branch: '',
       startFrom: '',
       startTo: ''
     };

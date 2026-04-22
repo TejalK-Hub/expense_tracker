@@ -75,6 +75,10 @@ export class AdminDashboardComponent implements OnInit {
     this.route.navigate(['/visits']);
   }
 
+  goToExpenseTable(){
+    this.route.navigate(['/user-expense-review']);
+  }
+
   handleRouting(option: number) {
     console.log('Routing option:', option);
 

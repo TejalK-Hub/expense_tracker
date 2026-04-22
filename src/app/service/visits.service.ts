@@ -35,6 +35,4 @@ export class VisitsService {
     return this.http.get(`${environment.apiBaseUrl}/internal/visit_reason`);
   }
 
-
-
 }

@@ -60,7 +60,6 @@
               </div>
             </div>
 
-
             <!-- APPROVED -->
             <div
               class="status-box approved"
@@ -82,7 +81,6 @@
                 </div>
               </div>
             </div>
-
 
             <!-- REJECTED -->
             <div
@@ -111,7 +109,6 @@
     </div>
   </div>
 
-
   <!-- ACTION BUTTONS -->
   <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
     <!-- VISITS -->
@@ -123,7 +120,6 @@
       <span>Visits</span>
     </button>
 
-    
     <!-- EXPENSE DROPDOWN -->
     <!-- <div class="dropdown">
       <button
@@ -149,20 +145,20 @@
     </div>
   </div> -->
 
+    <button
+      class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon"
+      (click)="goToManageExpense()"
+    >
+      <i class="bi bi-receipt"></i>
+      <span>Expense</span>
+    </button>
 
-  <button
-  class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon"
-  (click)="goToManageExpense()"
->
-  <i class="bi bi-receipt"></i>
-  <span>Expense</span>
-</button>
-
-  <!-- PENDING TABLE -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-body">
-      <h5 class="mb-3 fw-semibold text-dark">Pending Expenses</h5>
-      <app-pending-expense-table></app-pending-expense-table>
+    <!-- PENDING TABLE -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-3 fw-semibold text-dark">Pending Expenses</h5>
+        <app-pending-expense-table></app-pending-expense-table>
+      </div>
     </div>
   </div>
 </div>

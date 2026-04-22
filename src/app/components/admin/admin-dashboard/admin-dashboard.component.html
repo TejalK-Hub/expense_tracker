@@ -173,17 +173,17 @@
 
   <!-- ACTION BUTTONS -->
   <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
-    <button
+    <!-- CLIENTS BUTTON IS HIDDEN TEMPORARILY  -->
+
+    <!-- <button
       class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon overflow-hidden"
       (click)="viewClients()"
     >
-      <!-- <i class="bi bi-person"></i>        simple client -->
-      <!-- <i class="bi bi-person-badge"></i>  client with identity -->
       <i class="bi bi-people"></i>
-      <!-- <i class="bi bi-building"></i>      company/client org -->
       <span>Clients</span>
-    </button>
+    </button> -->
 
+    <!-- VISITS BUTTON  -->
     <button
       class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon overflow-hidden"
       (click)="viewVisits()"
@@ -192,6 +192,15 @@
       <span>Visits</span>
     </button>
 
+    <!-- EXPENSE BUTTON -->
+    <button
+      class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon"
+      (click)="goToExpenseTable()"
+    >
+      <i class="bi bi-receipt"></i>
+      <span>Expense</span>
+    </button>
+<!-- 
     <div class="dropdown">
       <button
         class="btn btn-dark dropdown-toggle px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2 btn-hover-icon"
@@ -213,7 +222,7 @@
           </button>
         </li>
       </ul>
-    </div>
+    </div> -->
   </div>
 
   <!-- PENDING TABLE -->
