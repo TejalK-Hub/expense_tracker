@@ -1,6 +1,6 @@
 const service = require('../services/master.service');
 
-// GET ALL /data/:table
+// GET ALL /internal/:table (GENERIC READ - ADMIN ONLY FOR VISITS, SELF FOR USERS)
 const getAll = async (req, res) => {
     try {
         const { table } = req.params;
@@ -16,6 +16,7 @@ const getAll = async (req, res) => {
         }
 
         // VISITS ACCESS CONTROL 
+        // VISITS READ BLOCKED HERE , USE /visits APIs 
         if (table === 'visits') {
             const role = req.user?.role?.toLowerCase();
 
@@ -35,7 +36,7 @@ const getAll = async (req, res) => {
     }
 };
 
-// GET ONE (by id) /data/:table/:id
+// GET ONE (by id) /internal/:table/:id (GENERIC READ WITH ACCESS CONTROL)
 const getOne = async (req, res) => {
     try {
         const { table, id } = req.params;
@@ -72,12 +73,13 @@ const getOne = async (req, res) => {
     }
 };
 
-// POST /data/:table
+// POST /internal/:table (GENERIC CREATE - USED FOR VISITS & MASTER TABLES)
 const create = async (req, res) => {
     try {
         const { table } = req.params;
 
         // MASTER TABLE ACCESS CONTROL 
+        // MASTER TABLES ; WRITE ACCESS RESTRICTED TO ADMIN ONLY
         const MASTER_TABLES = [
             'clients',
             'visit_reason',
@@ -103,8 +105,12 @@ const create = async (req, res) => {
         ];
 
         if (CREATED_BY_TABLES.includes(table)) {
-            delete req.body.created_by; // prevent spoofing
+            delete req.body.created_by; 
             req.body.created_by = req.user.id;
+        }
+
+        if (table === 'visits') {
+            req.body.user_id = req.user.id;
         }
 
         const data = await service.create(table, req.body);
@@ -115,7 +121,7 @@ const create = async (req, res) => {
     }
 };
 
-// PUT /data/:table/:id
+// PUT /internal/:table/:id (GENERIC UPDATE - ADMIN CONTROLLED FOR MASTER TABLES)
 const update = async (req, res) => {
     try {
         const { table, id } = req.params;
@@ -146,7 +152,7 @@ const update = async (req, res) => {
     }
 };
 
-// DELETE /data/:table/:id
+// DELETE /internal/:table/:id (SOFT DELETE - ADMIN CONTROLLED)
 const remove = async (req, res) => {
     try {
         const { table, id } = req.params;
