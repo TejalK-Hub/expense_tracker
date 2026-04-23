@@ -1,15 +1,17 @@
 <!-- initial -->
-<button
-  class="btn btn-sm rounded-pill d-flex align-items-center gap-1"
-  [ngClass]="
-    hasActiveFilters() ? 'btn-primary text-white' : 'btn-outline-primary'
-  "
-  data-bs-toggle="modal"
-  data-bs-target="#pendingFiltersModal"
->
-  <i class="bi bi-funnel"></i>
-  Filters
-</button>
+<div class="d-flex justify-content-end mb-2">
+  <button
+    class="btn btn-sm rounded-pill d-flex align-items-center gap-1"
+    [ngClass]="
+      hasActiveFilters() ? 'btn-primary text-white' : 'btn-outline-primary'
+    "
+    data-bs-toggle="modal"
+    data-bs-target="#pendingFiltersModal"
+  >
+    <i class="bi bi-funnel"></i>
+    Filters
+  </button>
+</div>
 
 <!-- ACTIVE FILTER BADGES -->
 <div class="active-filters mb-2" *ngIf="hasActiveFilters()">
@@ -44,7 +46,9 @@
 
 <div class="container-fluid past-expenses">
   <div class="table-responsive table-container">
-    <table class="table pending-table align-middle small text-nowrap mb-0">
+    <table
+      class="table pending-table mobile-table align-middle small text-nowrap mb-0"
+    >
       <!-- HEADER -->
       <thead class="clean-head sticky-top">
         <tr>
@@ -77,53 +81,83 @@
           *ngFor="let exp of filteredExpenses; let i = index"
           class="clean-row"
         >
-          <td class="fw-semibold">{{ i + 1 }}</td>
+          <td class="fw-semibold" data-label="#">{{ i + 1 }}</td>
 
-          <td *ngIf="isAdmin">{{ exp.user_name }}</td>
+          <td *ngIf="isAdmin" data-label="User">
+            {{ exp.user_name }}
+          </td>
 
-          <td class="category">
+          <td class="category" data-label="💼 Category">
             {{ exp.category }}
           </td>
 
-          <td class="text-muted small">
+          <td class="text-muted small" data-label="📅 Created At">
             {{ exp.created_at }}
           </td>
 
-          <td class="text-truncate desc">
+          <td class="text-truncate desc" data-label="🧾 Description">
             {{ exp.expense }}
           </td>
 
-          <td class="small text-muted">
+          <td class="small text-muted" data-label="📆 Expense Date">
             {{ exp.expense_date | date: "dd MMM yyyy" }}
           </td>
 
-          <td class="text-end amount">₹ {{ exp.amount }}</td>
+          <td class="amount" data-label="💰 Amount">
+            ₹ {{ exp.amount }}
+          </td>
 
-          <!-- <td class="text-muted small">{{ exp.visit }}</td> -->
-
-          <!-- ✅ VISIT NAME WITH ELLIPSIS -->
-          <td>
-            <div class="ellipsis-cell" [title]="exp.visit_name">
-              {{ exp.visit_name }}
+          <td data-label="📍 Visit">
+            <div class="d-flex align-items-center justify-content-end gap-2 ellipsis-cell">
+              <div
+                class="ellipsis-cell visit-cell"
+                [title]="exp.visit_name"
+                (click)="exp.showFullVisit = !exp.showFullVisit"
+                [class.expanded]="exp.showFullVisit"
+              >
+                {{ exp.visit_name }}
+              </div>
             </div>
           </td>
 
-          <td class="text-muted small start-date">
+          <td class="text-muted small start-date" data-label="🚀 Start">
             {{ exp.visit_start_date | date: "dd MMM yyyy" }}
           </td>
 
-          <td class="text-muted small end-date">
+          <td class="text-muted small end-date" data-label="🏁 End">
             {{ exp.visit_end_date | date: "dd MMM yyyy" }}
           </td>
 
-          <td>{{ exp.client_name }}</td>
-          <!-- <td>{{ exp.client_id }}</td> -->
+          <td data-label="👤 Client">
+            <div class="ellipsis-cell client-cell" [title]="exp.client_name">
+              {{ exp.client_name }}
+            </div>
+          </td>
 
-          <!-- ✅ IMPROVED VIEW BUTTON -->
-          <td class="text-center">
-            <button class="btn btn-sm view-btn" (click)="openPreview(exp)">
+          <td class="text-" data-label="Action">
+            <button class="btn btn-sm view-btn fit-content w-auto" (click)="openPreview(exp)">
               👁 View
             </button>
+          </td>
+        </tr>
+
+        <!-- <div
+          class="text-center mx-auto d-flex flex-column align-items-center gap-2 py-4"
+        >
+          <div class="spinner-border text-primary" role="status">
+            Loading pending expenses...
+          </div>
+        </div> -->
+
+        <tr *ngIf="filteredExpenses.length === 0">
+          <td
+            [attr.colspan]="isAdmin ? 11 : 10"
+            class="text-center py-5 text-muted"
+          >
+            <div class="d-flex flex-column align-items-center gap-2">
+              <i class="bi bi-inbox fs-2"></i>
+              <span>No pending expenses</span>
+            </div>
           </td>
         </tr>
       </tbody>

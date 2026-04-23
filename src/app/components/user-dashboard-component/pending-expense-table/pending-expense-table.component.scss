@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 .past-expenses {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 /* TABLE CONTAINER */
@@ -42,8 +42,8 @@
 .clean-row td {
   border: none;
   padding: 14px 16px;
-  // color: #374151;
   font-weight: 500;
+  line-height: 1.4;
 }
 
 .clean-row:hover {
@@ -59,6 +59,7 @@
 /* DESCRIPTION */
 .desc {
   max-width: 220px;
+  word-break: break-word;
 }
 
 /* AMOUNT */
@@ -67,13 +68,30 @@
   color: #111827;
 }
 
-/* ELLIPSIS (VISIT NAME) */
+/* ELLIPSIS */
 .ellipsis-cell {
-  max-width: 160px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
+}
+
+/* VISIT + CLIENT WIDTH CONTROL */
+.visit-cell {
+  max-width: 130px;
+}
+
+.client-cell {
+  max-width: 140px;
+}
+
+/* EXPAND ON HOVER (DESKTOP ONLY) */
+@media (min-width: 769px) {
+  .ellipsis-cell:hover {
+    white-space: normal;
+    background: #fff;
+    position: relative;
+    z-index: 10;
+  }
 }
 
 /* SORTABLE */
@@ -81,7 +99,7 @@
   cursor: pointer;
 }
 
-/* VIEW BUTTON */
+/* BUTTONS */
 .view-btn {
   border-radius: 999px;
   padding: 4px 12px;
@@ -98,142 +116,26 @@
   border-color: #111827;
 }
 
-
-
-/* Light color coding */
-
-.pending-table .clean-row > :nth-child(5) {
-  // color: #fa60bc !important;   // light blue → start date 
-}
-
-.pending-table .clean-row > :nth-child(6) {
-  color: #e13434 !important;   // light blue → start date 
-}
-
-.start-date, .pending-table .clean-row > :nth-child(8) {
-  color: #60a5fa !important;   // light blue → start date 
-}
-
-.end-date,  .pending-table .clean-row > :nth-child(9) {
-  color: #34d399 !important;   // light green → end date
-}
-
-
-
-
-// new css
-.past-expenses {
-  font-family: 'Poppins', sans-serif;
-}
-
-/* GRID */
-.card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-/* CARD */
-.expense-card {
-  width: 190px;
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px;
-  cursor: pointer;
-  transition: 0.2s;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; // ✅ LEFT ALIGN EVERYTHING
-
-  /* 🔴 VERY LIGHT RED SHADOW (pending feel) */
-  box-shadow: 0 4px 10px rgba(255, 0, 0, 0.06);
-}
-
-.expense-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(255, 0, 0, 0.12);
-}
-
-/* ICON */
-.icon-wrapper {
-  width: 42px;
-  height: 42px;
+.view-mini-btn {
   border-radius: 50%;
-  background: #fef2f2; // light red tone
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-/* CONTENT BLOCK */
-.content {
-  width: 100%;
-}
-
-/* CATEGORY */
-.category {
-  font-size: 12px;
-  font-weight: 600;
-  color: #ef4444; // subtle red tone
-  margin-bottom: 4px;
-}
-
-/* AMOUNT */
-.amount {
-  font-size: 17px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 4px;
-}
-
-/* USER */
-.user {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 4px;
-}
-
-/* VISIT */
-.visit {
-  font-size: 12px;
-  color: #374151;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* DATE */
-.date {
   font-size: 11px;
-  color: #9ca3af;
-  margin-top: 4px;
+  line-height: 1;
 }
 
-/* BUTTON */
-.view-btn {
-  margin-top: 10px;
-  align-self: flex-end; // button stays right
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 11px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  transition: 0.2s;
+/* COLOR CODING */
+.pending-table .clean-row > :nth-child(6) {
+  color: #e13434 !important;
 }
 
-.view-btn:hover {
-  background: #111827;
-  color: #fff;
+.start-date {
+  color: #60a5fa !important;
 }
 
+.end-date {
+  color: #34d399 !important;
+}
 
-// active filter css
-
-
-
+/* FILTER CHIPS */
 .active-filters {
   display: flex;
   flex-wrap: wrap;
@@ -250,13 +152,113 @@
   color: #3730a3;
   font-size: 12px;
   font-weight: 500;
+}
 
-  i {
-    cursor: pointer;
-    font-size: 12px;
+.filter-chip i {
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.filter-chip:hover {
+  background: #e0e7ff;
+}
+
+/* ================= MOBILE FIX ================= */
+@media (max-width: 768px) {
+  .table-container {
+    max-height: unset;
+    overflow: visible;
   }
 
-  &:hover {
-    background: #e0e7ff;
+  .mobile-table thead {
+    display: none;
+  }
+
+  .mobile-table,
+  .mobile-table tbody,
+  .mobile-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-table tr.clean-row {
+    background: #ffffff;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  /* EACH FIELD ROW */
+  .mobile-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 13px;
+    border: none;
+  }
+
+  /* LABEL */
+  .mobile-table td::before {
+    content: attr(data-label);
+    flex: 0 0 45%;
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  /* VALUE */
+  .mobile-table td > * {
+    flex: 1;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  /* HANDLE EMPTY VALUES */
+  .mobile-table td:empty::after {
+    content: "-";
+    color: #9ca3af;
+  }
+
+  /* DESCRIPTION FIX */
+  .mobile-table .desc {
+    white-space: normal !important;
+  }
+
+  /* VISIT FIX */
+  .mobile-table .visit-cell {
+    max-width: 100%;
+  }
+
+  /* EXPAND VISIT NAME ON TAP */
+  .visit-cell.expanded {
+    white-space: normal !important;
+  }
+
+  /* CLIENT FIX */
+  .mobile-table .client-cell {
+    max-width: 100%;
+  }
+
+  /* BUTTON ALIGN */
+  .mobile-table .view-btn {
+    margin-left: auto;
+  }
+
+  /* NO DATA FIX */
+  .mobile-table tr td[colspan] {
+    display: block;
+    text-align: center !important;
+  }
+}
+
+/* SMALL DEVICES */
+@media (max-width: 576px) {
+  .filter-chip {
+    font-size: 11px;
+    padding: 3px 8px;
   }
 }
