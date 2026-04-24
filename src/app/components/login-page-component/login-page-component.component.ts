@@ -61,4 +61,6 @@ export class LoginPageComponentComponent {
   register() {
     this.router.navigate(['/signup']);
   }
+
+  loading:any
 }

@@ -1,224 +1,175 @@
-<div class="container-fluid min-vh-100 d-flex p-0">
+<div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
+
+  <!-- MOBILE BANNER -->
+  <div class="mobile-banner d-md-none text-center text-white">
+    <img src="sampu.png" style="height:40px;" class="mb-1"/>
+    <p class="small mb-0">Start tracking your expenses smartly</p>
+  </div>
+
   <!-- LEFT PANEL -->
-  <div
-    class="d-none d-md-flex col-md-6 flex-column justify-content-center align-items-center text-white left-panel"
-  >
-    <img src="sampu.png" alt="Logo" class="mb-4" style="height: 60px" />
+  <div class="d-none d-md-flex col-md-6 flex-column justify-content-center align-items-center text-white left-panel">
+    <img src="sampu.png" class="mb-4" style="height: 60px" />
     <h2 class="fw-bold">Expense Tracker</h2>
+
+    <div class="rupee-circle my-3">₹</div>
+
     <p class="mt-2 text-center px-4">
       Create your account and start tracking your expenses efficiently.
     </p>
   </div>
 
   <!-- RIGHT PANEL -->
-  <div
-    class="col-12 col-md-6 d-flex justify-content-center align-items-center right-panel"
-  >
-    <div
-      class="glass-card p-4 rounded-4 shadow-lg w-100"
-      style="max-width: 420px"
-    >
+  <div class="col-12 col-md-6 d-flex justify-content-center align-items-center right-panel">
+
+    <div class="login-card shadow w-100 mx-3 position-relative" style="max-width: 420px">
+
+      <!-- BIGGER RUPEE BADGE -->
+      <div class="rupee-badge">₹</div>
+
+      <!-- HEADING -->
       <div class="text-center mb-4">
-        <h4 class="fw-bold">Create Account</h4>
-        <p class="text-muted small">Quick & secure signup</p>
+        <h4 class="fw-bold">Create your account</h4>
+        <p class="text-muted small">Get started with smart expense tracking</p>
       </div>
 
       <form #signupForm="ngForm" (ngSubmit)="signup(signupForm)">
+
         <!-- NAME -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Full Name</label>
+        <div class="form-floating mb-3">
           <input
             type="text"
-            class="form-control form-control-lg"
+            class="form-control"
+            id="name"
             name="name"
             [(ngModel)]="name"
             #nameCtrl="ngModel"
             required
             minlength="3"
-            pattern="^[A-Za-z ]{3,}$"
-            placeholder="Deepak Kumar"
-            [ngClass]="{
-              'is-invalid':
-                nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched),
-            }"
+            pattern="^[A-Za-z ]+$"
+            (input)="nameCtrl.control.updateValueAndValidity()"
+            placeholder="Full Name"
           />
+          <label>Full Name</label>
 
-          <div
-            *ngIf="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)"
-            class="invalid-feedback d-block"
-          >
-            <div *ngIf="nameCtrl.errors?.['required']">Name is required</div>
-            <div *ngIf="nameCtrl.errors?.['pattern']">
-              Only letters, min 3 characters
-            </div>
-          </div>
+          <small class="text-danger" *ngIf="nameCtrl.touched || nameCtrl.dirty">
+            <span *ngIf="nameCtrl.errors?.['required']">Name is required</span>
+            <span *ngIf="nameCtrl.errors?.['minlength']">Min 3 characters</span>
+            <span *ngIf="nameCtrl.errors?.['pattern']">Only letters allowed</span>
+          </small>
         </div>
 
         <!-- EMAIL -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Email</label>
+        <div class="form-floating mb-3">
           <input
-            type="text"
-            class="form-control form-control-lg"
+            type="email"
+            class="form-control"
+            id="email"
             name="email"
             [(ngModel)]="email"
             #emailCtrl="ngModel"
             required
-            pattern="^[a-zA-Z0-9]+([._%+-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$"
-            placeholder="abc@mail.com"
-            [ngClass]="{
-              'is-invalid':
-                emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched),
-            }"
+            email
+            (input)="emailCtrl.control.updateValueAndValidity()"
+            placeholder="Email"
           />
+          <label>Email</label>
 
-          <div
-            *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)"
-            class="invalid-feedback d-block"
-          >
-            <div *ngIf="emailCtrl.errors?.['required']">Email is required</div>
-            <div *ngIf="emailCtrl.errors?.['pattern']">Enter valid email</div>
-          </div>
+          <small class="text-danger" *ngIf="emailCtrl.touched || emailCtrl.dirty">
+            <span *ngIf="emailCtrl.errors?.['required']">Email is required</span>
+            <span *ngIf="emailCtrl.errors?.['email']">Invalid email format</span>
+          </small>
         </div>
 
         <!-- PASSWORD -->
-        <div class="mb-3 position-relative">
-          <label class="form-label fw-semibold">Password</label>
-
+        <div class="form-floating mb-3 position-relative">
           <input
             [type]="showPassword ? 'text' : 'password'"
-            class="form-control form-control-lg pe-5"
+            class="form-control pe-5"
+            id="password"
             name="password"
             [(ngModel)]="password"
-            (input)="checkStrength()"
+            (input)="checkStrength(); passwordCtrl.control.updateValueAndValidity()"
             #passwordCtrl="ngModel"
             required
             minlength="6"
             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
-            placeholder="Strong password"
-            [ngClass]="{
-              'is-invalid':
-                passwordCtrl.invalid &&
-                (passwordCtrl.dirty || passwordCtrl.touched),
-            }"
+            placeholder="Password"
           />
+          <label>Password</label>
 
-          <!-- EYE ICON -->
-          <span
-            class="position-absolute top-50 end-0 translate-middle-y m-3"
-            (click)="togglePassword()"
-            style="cursor: pointer"
-          >
-            <i
-              class="bi"
-              [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
-            ></i>
+          <span class="eye-icon" (click)="togglePassword()">
+            <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
           </span>
 
-          <div
-            *ngIf="
-              passwordCtrl.invalid &&
-              (passwordCtrl.dirty || passwordCtrl.touched)
-            "
-            class="invalid-feedback d-block"
-          >
-            <div *ngIf="passwordCtrl.errors?.['required']">
-              Password is required
-            </div>
-            <div *ngIf="passwordCtrl.errors?.['minlength']">
-              Minimum 6 characters
-            </div>
-            <div *ngIf="passwordCtrl.errors?.['pattern']">
+          <small class="text-danger" *ngIf="passwordCtrl.touched || passwordCtrl.dirty">
+            <span *ngIf="passwordCtrl.errors?.['required']">Password required</span>
+            <span *ngIf="passwordCtrl.errors?.['minlength']">Min 6 characters</span>
+            <span *ngIf="passwordCtrl.errors?.['pattern']">
               Must include uppercase, lowercase & number
-            </div>
-          </div>
+            </span>
+          </small>
 
+          <!-- STRENGTH -->
           <div class="mt-2" *ngIf="password">
             <div class="progress" style="height: 6px">
-              <div
-                class="progress-bar"
-                [ngClass]="strengthClass"
-                [style.width.%]="strength * 20"
-              ></div>
+              <div class="progress-bar" [ngClass]="strengthClass" [style.width.%]="strength * 20"></div>
             </div>
-            <small
-              class="fw-semibold"
+            <small class="fw-semibold"
               [ngClass]="{
                 'text-danger': strength <= 2,
                 'text-warning': strength === 3 || strength === 4,
-                'text-success': strength === 5,
-              }"
-            >
+                'text-success': strength === 5
+              }">
               {{ strengthText }}
             </small>
           </div>
         </div>
 
-        <!-- RE-ENTER PASSWORD -->
         <!-- CONFIRM PASSWORD -->
-        <div class="mb-3 position-relative">
-          <label class="form-label fw-semibold">Confirm Password</label>
-
+        <div class="form-floating mb-3 position-relative">
           <input
             [type]="showPassword ? 'text' : 'password'"
-            class="form-control form-control-lg pe-5"
+            class="form-control pe-5"
+            id="confirmPassword"
             name="confirmPassword"
             [(ngModel)]="confirmPassword"
             #confirmPasswordCtrl="ngModel"
             required
-            placeholder="Re-enter password"
-            [ngClass]="{
-              'is-invalid':
-                (confirmPasswordCtrl.invalid &&
-                  (confirmPasswordCtrl.dirty || confirmPasswordCtrl.touched)) ||
-                (confirmPassword && password !== confirmPassword),
-            }"
+            (input)="confirmPasswordCtrl.control.updateValueAndValidity()"
+            placeholder="Confirm Password"
           />
+          <label>Confirm Password</label>
 
-          <!-- EYE ICON (same toggle) -->
-          <span
-            class="position-absolute top-50 end-0 translate-middle-y m-3"
-            (click)="togglePassword()"
-            style="cursor: pointer"
-          >
-            <i
-              class="bi"
-              [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
-            ></i>
+          <span class="eye-icon" (click)="togglePassword()">
+            <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
           </span>
 
-          <!-- ERRORS -->
-          <div
-            *ngIf="confirmPasswordCtrl.dirty || confirmPasswordCtrl.touched"
-            class="invalid-feedback d-block"
-          >
-            <div *ngIf="confirmPasswordCtrl.errors?.['required']">
-              Confirm password is required
-            </div>
-
-            <div *ngIf="confirmPassword && password !== confirmPassword">
+          <small class="text-danger"
+            *ngIf="confirmPasswordCtrl.touched || confirmPasswordCtrl.dirty">
+            <span *ngIf="confirmPasswordCtrl.errors?.['required']">Required</span>
+            <span *ngIf="confirmPassword && password !== confirmPassword">
               Passwords do not match
-            </div>
-          </div>
+            </span>
+          </small>
         </div>
 
         <!-- BUTTON -->
         <button
-          class="btn w-100 py-2 fw-semibold login-btn"
+          class="btn w-100 login-btn"
           type="submit"
-          [disabled]="signupForm.invalid || password !== confirmPassword"
-        >
+          [disabled]="signupForm.invalid || password !== confirmPassword">
           Create Account
         </button>
+
       </form>
 
       <!-- FOOTER -->
       <div class="text-center mt-3">
         <span class="text-muted small">Already have an account?</span>
-        <span class="fw-semibold ms-1 register-link" (click)="goToLogin()"
-          >Login</span
-        >
+        <span class="fw-semibold ms-1 register-link" (click)="goToLogin()">Login</span>
       </div>
+
     </div>
+
   </div>
 </div>

@@ -1,9 +1,22 @@
-<div class="container-fluid min-vh-100 d-flex p-0">
+<div class="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
+
+  <!-- MOBILE BANNER -->
+  <div class="mobile-banner d-md-none text-white position-relative">
+    <img src="sampu.png" style="height:40px;width:auto;" class="mb-1"/>
+    <p class="small mb-0">Track every rupee smartly</p>
+
+    <!-- SMALL ₹ -->
+    <span class="rupee-mobile">₹</span>
+  </div>
 
   <!-- LEFT PANEL -->
   <div class="d-none d-md-flex col-md-6 flex-column justify-content-center align-items-center text-white left-panel">
     <img src="sampu.png" alt="Logo" class="mb-4" style="height:60px;" />
     <h2 class="fw-bold">Expense Tracker</h2>
+
+    <!-- BIG ₹ -->
+    <div class="rupee-circle my-3">₹</div>
+
     <p class="mt-2 text-center px-4">
       Manage your expenses smartly, track every rupee, and stay financially organized.
     </p>
@@ -12,87 +25,87 @@
   <!-- RIGHT PANEL -->
   <div class="col-12 col-md-6 d-flex justify-content-center align-items-center right-panel">
 
-    <div class="glass-card p-4 rounded-4 shadow-lg w-100" style="max-width:420px;">
+    <div class="w-100 d-flex justify-content-center align-items-center">
 
-      <div class="text-center mb-4">
-        <h4 class="fw-bold">Welcome Back</h4>
-        <p class="text-muted small">Login to your account</p>
-      </div>
+      <div class="login-card shadow w-100 mx-3 position-relative" style="max-width:420px;">
 
-      <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+        <!-- CARD ₹ BADGE -->
+        <div class="rupee-badge">₹</div>
 
-        <!-- EMAIL -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Email</label>
-          <input
-            type="text"
-            class="form-control form-control-lg"
-            name="email"
-            [(ngModel)]="email"
-            #emailCtrl="ngModel"
-            required
-            pattern="^[a-zA-Z0-9]+([._%+-]?[a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$"
-            placeholder="abc@mail.com"
-            [ngClass]="{'is-invalid': emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)}"
-          />
-
-          <div *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="invalid-feedback d-block">
-            <div *ngIf="emailCtrl.errors?.['required']">Email is required</div>
-            <div *ngIf="emailCtrl.errors?.['pattern']">Enter valid email</div>
-          </div>
+        <div class="text-center mb-4">
+          <h4 class="fw-bold">Sign in to continue</h4>
+          <p class="text-muted small">Access your expense dashboard securely</p>
         </div>
 
-        <!-- PASSWORD -->
-        <div class="mb-3 position-relative">
-          <label class="form-label fw-semibold">Password</label>
+        <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
 
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            class="form-control form-control-lg pe-5"
-            name="password"
-            [(ngModel)]="password"
-            #passwordCtrl="ngModel"
-            required
-            minlength="1"
-            placeholder="Enter password"
-            [ngClass]="{'is-invalid': passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)}"
-          />
+          <!-- EMAIL -->
+          <div class="form-floating mb-3">
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              placeholder="name@example.com"
+              [(ngModel)]="email"
+              name="email"
+              #emailCtrl="ngModel"
+              required
+            />
+            <label for="email">Email</label>
 
-          <!-- EYE -->
-          <span
-            class="position-absolute top-50 end-0 translate-middle-y m-3"
-            (click)="togglePassword()"
-            style="cursor:pointer;"
+            <small class="text-danger" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+              Enter valid email
+            </small>
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="form-floating mb-3 position-relative">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control pe-5"
+              id="password"
+              placeholder="Password"
+              [(ngModel)]="password"
+              name="password"
+              #passwordCtrl="ngModel"
+              required
+              minlength="1"
+            />
+            <label for="password">Password</label>
+
+            <!-- EYE ICON -->
+            <span class="eye-icon" (click)="togglePassword()">
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </span>
+
+            <small class="text-danger" *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
+              Min 6 characters
+            </small>
+          </div>
+
+          <!-- BUTTON -->
+          <button
+            class="btn w-100 login-btn"
+            type="submit"
+            [disabled]="loginForm.invalid || loading"
           >
-            <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-          </span>
+            <span *ngIf="!loading">Login</span>
+            <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+          </button>
 
-          <div *ngIf="passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)" class="invalid-feedback d-block">
-            <div *ngIf="passwordCtrl.errors?.['required']">Password is required</div>
-            <div *ngIf="passwordCtrl.errors?.['minlength']">Minimum 6 characters</div>
+          <!-- ERROR -->
+          <div *ngIf="errorMsg" class="alert alert-danger mt-3 py-2 text-center small">
+            {{ errorMsg }}
           </div>
+
+        </form>
+
+        <!-- FOOTER -->
+        <div class="text-center mt-3">
+          <span class="text-muted small">No account?</span>
+          <span class="fw-semibold ms-1 register-link" (click)="register()">Register</span>
         </div>
 
-        <!-- BUTTON -->
-        <button
-          class="btn w-100 py-2 fw-semibold login-btn"
-          type="submit"
-          [disabled]="loginForm.invalid"
-        >
-          Login
-        </button>
-
-        <!-- ERROR -->
-        <div *ngIf="errorMsg" class="alert alert-danger mt-3 py-2 text-center small">
-          {{ errorMsg }}
-        </div>
-
-      </form>
-
-      <!-- FOOTER -->
-      <div class="text-center mt-3">
-        <span class="text-muted small">No account?</span>
-        <span class="fw-semibold ms-1 register-link" (click)="register()">Register</span>
       </div>
 
     </div>
