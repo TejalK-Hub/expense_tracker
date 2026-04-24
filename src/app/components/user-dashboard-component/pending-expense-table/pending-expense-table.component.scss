@@ -58,7 +58,7 @@
 
 /* DESCRIPTION */
 .desc {
-  max-width: 220px;
+  // max-width: 220px;
   word-break: break-word;
 }
 
@@ -102,6 +102,7 @@
 /* BUTTONS */
 .view-btn {
   border-radius: 999px;
+  width: max-content;
   padding: 4px 12px;
   font-size: 12px;
   font-weight: 500;
@@ -211,7 +212,7 @@
   }
 
   /* VALUE */
-  .mobile-table td > * {
+  .mobile-table td > *:not(.view-btn) {
     flex: 1;
     text-align: right;
     word-break: break-word;

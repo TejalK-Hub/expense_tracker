@@ -62,7 +62,6 @@
             <span *ngIf="sortDirection === 'desc'">↓</span>
           </th>
 
-          <th>Description</th>
           <th>Expense Date</th>
           <th class="text-end">Amount</th>
           <!-- <th>Visit Id</th> -->
@@ -71,6 +70,7 @@
           <th>Visit End</th>
           <th>Client</th>
           <!-- <th>Client Id</th> -->
+          <th>Description</th>
           <th class="text-center">Action</th>
         </tr>
       </thead>
@@ -95,20 +95,16 @@
             {{ exp.created_at }}
           </td>
 
-          <td class="text-truncate desc" data-label="🧾 Description">
-            {{ exp.expense }}
-          </td>
-
           <td class="small text-muted" data-label="📆 Expense Date">
             {{ exp.expense_date | date: "dd MMM yyyy" }}
           </td>
 
-          <td class="amount" data-label="💰 Amount">
-            ₹ {{ exp.amount }}
-          </td>
+          <td class="amount" data-label="💰 Amount">₹ {{ exp.amount }}</td>
 
           <td data-label="📍 Visit">
-            <div class="d-flex align-items-center justify-content-end gap-2 ellipsis-cell">
+            <div
+              class="d-flex align-items-center justify-content-end gap-2 ellipsis-cell"
+            >
               <div
                 class="ellipsis-cell visit-cell"
                 [title]="exp.visit_name"
@@ -134,8 +130,15 @@
             </div>
           </td>
 
+          <td class="text-truncate desc" data-label="🧾 Description">
+            {{ exp.expense }}
+          </td>
+          
           <td class="text-" data-label="Action">
-            <button class="btn btn-sm view-btn fit-content w-auto" (click)="openPreview(exp)">
+            <button
+              class="btn btn-sm view-btn fit-content w-auto"
+              (click)="openPreview(exp)"
+            >
               👁 View
             </button>
           </td>
