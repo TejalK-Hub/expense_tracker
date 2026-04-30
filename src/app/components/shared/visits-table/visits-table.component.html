@@ -53,15 +53,14 @@
     </span>
   </div>
 
-  <!-- TABLE -->
-  <div class="table-responsive">
+  <!-- ===================== UPDATED TABLE ONLY (copy-paste replace your table block) ===================== -->
+  <div class="table-responsive table-container">
     <table
-      class="table clean-table align-middle small text-nowrap mb-0 visits-table"
+      class="table clean-table align-middle small text-nowrap mb-0 visits-table mobile-table"
     >
       <thead class="clean-head">
         <tr>
           <th>#</th>
-          <!-- <th>Visit ID</th> -->
           <th>Visit Name</th>
           <th>Start Date</th>
           <th>End Date</th>
@@ -72,7 +71,6 @@
             <span *ngIf="sortDirection === 'desc'">↓</span>
           </th>
 
-          <!-- <th>Client ID</th> -->
           <th>Client Name</th>
           <th>Description</th>
         </tr>
@@ -82,36 +80,54 @@
         <tr
           *ngFor="let visit of filteredVisits; let i = index"
           class="clean-row"
+          (click)="goToVisitDetails(visit)"
+          style="cursor: pointer"
         >
-          <td>{{ i + 1 }}</td>
+          <td data-label="#">{{ i + 1 }}</td>
 
-          <!-- <td>{{ visit.id }}</td> -->
-
-          <!-- ✅ ELLIPSIS + TOOLTIP -->
-          <td>
-            <div class="ellipsis-cell">
+          <!-- VISIT -->
+          <td data-label="📍 Visit Name">
+            <div class="ellipsis-cell visit-cell">
               {{ visit.visit_name }}
             </div>
           </td>
 
-          <td>
-            {{ visit.start_date | date: "dd MMMM yyyy" }}
-            <!-- <span class="end">
-              {{ visit.end_date | date: "dd MMMM yyyy" }}
-            </span> -->
+          <!-- START -->
+          <td data-label="🚀 Start Date" class="startDate">
+            {{ visit.start_date | date: "dd MMM yyyy" }}
           </td>
-          <td>{{ visit.end_date | date: "dd MMMM yyyy" }}</td>
 
-          <td>{{ visit.created_at | date: "dd MMMM yyyy" }}</td>
+          <!-- END -->
+          <td data-label="🏁 End Date" class="endDate">
+            {{ visit.end_date | date: "dd MMM yyyy" }}
+          </td>
 
-          <!-- <td>{{ visit.client_id }}</td> -->
+          <!-- CREATED -->
+          <td data-label="📅 Created At">
+            {{ visit.created_at | date: "dd MMM yyyy" }}
+          </td>
 
-          <td>
-            <div class="ellipsis-cell">
+          <!-- CLIENT -->
+          <td data-label="👤 Client" class="client">
+            <div class="ellipsis-cell client-cell">
               {{ visit.client }}
             </div>
           </td>
-          <td>{{ visit.agenda ? visit.agenda : "-NA-" }}</td>
+
+          <!-- DESCRIPTION -->
+          <td class="desc" data-label="🧾 Description">
+            {{ visit.agenda ? visit.agenda : "-NA-" }}
+          </td>
+        </tr>
+
+        <!-- EMPTY -->
+        <tr *ngIf="filteredVisits.length === 0">
+          <td colspan="7" class="text-center py-5 text-muted">
+            <div class="d-flex flex-column align-items-center gap-2">
+              <i class="bi bi-inbox fs-2"></i>
+              <span>No visits found</span>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { VisitsService } from '../../../service/visits.service';
 import { BackButtonComponent } from '../../back-button/back-button.component';
 import { AddVisitComponent } from '../add-visit/add-visit.component';
-import { FormsModule } from '@angular/forms';
-
+import { AuthServiceService } from '../../../service/auth-service.service';
 
 @Component({
   selector: 'app-visits-table',
@@ -37,7 +38,7 @@ export class VisitsTableComponent {
 
   private readonly FILTER_KEY = 'visits_filters_v1';
 
-  constructor(private visitService: VisitsService) { }
+  constructor(private authService: AuthServiceService, private visitService: VisitsService, private router: Router) { }
 
   ngOnInit() {
     this.loadFilters();
@@ -55,7 +56,21 @@ export class VisitsTableComponent {
   }
 
 
+  /*------------------------------------- VIEW THIS VISIT'S EXPENSES ------------------------------------*/
+  goToVisitDetails(visitId: any) {
+    // Implement navigation to visit details page
+    console.log('Navigate to details of visit ID:', visitId);
 
+    const queryParams: any = {
+      visit: visitId.visit_name
+    }
+    if (this.authService.isAdmin) {
+    this.router.navigate(['/user-expense-review'], { queryParams });
+    // Example: this.router.navigate(['/visit-details', visitId]);
+    } else {
+      this.router.navigate(['/manage-expense'], { queryParams });
+    }
+  }
 
   saveFilters() {
     localStorage.setItem(this.FILTER_KEY, JSON.stringify(this.filters));
@@ -191,7 +206,7 @@ export class VisitsTableComponent {
   }
 
 
-//--------------------- SORTING ---------------------
+  //--------------------- SORTING ---------------------
 
   applySorting() {
     this.filteredVisits.sort((a: any, b: any) => {

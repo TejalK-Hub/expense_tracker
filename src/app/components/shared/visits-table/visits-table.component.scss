@@ -72,16 +72,25 @@
 
 /* Light color coding */
 
-.visits-table .clean-row > :nth-child(3) {
+// .visits-table .clean-row > :nth-child(3) {
+//   color: #60a5fa;   // light blue → start date
+//   font-weight: 500;
+// }
+
+.clean-row td.startDate {
   color: #60a5fa;   // light blue → start date
   font-weight: 500;
 }
 
-.visits-table .clean-row > :nth-child(4) {
+.clean-row td.endDate {
   color: #34d399;   // light green → end date
   font-weight: 500;
 }
 
+.clean-row td.client {
+  color: #4F46E5;   // light green → end date
+  font-weight: 500;
+}
 //--------------------------------------------------- FILTER MODAL ---------------------------------------------------
 
 .filter-wrapper {
@@ -145,5 +154,135 @@
 
   &:hover {
     background: #e0e7ff;
+  }
+}
+
+
+
+/* ===================== RESPONSIVE CARDS ===================== */
+
+/* TABLE CONTAINER */
+.table-container {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+/* DESCRIPTION */
+.desc {
+  word-break: break-word;
+}
+
+/* VISIT + CLIENT WIDTH */
+.visit-cell {
+  max-width: 130px;
+}
+
+.client-cell {
+  max-width: 140px;
+}
+
+/* DESKTOP HOVER EXPAND */
+@media (min-width: 769px) {
+  .ellipsis-cell:hover {
+    white-space: normal;
+    background: #fff;
+    position: relative;
+    z-index: 10;
+  }
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .table-container {
+    max-height: unset;
+    overflow: visible;
+  }
+
+  /* HIDE HEADER */
+  .mobile-table thead {
+    display: none;
+  }
+
+  /* BLOCK MODE */
+  .mobile-table,
+  .mobile-table tbody,
+  .mobile-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  /* CARD STYLE */
+  .mobile-table tr.clean-row {
+    background: #ffffff;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  /* EACH FIELD */
+  .mobile-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 3px 0;
+    font-size: 13px;
+    border: none;
+    white-space: normal !important;
+  }
+
+  /* LABEL */
+  .mobile-table td::before {
+    content: attr(data-label);
+    flex: 0 0 45%;
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  /* VALUE */
+  .mobile-table td > * {
+    flex: 1;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  /* EMPTY VALUE */
+  .mobile-table td:empty::after {
+    content: "-";
+    color: #9ca3af;
+  }
+
+  /* DESCRIPTION */
+  .mobile-table .desc {
+    white-space: normal !important;
+  }
+
+  /* VISIT */
+  .mobile-table .visit-cell {
+    max-width: 100%;
+    white-space: normal !important;
+  }
+
+  /* CLIENT */
+  .mobile-table .client-cell {
+    max-width: 100%;
+    white-space: normal !important;
+  }
+
+  /* NO DATA */
+  .mobile-table tr td[colspan] {
+    display: block;
+    text-align: center !important;
+  }
+}
+
+/* SMALL DEVICES */
+@media (max-width: 576px) {
+  .filter-chip {
+    font-size: 11px;
+    padding: 3px 8px;
   }
 }
