@@ -62,7 +62,7 @@
     </span>
 
     <span class="filter-chip" *ngIf="filters.visit">
-      {{ filters.visit }}
+      {{ filters.visit }} works
       <i class="bi bi-x" (click)="removeFilter('visit')"></i>
     </span>
 
@@ -81,9 +81,11 @@
   </div>
 
   <!-- TABLE -->
-  <div class="table-responsive">
-    <table class="table clean-table align-middle small text-nowrap mb-0">
-      <thead class="clean-head">
+  <div class="table-responsive table-container">
+    <table
+      class="table clean-table mobile-table align-middle small text-nowrap mb-0"
+    >
+      <thead class="clean-head sticky-top">
         <tr>
           <th>#</th>
           <th *ngIf="isAdmin">User</th>
@@ -104,21 +106,29 @@
           *ngFor="let exp of filteredExpenses; let i = index"
           class="clean-row"
         >
-          <td>{{ i + 1 }}</td>
-          <td *ngIf="isAdmin">{{ exp.user_name }}</td>
-          <td>{{ exp.category }}</td>
+          <td data-label="#">{{ i + 1 }}</td>
 
-          <td class="text-truncate desc">
+          <td *ngIf="isAdmin" data-label="User">
+            {{ exp.user_name }}
+          </td>
+
+          <td data-label="💼 Category">{{ exp.category }}</td>
+
+          <td class="desc" data-label="🧾 Description">
             {{ exp.expense }}
           </td>
 
-          <td>{{ exp.expense_date }}</td>
-          <td>{{ exp.receipt }}</td>
+          <td data-label="📆 Expense Date">
+            {{ exp.expense_date }}
+          </td>
 
-          <td class="text-end amount">₹ {{ exp.amount }}</td>
+          <td data-label="🧾 Receipt">
+            {{ exp.receipt }}
+          </td>
 
-          <!-- STATUS -->
-          <td>
+          <td class="amount" data-label="💰 Amount">₹ {{ exp.amount }}</td>
+
+          <td data-label="📌 Status">
             <span
               class="status-pill"
               [ngClass]="{
@@ -131,18 +141,36 @@
             </span>
           </td>
 
-          <!-- ✅ VISIT WITH ELLIPSIS + TOOLTIP -->
-          <td>
-            <div class="ellipsis-cell" [title]="exp.visit_name">
-              {{ exp.visit_name }}
+          <td data-label="📍 Visit">
+            <div
+              class="d-flex align-items-center justify-content-end gap-2 ellipsis-cell"
+            >
+              <div
+                class="ellipsis-cell visit-cell"
+                [title]="exp.visit_name"
+                (click)="exp.showFullVisit = !exp.showFullVisit"
+                [class.expanded]="exp.showFullVisit"
+              >
+                {{ exp.visit_name }}
+              </div>
             </div>
           </td>
 
-          <td>{{ exp.client_name }}</td>
+          <!-- <td data-label="📍 Visit">
+            <div class="ellipsis-cell" [title]="exp.visit_name">
+              {{ exp.visit_name }}
+            </div>
+          </td> -->
 
-          <td class="text-center">
+          <td data-label="👤 Client">
+            <div class="ellipsis-cell" [title]="exp.client_name">
+              {{ exp.client_name }}
+            </div>
+          </td>
+
+          <td data-label="Action">
             <button class="btn btn-sm view-btn" (click)="openPreview(exp)">
-              👁
+              👁 View
             </button>
           </td>
         </tr>
@@ -198,8 +226,8 @@
                 <i class="bi bi-person-circle filter-icon"></i>
                 <select
                   class="form-select form-select-sm filter-dropdown w-100"
-                  [(ngModel)]="filters.user"
-                  (ngModelChange)="onFilterChange()"
+                  [ngModel]="filters.user"
+                  (ngModelChange)="onUserChange($event)"
                 >
                   <option value="">All Users</option>
                   <option *ngFor="let u of getUnique('user_name')" [value]="u">
@@ -315,7 +343,7 @@
 
             <!-- DATE RANGE -->
             <div class="col-md-6">
-              <div class="filter-wrapper range-filter w-100">
+              <div class="filter-wrapper date range-filter w-100">
                 <i class="bi bi-calendar3 filter-icon"></i>
                 <input
                   type="date"
@@ -335,7 +363,7 @@
 
             <!-- AMOUNT RANGE -->
             <div class="col-md-6">
-              <div class="filter-wrapper range-filter w-100">
+              <div class="filter-wrapper amount range-filter w-100">
                 <i class="bi bi-currency-rupee filter-icon"></i>
                 <input
                   type="number"
