@@ -12,6 +12,7 @@ export class AuthServiceService {
   userRole: string | null = null;
   userName: string | null = null;
   tokenExpiration: Date | null = null;
+  isAdmin: boolean = false;
 
   constructor(private http: HttpClient) {
 
@@ -45,6 +46,10 @@ export class AuthServiceService {
     this.userId = id;
     this.userRole = role;
     this.userName = name;
+
+    if (role.toLowerCase() === 'admin') {
+      this.isAdmin = true;
+    }
 
     console.log('token: ', token);
     console.log('userId: ', id.toString());
