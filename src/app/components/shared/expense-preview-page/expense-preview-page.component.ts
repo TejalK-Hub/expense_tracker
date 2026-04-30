@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ExpensesService } from '../../../service/expenses.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { BackButtonComponent } from '../../back-button/back-button.component';
-import { environment } from '../../../../environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
+import { environment } from '../../../../environments/environment';
+import { BackButtonComponent } from '../../back-button/back-button.component';
 import { AuthServiceService } from '../../../service/auth-service.service';
-import { VisitsService } from '../../../service/visits.service';
+import { ExpensesService } from '../../../service/expenses.service';
 import { SharedServicesService } from '../../../service/shared-services.service';
+import { VisitsService } from '../../../service/visits.service';
 
 @Component({
   selector: 'app-expense-preview-page',
@@ -31,15 +32,7 @@ export class ExpensePreviewPageComponent {
   isDeletable: boolean = false;
 
   showImagePreview = false;
-
-  // -------------------------------------------------------Alerts---------------------------------------------------------
-
-  showPopup = false;
-  showErrorPopup = false;
-
-  successMessage = '';
-  errorMessage = '';
-
+  
   // ----------------------------------------------modal properties------------------------------------------------
   rejectionReasons: any;
   selectedRejectionReason: string = '';
@@ -62,7 +55,7 @@ export class ExpensePreviewPageComponent {
   body: any = {};
 
 
-  constructor(private expenseService: ExpensesService, private router: Router, private authService: AuthServiceService, private sharedService: SharedServicesService, private visitService: VisitsService) { }
+  constructor(private expenseService: ExpensesService, private router: Router, private authService: AuthServiceService, private sharedService: SharedServicesService, private visitService: VisitsService, private toastr: ToastrService) { }
 
   // bill_path:"uploads\\1773641334791.png"
 
@@ -177,21 +170,11 @@ export class ExpensePreviewPageComponent {
         console.log("Expense status response: ", res.data);
 
 
-        this.successMessage = 'Expense approved successfully!';
-        this.showPopup = true;
-
-        setTimeout(() => {
-          this.showPopup = false;
-        }, 3000);
+        this.toastr.success('Expense approved successfully!');
       });
 
     } catch (error) {
-      this.errorMessage = 'Failed to approve expense!';
-      this.showErrorPopup = true;
-
-      setTimeout(() => {
-        this.showErrorPopup = false;
-      }, 3000);
+      this.toastr.error('Failed to approve expense!');
     }
 
   }
@@ -220,14 +203,7 @@ export class ExpensePreviewPageComponent {
 
     this.expenseService.updateExpenseStatus(this.expense.id, this.body).subscribe((res) => {
       console.log("Expense status response: ", res.data);
-
-      this.errorMessage = 'This Expense has been rejected!';
-      this.showErrorPopup = true;
-
-      setTimeout(() => {
-        this.showErrorPopup = false;
-      }, 3000);
-
+      this.toastr.info('This Expense has been rejected!');
     });
 
   }
@@ -260,8 +236,8 @@ export class ExpensePreviewPageComponent {
 
     this.expenseService.resubmit(this.expense.id, body).subscribe({
       next: (res) => {
-        this.successMessage = 'Expense resubmitted successfully!';
-        this.showPopup = true;
+        this.toastr.success('Expense resubmitted successfully!');
+        // this.showPopup = true;
         console.log("Expense resubmitted successfully", res.data);
       },
       error: (err) => {

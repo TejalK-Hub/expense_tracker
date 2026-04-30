@@ -1,11 +1,3 @@
-<div *ngIf="showPopup" class="custom-popup approve">
-  {{ successMessage }}
-</div>
-
-<div *ngIf="showErrorPopup" class="custom-popup reject">
-  {{ errorMessage }}
-</div>
-
 <div class="container mt-4" *ngIf="expense">
   <!-- SINGLE ROW -->
   <div
@@ -101,8 +93,10 @@
       <label>Rejection Reason</label>
       <div class="value">{{ expense.rejection_reason || "-NA-" }}</div>
     </div>
+
     <!-- Grid -->
     <div class="grid">
+      <!-- USER -->
       <ng-container *ngIf="isAdmin">
         <div class="item">
           <label>User ID</label>
@@ -115,6 +109,7 @@
         </div>
       </ng-container>
 
+      <!-- STATUS / CATEGORY -->
       <div class="item">
         <label>Status</label>
         <div
@@ -138,6 +133,7 @@
         <div class="value">{{ expense.category || "-NA-" }}</div>
       </div>
 
+      <!-- AMOUNT / RECEIPT -->
       <div class="item highlight">
         <label>Amount</label>
         <div class="value">₹ {{ expense.amount || "-NA-" }}</div>
@@ -148,6 +144,7 @@
         <div class="value">{{ expense.receipt || "-NA-" }}</div>
       </div>
 
+      <!-- CLIENT / VISIT -->
       <div class="item">
         <label>Client</label>
         <div class="value">{{ expense.client_name || "-NA-" }}</div>
@@ -155,20 +152,21 @@
 
       <div class="item">
         <label>Visit</label>
-        <div class="value text-truncate" [title]="expense.visit_name">
+        <div class="value">
           {{ expense.visit_name || "-NA-" }}
         </div>
       </div>
 
-      <div class="item">
+      <!-- DATE (FULL WIDTH) -->
+      <div class="item full">
         <label>Expense Date</label>
         <div class="value">
           {{ (expense.expense_date | date: "dd MMMM yyyy") || "-NA-" }}
         </div>
       </div>
 
-      <!-- Description -->
-      <div class="item">
+      <!-- DESCRIPTION (FULL WIDTH) -->
+      <div class="item full">
         <label>Description</label>
         <div class="value">{{ expense.expense || "-NA-" }}</div>
       </div>
