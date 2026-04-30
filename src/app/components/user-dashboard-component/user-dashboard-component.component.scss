@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
-
 .user-dashboard {
   font-family: "Poppins", sans-serif;
 }
@@ -9,148 +7,19 @@
   font-size: 22px;
 }
 
-/* CARDS */
+/* CARD */
 .action-card {
-  cursor: default;
   border-radius: 16px;
-  background: linear-gradient(135deg, #ffffff, #f8fbff);
+  background: #ffffff;
   transition: all 0.25s ease;
 }
 
 .action-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* ICON */
-.card-icon {
-  width: 45px;
-  height: 45px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 18px;
-}
-
-/* VALUE TEXT */
-.user-count {
-  font-size: 16px;
-  font-weight: 600;
-  color: #4f46e5;
-}
-
-/* NOTE */
-.card-note {
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: 6px;
-}
-
-/* BUTTON HOVER */
-.btn-hover-icon {
-  transition: 0.2s;
-}
-
-.btn-hover-icon:hover {
-  transform: translateY(-2px);
-}
-
-/* TABLE STYLE */
-.clean-table {
-  border-collapse: separate;
-  border-spacing: 0 10px;
-}
-
-.clean-head th {
-  font-weight: 500;
-  color: #6b7280;
-  border: none;
-  font-size: 14px;
-  background: #f9fafb;
-  padding: 12px 18px;
-}
-
-.clean-row {
-  background: #f8fbff;
-  border-radius: 10px;
-}
-
-.clean-row td,
-.clean-row th {
-  border: none;
-  padding: 14px 18px;
-  vertical-align: middle;
-  color: #374151;
-}
-
-.clean-row:hover {
-  background: #f1f6ff;
-  background-color: pink;
-}
-
-//----------------------------------------------------------------card styling---------------------------------------------------
-/* -------- STATUS LIST (NEW CLEAN STYLE) -------- */
-
-.sub-value {
-  font-size: 13px;
-  font-weight: 600;
-  opacity: 0.85;
-}
-
-.status-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.status-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  background: #f9fafb;
-
-  .left {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-  }
-
-  .right {
-    font-weight: 600;
-  }
-
-  i {
-    font-size: 13px;
-  }
-}
-
-/* SUBMITTED */
-.status-item.submitted {
-  border-left: 3px solid #2e6a9c;
-  color: #2e6a9c;
-}
-
-/* APPROVED */
-.status-item.approved {
-  border-left: 3px solid #166534;
-  color: #166534;
-}
-
-/* REJECTED */
-.status-item.rejected {
-  border-left: 3px solid #991b1b;
-  color: #991b1b;
-}
-
-/* -------- TOTAL (TOP RIGHT) -------- */
-
+/* TOTAL */
 .total-value {
   font-size: 16px;
   font-weight: 600;
@@ -162,72 +31,49 @@
   color: #6b7280;
 }
 
-/* -------- HOVER EFFECT -------- */
-
-.status-item {
-  transition:
-    background-color 0.2s ease,
-    transform 0.15s ease;
-  cursor: default;
-}
-
-/* SUBMITTED HOVER */
-.status-item.submitted:hover {
-  background-color: #e0e7ff;
-}
-
-/* APPROVED HOVER */
-.status-item.approved:hover {
-  background-color: #dcfce7;
-}
-
-/* REJECTED HOVER */
-.status-item.rejected:hover {
-  background-color: #fee2e2;
-}
-
-/* COMPACT CARD */
-.compact-card {
-  padding: 14px 16px !important;
-}
-
-/* STATUS GRID (replaces vertical list) */
+/* STATUS GRID */
 .status-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
-/* INDIVIDUAL BOX */
+/* STATUS BOX */
 .status-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
+  padding: 10px;
   border-radius: 10px;
-  font-size: 12px;
   background: #f9fafb;
+  font-size: 12px;
   transition: all 0.2s ease;
-
-  i {
-    font-size: 14px;
-  }
-
-  .label {
-    font-size: 11px;
-    font-weight: 500;
-  }
-
-  .value {
-    font-size: 13px;
-    font-weight: 600;
-  }
 }
 
-/* COLORS (same theme preserved) */
+.status-box i {
+  font-size: 14px;
+}
+
+.status-box .label {
+  font-size: 11px;
+}
+
+.status-box .value {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sub-value {
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* COLORS */
 .status-box.submitted {
   border-left: 3px solid #2e6a9c;
+  // background: #e9f5ff;
   color: #2e6a9c;
 }
 
@@ -241,42 +87,61 @@
   color: #991b1b;
 }
 
-/* HOVER (same feel, tighter) */
+/* HOVER */
+.status-box:hover {
+  transform: translateY(-2px);
+}
+
 .status-box.submitted:hover {
-  background-color: #e0e7ff;
-  transform: translateY(-1px);
+  background: #e0e7ff;
 }
 
 .status-box.approved:hover {
-  background-color: #dcfce7;
-  transform: translateY(-1px);
+  background: #dcfce7;
 }
 
 .status-box.rejected:hover {
-  background-color: #fee2e2;
-  transform: translateY(-1px);
+  background: #fee2e2;
 }
 
-
-.dashboard {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-  padding: 20px;
-  background: #0b0f17;
-  min-height: 100vh;
+/* BUTTON */
+.btn-hover-icon {
+  transition: 0.2s;
 }
 
-/* LEFT SIDE */
-.left {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.btn-hover-icon:hover {
+  transform: translateY(-2px);
 }
 
-/* RIGHT SIDE */
-.right {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+/* EMPTY STATE */
+.text-muted i {
+  opacity: 0.6;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .status-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-title {
+    font-size: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .total-value {
+    font-size: 14px;
+  }
+
+  .status-box {
+    padding: 8px;
+  }
 }

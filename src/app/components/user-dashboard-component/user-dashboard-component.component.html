@@ -1,106 +1,100 @@
 <div class="container-fluid py-3 user-dashboard">
   <!-- HEADER -->
-  <div class="d-flex justify-content-center mb-4">
+  <div class="text-center mb-4">
     <h4 class="fw-semibold dashboard-title">User Dashboard</h4>
   </div>
 
-  <!-- SUMMARY CARDS -->
-  <div class="row g-3 mb-4">
-    <!-- MERGED SUMMARY CARD -->
-    <div class="row g-3 mb-4">
-      <div class="col-12">
+  <!-- SUMMARY CARD -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div
+        class="card border-0 shadow-sm action-card compact-card p-3"
+        (click)="goToMonthlyExpenses()"
+      >
+        <!-- TOP -->
         <div
-          class="card border-0 shadow-sm action-card compact-card p-3"
-          (click)="goToMonthlyExpenses()"
-          style="cursor: pointer"
+          class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2"
         >
-          <!-- TOP ROW -->
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <div>
-              <div class="text-muted small">Expense Summary</div>
-              <div class="fw-semibold text-secondary small">
-                {{ current_month }}
-              </div>
+          <div>
+            <div class="text-muted small">Expense Summary</div>
+            <div class="fw-semibold text-secondary small">
+              {{ current_month }}
             </div>
+          </div>
 
-            <div class="text-end">
-              <div class="total-value">
+          <div class="text-end">
+            <div class="total-value">
+              {{
+                summary_current_month?.total_amount || 0
+                  | currency: "INR" : "symbol" : "1.2-2"
+              }}
+            </div>
+            <div class="total-label">
+              {{ summary_current_month?.total_count || 0 }} entries
+            </div>
+          </div>
+        </div>
+
+        <!-- STATUS GRID -->
+        <div class="status-grid">
+          <!-- SUBMITTED -->
+          <div
+            class="status-box submitted"
+            (click)="
+              goToFilteredExpenses('submitted'); $event.stopPropagation()
+            "
+          >
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+              <div class="label">Submitted</div>
+              <div class="value">
+                {{ summary_current_month?.submitted?.count || 0 }}
+              </div>
+              <div class="sub-value">
                 {{
-                  summary_current_month?.total_amount || 0
+                  summary_current_month?.submitted?.amount || 0
                     | currency: "INR" : "symbol" : "1.2-2"
                 }}
-              </div>
-              <div class="total-label">
-                {{ summary_current_month?.total_count || 0 }} entries
               </div>
             </div>
           </div>
 
-          <!-- STATUS GRID -->
-          <div class="status-grid">
-            <!-- SUBMITTED -->
-            <div
-              class="status-box submitted"
-              (click)="
-                goToFilteredExpenses('submitted'); $event.stopPropagation()
-              "
-            >
-              <i class="bi bi-hourglass-split"></i>
-              <div>
-                <div class="label">Submitted</div>
-                <div class="value">
-                  {{ summary_current_month?.submitted?.count || 0 }}
-                </div>
-                <div class="sub-value">
-                  {{
-                    summary_current_month?.submitted?.amount || 0
-                      | currency: "INR" : "symbol" : "1.2-2"
-                  }}
-                </div>
+          <!-- APPROVED -->
+          <div
+            class="status-box approved"
+            (click)="goToFilteredExpenses('approved'); $event.stopPropagation()"
+          >
+            <i class="bi bi-check-circle"></i>
+            <div>
+              <div class="label">Approved</div>
+              <div class="value">
+                {{ summary_current_month?.approved?.count || 0 }}
+              </div>
+              <div class="sub-value">
+                {{
+                  summary_current_month?.approved?.amount || 0
+                    | currency: "INR" : "symbol" : "1.2-2"
+                }}
               </div>
             </div>
+          </div>
 
-            <!-- APPROVED -->
-            <div
-              class="status-box approved"
-              (click)="
-                goToFilteredExpenses('approved'); $event.stopPropagation()
-              "
-            >
-              <i class="bi bi-check-circle"></i>
-              <div>
-                <div class="label">Approved</div>
-                <div class="value">
-                  {{ summary_current_month?.approved?.count || 0 }}
-                </div>
-                <div class="sub-value">
-                  {{
-                    summary_current_month?.approved?.amount || 0
-                      | currency: "INR" : "symbol" : "1.2-2"
-                  }}
-                </div>
+          <!-- REJECTED -->
+          <div
+            class="status-box rejected"
+            (click)="goToFilteredExpenses('rejected'); $event.stopPropagation()"
+          >
+            <i class="bi bi-x-circle"></i>
+            <div>
+              <div class="label">Rejected</div>
+              <div class="value">
+                {{ summary_current_month?.rejected?.count || 0 }}
               </div>
-            </div>
-
-            <!-- REJECTED -->
-            <div
-              class="status-box rejected"
-              (click)="
-                goToFilteredExpenses('rejected'); $event.stopPropagation()
-              "
-            >
-              <i class="bi bi-x-circle"></i>
-              <div>
-                <div class="label">Rejected</div>
-                <div class="value">
-                  {{ summary_current_month?.rejected?.count || 0 }}
-                </div>
-                <div class="sub-value">
-                  {{
-                    summary_current_month?.rejected?.amount || 0
-                      | currency: "INR" : "symbol" : "1.2-2"
-                  }}
-                </div>
+              <div class="sub-value">
+                {{
+                  summary_current_month?.rejected?.amount || 0
+                    | currency: "INR" : "symbol" : "1.2-2"
+                }}
               </div>
             </div>
           </div>
@@ -111,7 +105,6 @@
 
   <!-- ACTION BUTTONS -->
   <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
-    <!-- VISITS -->
     <button
       class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon"
       (click)="viewVisits()"
@@ -120,31 +113,6 @@
       <span>Visits</span>
     </button>
 
-    <!-- EXPENSE DROPDOWN -->
-    <!-- <div class="dropdown">
-      <button
-        class="btn btn-dark dropdown-toggle px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2 btn-hover-icon"
-        data-bs-toggle="dropdown"
-      >
-        <i class="bi bi-receipt"></i>
-        <span>Expense</span>
-      </button>
-
-      <ul class="dropdown-menu shadow border-0 rounded-3">
-        <li>
-          <button class="dropdown-item" (click)="handleExpense(1)">
-            ➕ Add Expense
-          </button>
-        </li>
-        <li>
-          <button class="dropdown-item" (click)="handleExpense(2)">
-            ⚙️ Manage Expense
-          </button>
-        </li>
-      </ul>
-    </div>
-  </div> -->
-
     <button
       class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon"
       (click)="goToManageExpense()"
@@ -152,12 +120,22 @@
       <i class="bi bi-receipt"></i>
       <span>Expense</span>
     </button>
+  </div>
 
-    <!-- PENDING TABLE -->
-    <div class="card border-0 shadow-sm">
-      <div class="card-body">
-        <h5 class="mb-3 fw-semibold text-dark">Pending Expenses</h5>
-        <app-pending-expense-table></app-pending-expense-table>
+  <!-- PENDING TABLE -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="mb-3 fw-semibold text-dark">Pending Expenses</h5>
+
+          <!-- TABLE / EMPTY STATE -->
+          <ng-container>
+            <app-pending-expense-table></app-pending-expense-table>
+          </ng-container>
+
+         
+        </div>
       </div>
     </div>
   </div>
