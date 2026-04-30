@@ -15,6 +15,7 @@ import { UserListComponent } from './components/admin/users-component/user-list/
 import { ExpenseReviewComponent } from './components/admin/expense-review/expense-review.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { ClientComponent } from './components/admin/client/client.component';
+import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 
 export const routes: Routes = [
 
@@ -52,7 +53,8 @@ export const routes: Routes = [
     {path: 'user-list', component: UserListComponent, canActivate: [authGuard], data: { role: 'Admin' }},
     {path: 'user-expense-review', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'Admin' }},
     {path: 'clients', component: ClientComponent, canActivate: [authGuard], data: { role: 'Admin' }},
-    
+
+    {path: 'profile-page', component: ProfilePageComponent, canActivate: [authGuard]},
 
 
 
