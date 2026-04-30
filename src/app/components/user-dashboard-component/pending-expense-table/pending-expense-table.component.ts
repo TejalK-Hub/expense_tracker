@@ -51,6 +51,7 @@ export class PendingExpenseTableComponent implements OnInit {
     this.isAdmin = this.authService.userRole?.toLowerCase() === 'admin';
 
     this.filteredVisitsList = this.getUnique('visit_name');
+    console.log("Unique visits: ", this.filteredVisitsList);
 
     this.loadFilters();
 
@@ -121,13 +122,13 @@ export class PendingExpenseTableComponent implements OnInit {
   }
 
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: any) {
-    const clickedInside = event.target.closest('.visit-dropdown');
-    if (!clickedInside) {
-      this.isVisitDropdownOpen = false;
-    }
-  }
+  // @HostListener('document:click', ['$event'])
+  // onClickOutside(event: any) {
+  //   const clickedInside = event.target.closest('.visit-dropdown');
+  //   if (!clickedInside) {
+  //     this.isVisitDropdownOpen = false;
+  //   }
+  // }
 
   // ---------------- NORMALIZE ----------------
 

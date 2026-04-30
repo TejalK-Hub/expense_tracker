@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 .past-expenses {
   font-family: "Poppins", sans-serif;
@@ -164,7 +164,7 @@
   background: #e0e7ff;
 }
 
-/* ================= MOBILE FIX ================= */
+/* ================= MOBILE RESPONSIVE ================= */
 @media (max-width: 768px) {
   .table-container {
     max-height: unset;
@@ -196,7 +196,7 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 10px;
-    padding: 6px 0;
+    padding: 3px 0;
     font-size: 13px;
     border: none;
   }
@@ -241,7 +241,7 @@
 
   /* CLIENT FIX */
   .mobile-table .client-cell {
-    max-width: 100%;
+    // max-width: 100%;
   }
 
   /* BUTTON ALIGN */
