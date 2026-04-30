@@ -1,0 +1,50 @@
+.wip-container {
+  min-height: 100vh;
+  background: #f4f7fb;
+  padding: 20px;
+}
+
+/* ₹ ICON */
+.rupee-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #1c2b4a;
+  color: #fff;
+  font-size: 40px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* TEXT */
+h2 {
+  color: #1c2b4a;
+}
+
+p {
+  max-width: 400px;
+  font-size: 14px;
+}
+
+/* PROGRESS BAR */
+.wip-progress {
+  height: 6px;
+  max-width: 250px;
+}
+
+.progress-bar {
+  background: #2f4f8f;
+}
+
+/* BUTTON */
+button {
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #1c2b4a;
+  color: #fff;
+}
