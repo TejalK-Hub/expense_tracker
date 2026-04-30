@@ -8,15 +8,15 @@
   <div class="row g-3 mb-4">
     <!-- SUMMARY CARD (ADMIN) -->
     <!-- SUMMARY CARD (ADMIN) -->
+    <!-- SUMMARY CARDS -->
     <div class="row g-3 mb-4">
       <div class="col-12">
         <div
-          class="card border-0 shadow-sm action-card compact-card p-3"
+          class="card border-0 shadow-sm action-card compact-card p-3 summary-card"
           (click)="goToMonthlyExpenses()"
-          style="cursor: pointer"
         >
           <!-- TOP ROW -->
-          <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="summary-top">
             <div>
               <div class="text-muted small">Expense Summary</div>
               <div class="fw-semibold text-secondary small">
@@ -25,11 +25,12 @@
             </div>
 
             <!-- USER FILTER -->
-            <div style="min-width: 180px" (click)="$event.stopPropagation()">
+            <div class="user-select">
               <select
-                class="form-select form-select-sm"
+                class="custom-select form-select-sm w-100"
                 [(ngModel)]="selectedUserId"
-                (change)="onUserChange()"
+                (click)="$event.stopPropagation()"
+                (click)="onUserChange($event)"
               >
                 <option [ngValue]="null">All Users</option>
                 <option *ngFor="let u of usersList" [ngValue]="u.id">
@@ -40,7 +41,7 @@
           </div>
 
           <!-- TOTAL -->
-          <div class="text-end mb-2">
+          <div class="summary-total">
             <div class="total-value">
               {{
                 summary_current_period?.total_amount || 0
@@ -121,6 +122,14 @@
             </div>
           </div>
         </div>
+        <!-- <div class="row d-flex justify-content-end">
+          <button
+            class="goToMonthlyExpenses col-2 btn btn-outline-primary mt-2"
+            (click)="goToMonthlyExpenses()"
+          >
+            View Data
+          </button>
+        </div> -->
       </div>
     </div>
 
@@ -200,7 +209,7 @@
       <i class="bi bi-receipt"></i>
       <span>Expense</span>
     </button>
-<!-- 
+    <!-- 
     <div class="dropdown">
       <button
         class="btn btn-dark dropdown-toggle px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2 btn-hover-icon"
