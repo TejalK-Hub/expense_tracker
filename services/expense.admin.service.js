@@ -16,12 +16,11 @@ const pool = require('../config/db');
     index++;
     }
 
-    // DEFAULT CURRENT MONTH (if not provided)
-    const month = filters.month || new Date().toISOString().slice(0, 7);
-
+    if (filters.month) {
     conditions.push(`TO_CHAR(e.date, 'YYYY-MM') = $${index}`);
-    values.push(month);
+    values.push(filters.month);
     index++;
+    }
 
     if (filters.user_id) {
 
@@ -96,6 +95,8 @@ const pool = require('../config/db');
         ORDER BY e.created_at DESC
     `;
 
+    // console.log("FINAL QUERY:", query);
+    // console.log("VALUES:", values);
     const result = await pool.query(query, values);
     return result.rows;
 };
