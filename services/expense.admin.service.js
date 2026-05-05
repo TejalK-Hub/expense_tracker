@@ -3,7 +3,7 @@ const pool = require('../config/db');
 
 // ADMIN LIST ( Pending)
 
-    const getAllExpenses = async (filters) => {
+    const getAllExpenses = async (filters = {}) => {
 
     let conditions = [];
     conditions.push(`e.deleted_on IS NULL`);
@@ -13,7 +13,7 @@ const pool = require('../config/db');
     // APPLY STATUS FILTER ONLY IF NOT REVIEW MODE
     if (!filters.include_all && filters.status) {
     conditions.push(`LOWER(es.name) = $${index}`);
-    values.push(filters.status.toLowerCase());
+    values.push(String(filters.status).trim().toLowerCase());
     index++;
     }
 
@@ -27,18 +27,18 @@ const pool = require('../config/db');
 
         if (Array.isArray(filters.user_id)) {
             conditions.push(`e.user_id = ANY($${index}::int[])`);
-            values.push(filters.user_id);
+            values.push(filters.user_id.map(Number));
         } else {
             conditions.push(`e.user_id = $${index}`);
-            values.push(filters.user_id);
+            values.push(Number(filters.user_id));
         }
 
         index++;
     }
 
-    const whereClause = conditions.length
-        ? `WHERE ${conditions.join(' AND ')}`
-        : '';
+    if (!conditions.length) {
+    conditions.push('1=1');
+    }
 
     const query = `
         SELECT 
@@ -73,7 +73,7 @@ const pool = require('../config/db');
             rr_data.rejection_reason
 
         FROM expenses e
-        WHERE e.deleted_on IS NULL
+        
 
         JOIN users u ON u.id = e.user_id
         JOIN visits v ON v.id = e.visit_id
@@ -94,7 +94,7 @@ const pool = require('../config/db');
             LIMIT 1
         ) rr_data ON TRUE
 
-        ${whereClause}
+        WHERE ${conditions.join(' AND ')}
         ORDER BY e.created_at DESC
     `;
 
@@ -140,7 +140,9 @@ const updateExpenseStatus = async (expenseId, action, adminId, rejection_reason_
 
     // SELF APPROVAL RESTRICTION
     const expenseCheck = await pool.query(
-        `SELECT user_id FROM expenses WHERE id = $1`,
+        `SELECT user_id FROM expenses 
+        WHERE id = $1
+        AND deleted_on IS NULL`,
         [expenseId]
     );
 
@@ -160,6 +162,7 @@ const updateExpenseStatus = async (expenseId, action, adminId, rejection_reason_
         approved_at = NOW(),
         rejection_description = $4
     WHERE id = $3
+    AND deleted_on IS NULL
     RETURNING 
         id,
         status_id,
