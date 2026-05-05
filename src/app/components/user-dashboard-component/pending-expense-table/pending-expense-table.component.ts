@@ -57,6 +57,7 @@ export class PendingExpenseTableComponent implements OnInit {
 
     if (this.isAdmin) {
       this.expensesService.fetchAdminPending().subscribe(res => {
+        console.log("Admin pending expenses response: ", res);
         this.expenses = this.normalizeExpenses(res.data);
         this.filteredVisitsList = this.getUnique('visit_name'); 
         this.applyFilters();
