@@ -146,6 +146,7 @@ const getExpensesByVisit = async (visitId, userId) => {
         LEFT JOIN users approver ON approver.id = e.approved_by
         WHERE e.visit_id = $1
         AND e.user_id = $2
+        AND e.deleted_on IS NULL
         ORDER BY e.created_at DESC
     `;
 
@@ -187,6 +188,7 @@ const getUserExpenses = async (userId) => {
         LEFT JOIN users approver ON approver.id = e.approved_by
         WHERE e.user_id = $1
         AND LOWER(es.name) = 'submitted'
+        AND e.deleted_on IS NULL
         ORDER BY e.created_at DESC
         `;
         // AND TO_CHAR(e.date,'YYYY-MM') = TO_CHAR(CURRENT_DATE,'YYYY-MM')
@@ -209,6 +211,7 @@ const updateExpense = async (id, userId, data) => {
         JOIN visits v ON v.id = e.visit_id
         WHERE e.id = $1
         AND e.user_id = $2
+        AND e.deleted_on IS NULL
     `;
 
     const checkResult = await pool.query(checkQuery, [id, userId]);
@@ -324,6 +327,38 @@ const updateExpense = async (id, userId, data) => {
     return result.rows[0];
 };
 
+// soft delete self expenses (only pending)
+const deleteExpense = async (expenseId, userId) => {
+
+    const checkQuery = `
+        SELECT id
+        FROM expenses
+        WHERE id = $1
+        AND user_id = $2
+        AND deleted_on IS NULL
+        AND approved_by IS NULL
+        AND approved_at IS NULL
+    `;
+
+    const check = await pool.query(checkQuery, [expenseId, userId]);
+
+    if (!check.rows.length) {
+        throw new Error('Expense cannot be deleted');
+    }
+
+    const deleteQuery = `
+        UPDATE expenses
+        SET deleted_on = NOW(),
+            deleted_by = $2
+        WHERE id = $1
+        RETURNING id
+    `;
+
+    const result = await pool.query(deleteQuery, [expenseId, userId]);
+
+    return result.rows[0];
+};
+
 const getUserAllExpenses = async (userId) => {
     const query = `
         SELECT 
@@ -372,6 +407,7 @@ const getUserAllExpenses = async (userId) => {
         ) rr_data ON TRUE
 
         WHERE e.user_id = $1
+        AND e.deleted_on IS NULL
         ORDER BY e.created_at DESC
     `;
 
@@ -392,6 +428,7 @@ const getUserMonthlySummary = async (userId) => {
             COALESCE(SUM(amount),0) AS total_amount
         FROM expenses
         WHERE user_id = $1
+        AND deleted_on IS NULL
         AND TO_CHAR(date, 'YYYY-MM') = TO_CHAR(CURRENT_DATE, 'YYYY-MM')
     `;
 
@@ -408,6 +445,7 @@ module.exports = {
     getExpensesByVisit,
     getUserExpenses,
     updateExpense,
+    deleteExpense,
     getUserAllExpenses,
     getUserMonthlySummary
 };

@@ -92,6 +92,29 @@ const data = await service.updateExpense(id, userId, payload);
     }
 };
 
+//soft delete : self expenses (pending only)
+
+const deleteExpense = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.id;
+
+        const data = await service.deleteExpense(id, userId);
+
+        res.json({
+            success: true,
+            data
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 const getUserAllExpenses = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -134,6 +157,7 @@ module.exports = {
     getExpensesByVisit,
     getUserExpenses,
     updateExpense,
+    deleteExpense,
     getUserAllExpenses,
     getUserMonthlySummary
 };

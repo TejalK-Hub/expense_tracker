@@ -29,6 +29,8 @@ router.get('/user', controller.getUserExpenses);
 
 router.put('/:id', upload.array('bills', 10), controller.updateExpense);
 
+router.delete('/:id', controller.deleteExpense);
+
 router.get('/user/all', controller.getUserAllExpenses);
 
 router.get('/user/summary', controller.getUserMonthlySummary);

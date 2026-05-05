@@ -6,6 +6,7 @@ const pool = require('../config/db');
     const getAllExpenses = async (filters) => {
 
     let conditions = [];
+    conditions.push(`e.deleted_on IS NULL`);
     let values = [];
     let index = 1;
 
@@ -72,6 +73,8 @@ const pool = require('../config/db');
             rr_data.rejection_reason
 
         FROM expenses e
+        WHERE e.deleted_on IS NULL
+
         JOIN users u ON u.id = e.user_id
         JOIN visits v ON v.id = e.visit_id
         LEFT JOIN clients c ON c.id = v.client_id
@@ -241,6 +244,8 @@ const getAllExpensesFull = async () => {
             ON h.expense_id = e.id
         LEFT JOIN rejection_reason rr 
             ON rr.id = h.rejection_reason_id
+
+        WHERE e.deleted_on IS NULL
 
         ORDER BY e.created_at DESC
     `;
