@@ -25,7 +25,7 @@ export class ExpensesService {
   }
 
   getSelectedExpense() {
-    console.log(this.selectedExpense);
+    console.log("From expense service: ", this.selectedExpense);
     return this.selectedExpense;
   }
 
@@ -40,7 +40,7 @@ export class ExpensesService {
 
   }
 
-  resubmit(expense_id: number, body: any): Observable<any>  {
+  resubmit(expense_id: number, body: any): Observable<any> {
     return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${expense_id}`, body, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } });
   }
 
@@ -57,6 +57,15 @@ export class ExpensesService {
   //     }
   //   })
   // }
+
+
+  // ------------------------------------------------------DELETE EXPENSE------------------------------------------------------
+
+  deleteExpense(expense_id: number): Observable<any> {
+    return this.httpClient.delete(`${environment.apiBaseUrl}/expenses/${expense_id}`, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } });
+  }
+
+
 
   // ------------------------------------------------------User Dashboard Summary Blocks------------------------------------------------------
 
@@ -123,9 +132,9 @@ export class ExpensesService {
 
 
 
-  updateExpense(id: any, body: any): Observable<any> {
-    return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${id}/status`, body);
-  }
+  // updateExpense(id: any, body: any): Observable<any> {
+  //   return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${id}/status`, body);
+  // }
 
   updateExpenseStatus(id: string, body: any): Observable<any> {
     return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${id}/status`,
