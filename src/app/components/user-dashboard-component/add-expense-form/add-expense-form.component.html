@@ -146,6 +146,10 @@
               class="form-control"
             />
 
+            <span *ngIf="selectedFiles.length" class="small text-muted">
+              {{ selectedFiles.length }} file(s) selected
+            </span>
+
             <!-- PREVIEW GRID -->
             <div *ngIf="filePreviews.length" class="preview-grid">
               <div

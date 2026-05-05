@@ -61,7 +61,7 @@ export class AddExpenseFormComponent {
     private sharedService: SharedServicesService,
     private visitService: VisitsService,
     private toastr: ToastrService,
-  ) {}
+  ) { }
 
   // ===== INIT =====
   ngOnInit() {
@@ -186,7 +186,7 @@ export class AddExpenseFormComponent {
 
     this.expenseForm.patchValue({
       selectedFiles: this.selectedFiles
-      
+
     });
     console.log("Multiple imgs support: ----------------------------", this.selectedFiles);
     console.log("Individual file: ", this.selectedFiles.forEach(s => s.name));
@@ -197,10 +197,23 @@ export class AddExpenseFormComponent {
     this.selectedFiles.splice(index, 1);
     this.filePreviews.splice(index, 1);
 
+    // ✅ Recreate FileList using DataTransfer
+    const dataTransfer = new DataTransfer();
+
+    this.selectedFiles.forEach(file => {
+      dataTransfer.items.add(file);
+    });
+
+    // ✅ Update input files
+    if (this.fileInput) {
+      this.fileInput.nativeElement.files = dataTransfer.files;
+    }
+
     this.expenseForm.patchValue({
       selectedFiles: this.selectedFiles
     });
 
+    // ✅ If empty, reset completely
     if (this.selectedFiles.length === 0) {
       this.resetFile();
     }
@@ -282,8 +295,9 @@ export class AddExpenseFormComponent {
     console.log("FormData entries:");
     formData.forEach((value, key) => {
       console.log(`${key}: ${value}`);
-      if (value instanceof File) {  
-      }});
+      if (value instanceof File) {
+      }
+    });
 
     this.expensesService.addExpense(formData).subscribe({
       next: () => {
