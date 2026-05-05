@@ -32,7 +32,7 @@ export class ExpensePreviewPageComponent {
   isDeletable: boolean = false;
 
   showImagePreview = false;
-  
+
   // ----------------------------------------------modal properties------------------------------------------------
   rejectionReasons: any;
   selectedRejectionReason: string = '';
@@ -67,7 +67,7 @@ export class ExpensePreviewPageComponent {
     this.initialChecks();
     this.getRejectionReason();
     this.getImagePath();
-    this.deletable();
+    // this.deletable();
     // If user refreshes page → redirect back safely
     if (!this.expense) {
       console.log("No expense selected, redirecting back to manage expense page.");
@@ -94,14 +94,51 @@ export class ExpensePreviewPageComponent {
       this.isSelfAdmin = false;
     }
 
+    this.deletable();
+
   }
+  // ------------------------------------------------------DELETE EXPENSE LOGIC------------------------------------------------------
 
   deletable() {
-    if (this.expense.status === 'Submitted' && !this.expense.approved_at) {
+
+    if (this.isAdmin) {
+
+      if (this.expense.user_id === this.authService.userId && this.expense.approved_at == null) {
+        this.isDeletable = true;
+      }
+
+    } else {
+
+      if (!this.expense.approved_at) {
+        this.isDeletable = true;
+      }
+    }
+
+
+    if (this.expense.approved_at == null && !this.isAdmin) {
       this.isDeletable = true;
     }
   }
 
+
+  deleteExpense() {
+
+    this.expenseService.deleteExpense(this.expense.id).subscribe({
+      next: () => {
+        this.toastr.success('Expense deleted successfully!');
+      },
+      error: (err) => {
+        console.log("Error deleting expense: ", err);
+        this.toastr.error(err.error?.message || 'Failed to delete expense!');
+      }
+    })
+  }
+
+  // ------------------------------------------------------ DELETE EXPENSE LOGIC (end) ------------------------------------------------------
+
+
+
+  // ------------------------------------------------------ IMAGE PREVIEW LOGIC ------------------------------------------------------
 
   openImagePreview(img: string) {
     if (!img) return;
@@ -113,6 +150,9 @@ export class ExpensePreviewPageComponent {
     this.showImagePreview = false;
     this.previewImage = '';
   }
+
+  // ------------------------------------------------------ IMAGE PREVIEW LOGIC (end)------------------------------------------------------
+
 
   // ------------------------------------------------------Service Calls (Initialization)------------------------------------------------------
 
