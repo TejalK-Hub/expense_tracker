@@ -260,8 +260,8 @@ export class ExpenseTableComponent implements OnInit {
   // ---------------- FILTER LOGIC ----------------
   applyFilters() {
     const f = this.filters;
-    if (f.status) {
-      {
+    // if (f.status) {
+      
         console.log('Available statuses: ', this.getUnique('status'));
         this.filteredExpenses = this.expenses.filter(exp => {
 
@@ -308,11 +308,11 @@ export class ExpenseTableComponent implements OnInit {
         });
         console.log('Filtered expenses: ', this.filteredExpenses);
         this.applySorting();
-      }
-    }
-    else {
-      this.filteredExpenses = []
-    }
+      
+    // }
+    // else {
+    //   this.filteredExpenses = []
+    // }
   }
 
   // ---------------- LOAD EXPENSES ----------------
