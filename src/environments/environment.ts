@@ -1,5 +1,5 @@
 const api = '192.168.0.104';
-// const api = '10.13.228.23';
+// const api = '100.105.12.55';
 // const api = 'localhost'
 
 export const environment = {
