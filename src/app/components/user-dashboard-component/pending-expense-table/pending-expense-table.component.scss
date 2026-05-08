@@ -261,6 +261,13 @@
 }
 
 /* ================= MOBILE RESPONSIVE ================= */
+
+.range-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 @media (max-width: 768px) {
   .table-container {
     max-height: unset;
@@ -346,6 +353,21 @@
   .mobile-table tr td[colspan] {
     display: block;
     text-align: center !important;
+  }
+
+  /* RANGE FILTER MOBILE FIX */
+  .range-filter {
+    flex-wrap: wrap;
+    padding-left: 30px;
+    gap: 8px;
+  }
+
+  .range-filter .filter-input {
+    width: 100%;
+  }
+
+  .range-separator {
+    display: none;
   }
 }
 
