@@ -141,6 +141,15 @@ export class ExpensePreviewPageComponent {
     })
   }
 
+
+  confirmDelete(){
+    const confirmed = window.confirm('Are you sure, you want to delete this expense?');
+
+    if (confirmed) {
+      this.deleteExpense();
+    }
+  }
+
   // ------------------------------------------------------ DELETE EXPENSE LOGIC (end) ------------------------------------------------------
 
 

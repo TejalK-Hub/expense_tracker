@@ -41,9 +41,9 @@
 
       <!-- DELETE BUTTON VISIBLE ONLY WHEN EXPENSE IS IN SUBMITTED STATE AND NOT APPROVED OR REJECTED -->
       <button
-      class="btn btn-sm btn-outline-dark delete-btn"
+      class="btn btn-sm btn-outline-danger delete-btn"
       *ngIf="isDeletable"
-      (click)="deleteExpense()"
+      (click)="confirmDelete()"
       >
         <i class="bi bi-trash"></i>
         Delete
