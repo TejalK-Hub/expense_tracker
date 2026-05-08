@@ -1,23 +1,24 @@
 /* LEFT PANEL */
 .left-panel {
-  background: linear-gradient(135deg, #1c2b4a, #2f4f8f);
+  background: var(--login-left-bg);
   text-align: center;
 }
 
 /* RIGHT PANEL */
 .right-panel {
-  background: #f4f7fb;
+  background: var(--login-right-bg);
 }
 
 /* MOBILE BANNER */
 .mobile-banner {
-  background: linear-gradient(135deg, #1c2b4a, #2f4f8f);
+  background: var(--login-left-bg);
   padding: 12px;
 }
 
 /* LOGIN CARD (clean instead of glass) */
 .login-card {
-  background: #fff;
+  background: var(--login-card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 18px;
   padding: 28px;
 }
@@ -30,8 +31,8 @@
 
 /* FOCUS */
 .form-control:focus {
-  border-color: #2f4f8f;
-  box-shadow: 0 0 0 0.15rem rgba(47, 79, 143, 0.2);
+  border-color:  var(--login-btn-bg);
+  box-shadow: 0 0 0 0.15rem var(--login-input-focus);
 }
 
 /* EYE ICON CENTER */
@@ -53,14 +54,14 @@
 
 /* BUTTON */
 .login-btn {
-  background: #1c2b4a;
+  background: var(--login-btn-bg);
   color: #fff;
   font-size: 15px;
   transition: all 0.2s ease;
 }
 
 .login-btn:hover {
-  background: #2f4f8f;
+  background: var(--login-btn-hover);
   transform: translateY(-1px);
 }
 
@@ -70,7 +71,7 @@
 
 /* LINK */
 .register-link {
-  color: #1c2b4a;
+  color: var(--login-link);
   cursor: pointer;
   font-size: 14px;
 }
@@ -100,7 +101,7 @@
   right: -12px;
   width: 55px;
   height: 55px;
-  background: #1c2b4a;
+  background: var(--login-rupee-badge-bg);
   color: #fff;
   border-radius: 50%;
   display: flex;
@@ -138,5 +139,56 @@
 @media (max-width: 480px) {
   .login-card {
     padding: 18px;
+  }
+}
+
+
+
+/* DARK MODE OVERRIDES */
+.dark-theme {
+  .login-card {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .form-control {
+    background: #262626;
+    color: #f3f4f6;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .form-control::placeholder {
+    color: #94a3b8;
+  }
+
+  .form-floating label {
+    color: #b0b0b0;
+  }
+
+  .eye-icon i {
+    color: #cbd5e1;
+  }
+
+  .text-muted {
+    color: #9ca3af !important;
+  }
+}
+
+
+/* =========================================
+   DARK MODE TEXT FIXES
+========================================= */
+
+:host-context(.dark-theme) {
+  .form-floating > .form-control::placeholder {
+    color: transparent !important;
+  }
+
+  .form-floating > .form-control:not(:placeholder-shown) ~ label,
+  .form-floating > .form-control:focus ~ label {
+    color: #93c5fd !important;
+  }
+
+  .form-floating > label {
+    color: #cbd5e1 !important;
   }
 }
