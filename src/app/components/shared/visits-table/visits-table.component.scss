@@ -480,6 +480,21 @@
     display: block;
     text-align: center !important;
   }
+
+  /* RANGE FILTER MOBILE FIX */
+  .range-filter {
+    flex-wrap: wrap;
+    padding-left: 30px;
+    gap: 8px;
+  }
+
+  .range-filter .filter-input {
+    width: 100%;
+  }
+
+  .range-separator {
+    display: none;
+  }
 }
 
 /* =========================================================
