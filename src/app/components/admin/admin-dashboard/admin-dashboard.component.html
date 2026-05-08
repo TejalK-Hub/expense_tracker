@@ -42,13 +42,13 @@
 
           <!-- TOTAL -->
           <div class="summary-total">
-            <div class="total-value">
+            <div class="total-value fs-6 fw-medium ">
               {{
                 summary_current_period?.total_amount || 0
                   | currency: "INR" : "symbol" : "1.2-2"
               }}
             </div>
-            <div class="total-label">
+            <div class="total-label fs-6 fw-medium ">
               {{ summary_current_period?.total_count || 0 }} entries
             </div>
           </div>
@@ -65,10 +65,10 @@
               <i class="bi bi-hourglass-split"></i>
               <div>
                 <div class="label">Submitted</div>
-                <div class="value">
+                <div class="value fs-6 fw-medium ">
                   {{ summary_current_period?.submitted?.count || 0 }}
                 </div>
-                <div class="sub-value">
+                <div class="sub-value fs-6 fw-medium ">
                   {{
                     summary_current_period?.submitted?.amount || 0
                       | currency: "INR" : "symbol" : "1.2-2"
@@ -87,10 +87,10 @@
               <i class="bi bi-check-circle"></i>
               <div>
                 <div class="label">Approved</div>
-                <div class="value">
+                <div class="value  fs-6 fw-medium ">
                   {{ summary_current_period?.approved?.count || 0 }}
                 </div>
-                <div class="sub-value">
+                <div class="sub-value fs-6 fw-medium ">
                   {{
                     summary_current_period?.approved?.amount || 0
                       | currency: "INR" : "symbol" : "1.2-2"
@@ -109,10 +109,10 @@
               <i class="bi bi-x-circle"></i>
               <div>
                 <div class="label">Rejected</div>
-                <div class="value">
+                <div class="value fs-6 fw-medium ">
                   {{ summary_current_period?.rejected?.count || 0 }}
                 </div>
-                <div class="sub-value">
+                <div class="sub-value fs-6 fw-medium ">
                   {{
                     summary_current_period?.rejected?.amount || 0
                       | currency: "INR" : "symbol" : "1.2-2"
