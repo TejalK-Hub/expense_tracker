@@ -156,7 +156,6 @@ input[type="number"] {
 
   --divider-color: rgba(15, 23, 42, 0.12);
 
-
   
 }
 
@@ -184,14 +183,14 @@ input[type="number"] {
      EXPENSE STATUS COLORS - DARK
   ========================================= */
 
-  --expense-approved-bg: #04f368;
-  --expense-approved-border: #04f368;
+  --expense-approved-bg: #90cda9;
+  --expense-approved-border: #90cda9;
 
   --expense-rejected-bg: #f6728e;
   --expense-rejected-border: #f6728e;
 
-  --expense-pending-bg: #b077dc;
-  --expense-pending-border: #b077dc;
+  --expense-pending-bg: #777edc;
+  --expense-pending-border: #777edc;
 
   --expense-card-shadow:
     0 25px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
