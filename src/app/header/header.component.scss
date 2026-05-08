@@ -1,108 +1,232 @@
-/* HEADER */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+:host {
+  font-family: "Poppins", sans-serif;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
 .header {
   position: sticky;
   top: 0;
   z-index: 1050;
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+
+  backdrop-filter: blur(14px);
+
+  background: var(--header-bg);
+
+  border-bottom: 1px solid var(--header-border);
+
+  box-shadow: 0 4px 24px var(--header-shadow);
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 
-/* LOGO */
+/* =========================================================
+   LOGO
+========================================================= */
+
 .logo {
-  width: 36px;
-  height: 36px;
+  width: 52px;
+  height: 52px;
+
+  object-fit: contain;
 }
 
-/* BRAND */
+/* =========================================================
+   BRAND
+========================================================= */
+
 .brand-text {
-  font-size: 15px;
-  color: #1c2b4a;
+  font-size: 20px;
+  font-weight: 600;
+
+  color: var(--header-text);
+
   letter-spacing: 0.2px;
 }
 
-/* PROFILE */
+/* =========================================================
+   PROFILE
+========================================================= */
+
 .profile {
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 20px;
-  transition: all 0.2s ease;
 }
 
-.profile:hover {
-  background: rgba(28, 43, 74, 0.06);
-}
+/* =========================================================
+   AVATAR
+========================================================= */
 
-/* AVATAR */
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
+
   border-radius: 50%;
-  background: #1c2b4a;
-  color: #fff;
+
+  background: var(--avatar-bg);
+
+  color: #ffffff;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  font-size: 20px;
   font-weight: 600;
-  font-size: 13px;
-  transition: transform 0.2s ease;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.22);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .profile:hover .avatar {
-  transform: scale(1.05);
+  transform: translateY(-1px);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 14px 30px rgba(0, 0, 0, 0.28);
 }
 
-/* USER NAME */
-.user-name {
-  max-width: 140px;
-  font-size: 14px;
-  color: #2d3748;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+/* =========================================================
+   ROLE BADGE
+========================================================= */
 
-/* ROLE BADGE */
 .role-badge {
-  font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 30px;
+
+  padding: 0 18px;
+
+  border-radius: 999px;
+
+  font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.5px;
+
+  letter-spacing: 0.2px;
 }
 
 /* ADMIN */
+
 .role-badge.admin {
-  background: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
+  color: #ef4444;
+
+  background: rgba(239, 68, 68, 0.12);
+
+  border: 1px solid rgba(239, 68, 68, 0.18);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 6px 18px rgba(239, 68, 68, 0.08);
 }
 
 /* EMPLOYEE */
+
 .role-badge.employee {
-  background: #f0fdf4;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+  color: #22c55e;
+
+  background: rgba(34, 197, 94, 0.12);
+
+  border: 1px solid rgba(34, 197, 94, 0.18);
 }
 
-/* LOGOUT */
+/* DIVIDER */
+.header-divider {
+  width: 1px;
+  height: 26px;
+
+  background: var(--divider-color);
+}
+
+/* =========================================================
+   THEME TOGGLE
+========================================================= */
+
+.theme-toggle-btn {
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+
+  border: 1px solid var(--header-btn-border);
+
+  background: var(--header-btn-bg);
+
+  color: var(--header-text);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: translateY(-1px);
+
+  background: var(--header-btn-hover);
+
+  border-color: var(--header-btn-border);
+}
+
+.theme-toggle-btn i {
+  font-size: 21px;
+}
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
 .logout-btn {
-  font-size: 13px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
+  height: 40px;
+
+  padding: 0 22px;
+
+  border-radius: 999px;
+
+  border: 1px solid var(--header-btn-border);
+
+  background: var(--header-btn-bg);
+
+  color: var(--header-text);
+
+  font-size: 16px;
+  font-weight: 500;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .logout-btn:hover {
-  background: #fee2e2;
-  border-color: #fecaca;
-  color: #b91c1c;
+  transform: translateY(-1px);
+
+  background: rgba(239, 68, 68, 0.08);
+
+  border-color: rgba(239, 68, 68, 0.2);
+
+  color: #ef4444;
 }
 
-/* ICON MICRO-INTERACTION */
 .logout-btn i {
+  font-size: 18px;
+
   transition: transform 0.2s ease;
 }
 
@@ -110,45 +234,151 @@
   transform: translateX(2px);
 }
 
-/* ---------- RESPONSIVE ---------- */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 768px) {
+  .logo {
+    width: 44px;
+    height: 44px;
+  }
+
   .brand-text {
-    font-size: 13px;
+    font-size: 17px;
+  }
+
+  .avatar,
+  .theme-toggle-btn {
+    width: 46px;
+    height: 46px;
+  }
+
+  .logout-btn {
+    height: 46px;
+    padding: 0 18px;
+
+    font-size: 14px;
   }
 
   .role-badge {
-    font-size: 10px;
-    padding: 3px 8px;
-  }
+    height: 36px;
 
-  .logout-text {
-    font-size: 12px;
+    padding: 0 14px;
+
+    font-size: 13px;
   }
 }
 
 @media (max-width: 576px) {
-  .logo {
-    width: 30px;
-    height: 30px;
-  }
-
   .brand-text {
-    font-size: 12px;
-  }
-
-  .avatar {
-    width: 30px;
-    height: 30px;
-    font-size: 12px;
-  }
-
-  .role-badge {
-    font-size: 9px;
-    padding: 2px 6px;
+    font-size: 15px;
   }
 
   .logout-text {
     display: none;
   }
+
+  .logout-btn {
+    width: 46px;
+
+    padding: 0;
+
+    justify-content: center;
+  }
+
+  .avatar,
+  .theme-toggle-btn,
+  .logout-btn {
+    height: 42px;
+  }
+
+  .avatar,
+  .theme-toggle-btn {
+    width: 42px;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .role-badge {
+    display: none;
+  }
+}
+
+
+
+/* From Uiverse.io by rishichawda */ 
+/* The switch - the box around the slider */
+#theme-toggle-button {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 7em;
+  cursor: pointer;
+}
+
+/* Hide default HTML checkbox */
+#toggle {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+#container,
+#patches,
+#stars,
+#button,
+#sun,
+#moon,
+#cloud {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.25s;
+}
+
+/* night sky background */
+#toggle:checked + svg #container {
+  fill: #2b4360;
+}
+
+/* move button to right when checked */
+#toggle:checked + svg #button {
+  transform: translate(28px, 2.333px);
+}
+
+/* show/hide sun and moon based on checkbox state */
+#sun {
+  opacity: 1;
+}
+
+#toggle:checked + svg #sun {
+  opacity: 0;
+}
+
+#moon {
+  opacity: 0;
+}
+
+#toggle:checked + svg #moon {
+  opacity: 1;
+}
+
+/* show or hide background items on checkbox state */
+#cloud {
+  opacity: 1;
+}
+
+#toggle:checked + svg #cloud {
+  opacity: 0;
+}
+
+#stars {
+  opacity: 0;
+}
+
+#toggle:checked + svg #stars {
+  opacity: 1;
 }

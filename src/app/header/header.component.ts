@@ -14,22 +14,51 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
 
-userName: string = 'User';
-userInitial: string = 'U';
-userRole: string = 'Employee'; // default
+  userName: string = 'User';
+  userInitial: string = 'U';
+  userRole: string = 'Employee'; // default
 
-constructor(
-  private authService: AuthServiceService,
-  private router: Router,
-  private toastr: ToastrService
-) {
-  const name = localStorage.getItem('userName') || 'User';
-  const role = localStorage.getItem('userRole') || 'Employee';
+  isDarkTheme = false;
 
-  this.userName = name;
-  this.userInitial = name.charAt(0).toUpperCase();
-  this.userRole = role;
-}
+  constructor(
+    private authService: AuthServiceService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {
+    const name = localStorage.getItem('userName') || 'User';
+    const role = localStorage.getItem('userRole') || 'Employee';
+
+    this.userName = name;
+    this.userInitial = name.charAt(0).toUpperCase();
+    this.userRole = role;
+  }
+
+
+
+  ngOnInit() {
+    const savedTheme = localStorage.getItem('theme');
+
+    this.isDarkTheme = savedTheme === 'dark';
+
+    if (this.isDarkTheme) {
+      document.body.classList.add('dark-theme');
+    }
+  }
+
+
+  // -------------------------------------- THEME TOGGLING --------------------------------------
+  toggleTheme() {
+    this.isDarkTheme = !this.isDarkTheme;
+
+    if (this.isDarkTheme) {
+      document.body.classList.add('dark-theme');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.classList.remove('dark-theme');
+      localStorage.setItem('theme', 'light');
+    }
+  }
+
 
   logout() {
     this.authService.logout?.(); // if you have logout method

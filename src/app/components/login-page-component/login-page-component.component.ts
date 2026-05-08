@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
 import { AuthServiceService } from '../../service/auth-service.service';
 import { ToastrService } from 'ngx-toastr';
+import { SplashScreenComponent } from '../splash-screen/splash-screen.component';
 
 @Component({
   selector: 'app-login-page-component',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, SplashScreenComponent],
   templateUrl: './login-page-component.component.html',
   styleUrl: './login-page-component.component.scss',
 })
@@ -18,11 +20,21 @@ export class LoginPageComponentComponent {
   errorMsg: string = '';
   showPassword: boolean = false;
 
+  splashScreenVisible: boolean = true;
+showLoader: boolean = false;
   constructor(
     private router: Router,
     private authService: AuthServiceService,
     private toastr: ToastrService
-  ) { }
+  ) {
+
+    
+this.showLoader = true;
+ 
+    setTimeout(() => {
+      this.showLoader = false;
+    }, 3000);
+   }
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -62,5 +74,5 @@ export class LoginPageComponentComponent {
     this.router.navigate(['/signup']);
   }
 
-  loading:any
+  loading: any
 }

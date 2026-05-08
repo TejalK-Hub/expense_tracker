@@ -1,34 +1,64 @@
 .user-dashboard {
   font-family: "Poppins", sans-serif;
+  color: var(--text-primary);
 }
 
 /* HEADER */
 .dashboard-title {
   font-size: 22px;
+  color: var(--text-primary);
 }
 
 /* CARD */
 .action-card {
   border-radius: 16px;
-  background: #ffffff;
+  background: var(--bg-card);
   transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
+  cursor: pointer;
 }
 
 .action-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* CARD BODY */
+.card {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-body {
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 /* TOTAL */
 .total-value {
   font-size: 16px;
   font-weight: 600;
-  color: #3575ff;
+  color: #4f8cff;
 }
 
 .total-label {
   font-size: 11px;
-  color: #6b7280;
+  color: var(--text-secondary);
+}
+
+/* TEXT COLORS */
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-dark {
+  color: var(--text-primary) !important;
+}
+
+.text-muted {
+  color: var(--text-secondary) !important;
 }
 
 /* STATUS GRID */
@@ -46,9 +76,10 @@
   gap: 8px;
   padding: 10px;
   border-radius: 10px;
-  background: #f9fafb;
+  background: var(--bg-hover);
   font-size: 12px;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .status-box i {
@@ -67,24 +98,23 @@
 .sub-value {
   font-size: 12px;
   font-weight: 600;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* COLORS */
 .status-box.submitted {
-  border-left: 3px solid #2e6a9c;
-  // background: #e9f5ff;
-  color: #2e6a9c;
+  border-left: 3px solid #3b82f6;
+  color: #3b82f6;
 }
 
 .status-box.approved {
-  border-left: 3px solid #166534;
-  color: #166534;
+  border-left: 3px solid #22c55e;
+  color: #22c55e;
 }
 
 .status-box.rejected {
-  border-left: 3px solid #991b1b;
-  color: #991b1b;
+  border-left: 3px solid #ef4444;
+  color: #ef4444;
 }
 
 /* HOVER */
@@ -92,25 +122,57 @@
   transform: translateY(-2px);
 }
 
+/* LIGHT MODE HOVERS */
 .status-box.submitted:hover {
-  background: #e0e7ff;
+  background: rgba(59, 130, 246, 0.12);
 }
 
 .status-box.approved:hover {
-  background: #dcfce7;
+  background: rgba(34, 197, 94, 0.12);
 }
 
 .status-box.rejected:hover {
-  background: #fee2e2;
+  background: rgba(239, 68, 68, 0.12);
 }
 
-/* BUTTON */
+/* DARK MODE HOVERS */
+.dark-theme .status-box.submitted:hover {
+  background: rgba(59, 130, 246, 0.18);
+}
+
+.dark-theme .status-box.approved:hover {
+  background: rgba(34, 197, 94, 0.18);
+}
+
+.dark-theme .status-box.rejected:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+/* BUTTONS */
 .btn-hover-icon {
   transition: 0.2s;
 }
 
+/* ACTION BUTTONS */
+.btn-outline-dark {
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+  background: var(--bg-card) !important;
+}
+
+.btn-outline-dark:hover {
+  background: var(--text-primary) !important;
+  color: var(--bg-card) !important;
+  border-color: var(--text-primary) !important;
+}
+
 .btn-hover-icon:hover {
   transform: translateY(-2px);
+}
+
+/* ICONS */
+.bi {
+  color: inherit;
 }
 
 /* EMPTY STATE */

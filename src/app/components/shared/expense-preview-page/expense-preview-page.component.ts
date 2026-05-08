@@ -27,6 +27,8 @@ export class ExpensePreviewPageComponent {
 
   isSelfAdmin: boolean = true;
 
+  isReviewable: boolean = false;
+
   isRejected: boolean = false;
 
   isDeletable: boolean = false;
@@ -85,13 +87,18 @@ export class ExpensePreviewPageComponent {
       this.isAdmin = true;
     }
 
-    if (this.expense.status === 'Rejected') {
-
-      this.isRejected = true;
+    if (this.isAdmin) {
+      if (this.expense.status === 'Rejected' && this.authService.userId === this.expense.user_id) {
+        this.isRejected = true;
+      }
+    }else{
+      if (this.expense.status === 'Rejected') {
+        this.isRejected = true;
+      }
     }
 
-    if (this.authService.userId === this.expense.user_id) {
-      this.isSelfAdmin = false;
+    if (this.isAdmin && this.authService.userId !== this.expense.user_id && this.expense.status === 'Submitted') {
+      this.isReviewable = true;
     }
 
     this.deletable();

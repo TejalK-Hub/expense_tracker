@@ -52,7 +52,7 @@ export const routes: Routes = [
             // {path: 'admin-manage-expense', component: ExpenseTableComponent},
             { path: 'admin-review-expense', component: ExpenseReviewComponent, canActivate: [authGuard], data: { role: 'Admin' } },
             { path: 'user-list', component: UserListComponent, canActivate: [authGuard], data: { role: 'Admin' } },
-            { path: 'user-expense-review', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'Admin' } },
+            { path: 'user-expense-review', component: ExpenseTableComponent},
             { path: 'clients', component: ClientComponent, canActivate: [authGuard], data: { role: 'Admin' } },
 
             { path: 'profile-page', component: ProfilePageComponent, canActivate: [authGuard] },

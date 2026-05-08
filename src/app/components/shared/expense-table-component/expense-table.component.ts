@@ -260,59 +260,54 @@ export class ExpenseTableComponent implements OnInit {
   // ---------------- FILTER LOGIC ----------------
   applyFilters() {
     const f = this.filters;
-    // if (f.status) {
-      
-        console.log('Available statuses: ', this.getUnique('status'));
-        this.filteredExpenses = this.expenses.filter(exp => {
 
-          const userMatch =
-            (!f.user && !f.userId) ||
-            (!!f.userId && exp.user_id === f.userId) ||
-            (!!f.user && exp.user_name === f.user);
+    console.log('Available statuses: ', this.getUnique('status'));
+    this.filteredExpenses = this.expenses.filter(exp => {
 
-          const statusMatch =
-            !f.status ||
-            exp.status?.toLowerCase() === f.status?.toLowerCase();
+      const userMatch =
+        (!f.user && !f.userId) ||
+        (!!f.userId && exp.user_id === f.userId) ||
+        (!!f.user && exp.user_name === f.user);
 
-          const categoryMatch =
-            !f.category ||
-            exp.category === f.category;
+      const statusMatch =
+        !f.status ||
+        exp.status?.toLowerCase() === f.status?.toLowerCase();
 
-          const clientMatch =
-            !f.client ||
-            exp.client_name === f.client;
+      const categoryMatch =
+        !f.category ||
+        exp.category === f.category;
 
-          const visitMatch =
-            !f.visit ||
-            exp.visit_name === f.visit;
+      const clientMatch =
+        !f.client ||
+        exp.client_name === f.client;
 
-          const expenseDate = new Date(exp.expense_date).getTime();
+      const visitMatch =
+        !f.visit ||
+        exp.visit_name === f.visit;
 
-          const dateMatch =
-            (!f.dateFrom || expenseDate >= new Date(f.dateFrom).getTime()) &&
-            (!f.dateTo || expenseDate <= new Date(f.dateTo).getTime());
+      const expenseDate = new Date(exp.expense_date).getTime();
 
-          const amountMatch =
-            (f.amountMin === null || exp.amount_value >= f.amountMin) &&
-            (f.amountMax === null || exp.amount_value <= f.amountMax);
+      const dateMatch =
+        (!f.dateFrom || expenseDate >= new Date(f.dateFrom).getTime()) &&
+        (!f.dateTo || expenseDate <= new Date(f.dateTo).getTime());
 
-          return (
-            userMatch &&
-            statusMatch &&
-            categoryMatch &&
-            clientMatch &&
-            visitMatch &&
-            dateMatch &&
-            amountMatch
-          );
-        });
-        console.log('Filtered expenses: ', this.filteredExpenses);
-        this.applySorting();
-      
-    // }
-    // else {
-    //   this.filteredExpenses = []
-    // }
+      const amountMatch =
+        (f.amountMin === null || exp.amount_value >= f.amountMin) &&
+        (f.amountMax === null || exp.amount_value <= f.amountMax);
+
+      return (
+        userMatch &&
+        statusMatch &&
+        categoryMatch &&
+        clientMatch &&
+        visitMatch &&
+        dateMatch &&
+        amountMatch
+      );
+    });
+    console.log('Filtered expenses: ', this.filteredExpenses);
+    this.applySorting();
+
   }
 
   // ---------------- LOAD EXPENSES ----------------

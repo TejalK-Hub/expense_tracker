@@ -136,7 +136,13 @@
             Upload Bills <span class="required">*</span>
           </label>
 
-          <div class="file-box">
+          <div
+            class="file-box"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            [class.drag-active]="isDragOver"
+          >
             <input
               type="file"
               #fileInput
@@ -146,8 +152,18 @@
               class="form-control"
             />
 
+            <div class="drag-text">
+              Drag & Drop images here or click to upload
+            </div>
+
             <span *ngIf="selectedFiles.length" class="small text-muted">
-              {{ selectedFiles.length }} file(s) selected
+              <div *ngIf="selectedFiles.length > 1">
+                {{ selectedFiles.length }} files selected
+              </div>
+
+              <div *ngIf="selectedFiles.length === 1">
+                {{ selectedFiles.length }} file selected
+              </div>
             </span>
 
             <!-- PREVIEW GRID -->

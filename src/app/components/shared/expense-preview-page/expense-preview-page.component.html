@@ -13,7 +13,7 @@
     <div class="d-flex align-items-center gap-2">
       <button
         class="btn btn-sm btn-outline-success"
-        *ngIf="isAdmin && isSelfAdmin"
+        *ngIf="isReviewable"
         (click)="confirmApprove()"
       >
         Approve
@@ -21,7 +21,7 @@
 
       <button
         class="btn btn-sm btn-outline-danger"
-        *ngIf="isAdmin && isSelfAdmin"
+        *ngIf="isReviewable"
         (click)="rejectExpense()"
         data-bs-toggle="modal"
         data-bs-target="#exampleModal"

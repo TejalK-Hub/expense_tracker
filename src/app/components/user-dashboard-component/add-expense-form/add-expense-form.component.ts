@@ -53,6 +53,9 @@ export class AddExpenseFormComponent {
   categories: CategoryOption[] = [];
   activeVisits: VisitsOption[] = [];
 
+  // ===== DRAG & DROP STATE =====
+  isDragOver = false;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -165,8 +168,40 @@ export class AddExpenseFormComponent {
   // ===== MULTI FILE HANDLER =====
   fileOnChange(event: any) {
     const files: FileList = event.target.files;
+
     if (!files || files.length === 0) return;
 
+    this.handleFiles(files);
+  }
+
+
+  //----------------------------------- IMAGE HANDLERS -----------------------------------
+
+  // ===== DRAG & DROP HANDLERS =====
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+
+    this.isDragOver = false;
+
+    const files = event.dataTransfer?.files;
+
+    if (!files || files.length === 0) return;
+
+    this.handleFiles(files);
+  }
+
+  // ===== MOVE FILE LOGIC =====
+  handleFiles(files: FileList) {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
@@ -178,19 +213,19 @@ export class AddExpenseFormComponent {
       this.selectedFiles.push(file);
 
       const reader = new FileReader();
+
       reader.onload = () => {
         this.filePreviews.push(reader.result as string);
       };
+
       reader.readAsDataURL(file);
     }
 
     this.expenseForm.patchValue({
       selectedFiles: this.selectedFiles
-
     });
-    console.log("Multiple imgs support: ----------------------------", this.selectedFiles);
-    console.log("Individual file: ", this.selectedFiles.forEach(s => s.name));
   }
+
 
   // ===== REMOVE FILE =====
   removeFile(index: number) {
@@ -331,4 +366,4 @@ export class AddExpenseFormComponent {
 
     this.resetFile();
   }
-}
+} 
