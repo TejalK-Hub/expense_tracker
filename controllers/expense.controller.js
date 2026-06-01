@@ -2,10 +2,51 @@ const service = require('../services/expense.service');
 
 
 // CREATE EXPENSE (user_id from token)
+// const createExpense = async (req, res) => {
+//     try {
+
+//         if (!req.files || req.files.length === 0) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: 'At least one bill image is required'
+//             });
+//         }
+
+//         const data = {
+//             ...req.body,
+//             user_id: req.user.id,
+//             bill_paths: req.files.map(f => f.path)
+//         };
+
+//         const result = await service.createExpense(data);
+
+//         res.json({ success: true, data: result });
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(400).json({
+//             success: false,
+//             message: error.message
+//         });
+//     }
+// };
+// CREATE EXPENSE (user_id from token)
 const createExpense = async (req, res) => {
     try {
 
-        if (!req.files || req.files.length === 0) {
+        let billPaths = [];
+
+        // uploaded files
+        if (req.files && req.files.length > 0) {
+            billPaths = req.files.map(f => f.path);
+        }
+
+        // raw JSON bill_paths (for Postman testing)
+        else if (Array.isArray(req.body.bill_paths) && req.body.bill_paths.length > 0) {
+            billPaths = req.body.bill_paths;
+        }
+
+        else {
             return res.status(400).json({
                 success: false,
                 message: 'At least one bill image is required'
@@ -15,15 +56,23 @@ const createExpense = async (req, res) => {
         const data = {
             ...req.body,
             user_id: req.user.id,
-            bill_paths: req.files.map(f => f.path)
+            bill_paths: billPaths
         };
+
+        if (typeof data.expense_items === 'string') {
+            data.expense_items = JSON.parse(data.expense_items);
+        }
 
         const result = await service.createExpense(data);
 
-        res.json({ success: true, data: result });
+        res.json({
+            success: true,
+            data: result
+        });
 
     } catch (error) {
         console.error(error);
+
         res.status(400).json({
             success: false,
             message: error.message
@@ -79,7 +128,7 @@ const updateExpense = async (req, res) => {
             ...req.body,
             bill_paths: (req.files && req.files.length > 0)
             ? req.files.map(f => f.path)
-            : undefined
+            : req.body.bill_paths
         };
 
 const data = await service.updateExpense(id, userId, payload);
