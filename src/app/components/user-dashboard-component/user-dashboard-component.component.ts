@@ -43,7 +43,7 @@ export class UserDashboardComponentComponent {
 
     this.current_month = `${formatMonth(start)} - ${formatMonth(end)}`;
 
-    this.expenseService.fetchExpense().subscribe((res: any) => {
+    this.expenseService.fetchExpenses().subscribe((res: any) => {
       const expenses = res.data;
       this.summary_current_month = this.calculateSummary(expenses);
     });
