@@ -15,7 +15,7 @@ import { UserListComponent } from './components/admin/users-component/user-list/
 import { ExpenseReviewComponent } from './components/admin/expense-review/expense-review.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { ClientComponent } from './components/admin/client/client.component';
-import { ProfilePageComponent } from './components/profile-page/profile-page.component';
+import { ProfilePageComponent } from './components/shared/profile-page/profile-page.component';
 
 export const routes: Routes = [
 
