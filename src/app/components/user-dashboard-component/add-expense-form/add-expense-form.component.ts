@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, HostListener, EventEmitter, Output } from '@angular/core';
+import { Component, ViewChild, ElementRef, HostListener, EventEmitter, Input, Output } from '@angular/core';
 import {
   FormsModule,
   FormGroup,
@@ -28,12 +28,26 @@ import { BackButtonComponent } from '../../back-button/back-button.component';
 })
 export class AddExpenseFormComponent {
 
+  @Input() editMode = false;
+  @Input() expenseData: any;
+
   @ViewChild('fileInput') fileInput!: ElementRef;
   @Output() expenseCreated = new EventEmitter<void>();
 
   // ===== STATE =====
   expenseForm!: FormGroup;
   loading = false;
+
+  // ===== CATEGORY =====
+  selectedCategoryNames: string[] = [];
+
+  expenseItems: {
+    category_id: number;
+    category_name: string;
+    amount: number | null;
+  }[] = [];
+
+  isCategoryDropdownOpen = false;
 
   selectedVisitInfo: any;
 
@@ -76,20 +90,114 @@ export class AddExpenseFormComponent {
     this.expenseForm.get('selectedVisit')?.valueChanges.subscribe(() => {
       this.onVisitChange();
     });
+
+    setTimeout(() => {
+      if (this.editMode) {
+        this.populateExpense();
+      }
+    }, 500);
+
   }
 
   // ===== FORM INIT =====
   expenseFormInit() {
     this.expenseForm = this.fb.group({
-      selectedCategory: ['', Validators.required],
+      selectedCategory: [[], Validators.required],
       selectedVisit: ['', Validators.required],
       date: ['', Validators.required],
-      selectedFiles: [[], Validators.required], // ✅ UPDATED
-      amount: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+      selectedFiles: [[], Validators.required],
+      expense_items: [[]],
       receiptNo: ['', Validators.required],
       description: ['']
     });
   }
+
+
+  populateExpense() {
+
+    if (!this.expenseData) return;
+
+    // Categories
+    this.selectedCategoryNames =
+      this.expenseData.expense_items.map(
+        (i: any) => i.category
+      );
+
+    this.expenseItems =
+      this.expenseData.expense_items.map(
+        (i: any) => ({
+          category_id: i.category_id,
+          category_name: i.category,
+          amount: Number(i.amount)
+        })
+      );
+
+    this.expenseForm.patchValue({
+      selectedCategory: this.selectedCategoryNames,
+      expense_items: this.expenseItems,
+
+      selectedVisit: this.expenseData.visit_name,
+
+      date: this.expenseData.expense_date,
+
+      receiptNo: this.expenseData.receipt,
+
+      description: this.expenseData.expense
+    });
+
+    this.visitSearch = this.expenseData.visit_name;
+
+    this.onVisitChange();
+  }
+
+  // ===== CATEGORY DROPDOWN =====
+  toggleCategoryDropdown() {
+    this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
+  }
+
+  toggleCategory(category: CategoryOption) {
+
+    const current =
+      this.expenseForm.get('selectedCategory')?.value || [];
+
+    const exists = current.includes(category.name);
+
+    let updated: string[];
+
+    if (exists) {
+
+      updated = current.filter(
+        (c: string) => c !== category.name
+      );
+
+      this.expenseItems =
+        this.expenseItems.filter(
+          item => item.category_id !== category.id
+        );
+
+    } else {
+
+      updated = [...current, category.name];
+
+      this.expenseItems.push({
+        category_id: category.id,
+        category_name: category.name,
+        amount: null
+      });
+    }
+
+    this.expenseForm.patchValue({
+      selectedCategory: updated,
+      expense_items: this.expenseItems
+    });
+
+    this.selectedCategoryNames = updated;
+  }
+
+  isCategorySelected(name: string): boolean {
+    return this.selectedCategoryNames.includes(name);
+  }
+
 
   // ===== FETCH VISITS =====
   fetchVisits() {
@@ -141,9 +249,19 @@ export class AddExpenseFormComponent {
   // ===== CLOSE DROPDOWN =====
   @HostListener('document:click', ['$event'])
   onClickOutside(event: any) {
-    const clickedInside = event.target.closest('.visit-dropdown');
-    if (!clickedInside) {
+
+    // VISIT
+    const clickedVisit = event.target.closest('.visit-dropdown');
+
+    if (!clickedVisit) {
       this.isVisitDropdownOpen = false;
+    }
+
+    // CATEGORY
+    const clickedCategory = event.target.closest('.category-dropdown');
+
+    if (!clickedCategory) {
+      this.isCategoryDropdownOpen = false;
     }
   }
 
@@ -232,14 +350,14 @@ export class AddExpenseFormComponent {
     this.selectedFiles.splice(index, 1);
     this.filePreviews.splice(index, 1);
 
-    // ✅ Recreate FileList using DataTransfer
+    // Recreate FileList using DataTransfer
     const dataTransfer = new DataTransfer();
 
     this.selectedFiles.forEach(file => {
       dataTransfer.items.add(file);
     });
 
-    // ✅ Update input files
+    // Update input files
     if (this.fileInput) {
       this.fileInput.nativeElement.files = dataTransfer.files;
     }
@@ -248,7 +366,7 @@ export class AddExpenseFormComponent {
       selectedFiles: this.selectedFiles
     });
 
-    // ✅ If empty, reset completely
+    // If empty, reset completely
     if (this.selectedFiles.length === 0) {
       this.resetFile();
     }
@@ -271,12 +389,27 @@ export class AddExpenseFormComponent {
   }
 
   validateForm(): boolean {
-    if (!this.expenseForm.get('selectedCategory')?.value) return this.showError('Category is required');
+
+    const categories =
+      this.expenseForm.get('selectedCategory')?.value || [];
+
+    if (!categories.length) return this.showError('At least one category is required');
+
     if (!this.expenseForm.get('selectedVisit')?.value) return this.showError('Visit is required');
     if (!this.expenseForm.get('date')?.value) return this.showError('Date is required');
 
-    const amount = this.expenseForm.get('amount')?.value;
-    if (!amount || Number(amount) <= 0) return this.showError('Enter valid amount');
+    for (const item of this.expenseItems) {
+
+      if (
+        item.amount === null ||
+        item.amount === undefined ||
+        Number(item.amount) <= 0
+      ) {
+        return this.showError(
+          `Enter valid amount for ${item.category_name}`
+        );
+      }
+    }
 
     if (!this.expenseForm.get('receiptNo')?.value) return this.showError('Receipt number is required');
 
@@ -296,7 +429,7 @@ export class AddExpenseFormComponent {
 
   // ===== SUBMIT =====
   onSubmit() {
-    // if (!this.validateForm()) return;
+    if (!this.validateForm()) return;
     console.log("Form valid: ")
 
     this.loading = true;
@@ -304,9 +437,15 @@ export class AddExpenseFormComponent {
     const formValues = this.expenseForm.value;
     const formData = new FormData();
 
+
     formData.append(
-      'category_id',
-      (this.categories.find((c) => c.name === formValues.selectedCategory)?.id ?? '').toString()
+      'expense_items',
+      JSON.stringify(
+        this.expenseItems.map(item => ({
+          category_id: item.category_id,
+          amount: Number(item.amount)
+        }))
+      )
     );
 
     formData.append(
@@ -323,7 +462,6 @@ export class AddExpenseFormComponent {
       formData.append('bills', file);
     });
 
-    formData.append('amount', formValues.amount);
     formData.append('receipt_id', `TESTING_${formValues.receiptNo}`);
     formData.append('description', formValues.description || '');
 
@@ -353,10 +491,15 @@ export class AddExpenseFormComponent {
     this.expenseForm.reset();
 
     this.expenseForm.patchValue({
-      selectedCategory: '',
+      selectedCategory: [],
       selectedVisit: '',
-      selectedFiles: []
+      selectedFiles: [],
+      expense_items: []
     });
+
+    this.selectedCategoryNames = [];
+    this.expenseItems = [];
+    this.isCategoryDropdownOpen = false;
 
     this.visitSearch = '';
     this.filteredVisits = [...this.activeVisits];
