@@ -15,6 +15,16 @@
 
 <!-- ACTIVE FILTER BADGES -->
 <div class="active-filters mb-2" *ngIf="hasActiveFilters()">
+  <span class="filter-chip" *ngIf="filters.userId">
+    User: {{ getUserNameById(filters.userId) }}
+    <i class="bi bi-x" (click)="removeFilter('user')"></i>
+  </span>
+
+  <span class="filter-chip" *ngIf="filters.user">
+    {{ filters.user }}
+    <i class="bi bi-x" (click)="removeFilter('user')"></i>
+  </span>
+
   <span class="filter-chip" *ngIf="filters.category">
     {{ filters.category }}
     <i class="bi bi-x" (click)="removeFilter('category')"></i>
@@ -44,6 +54,19 @@
   </span>
 </div>
 
+<!-- TOTAL AMOUNT BLOCK -->
+
+<div class="summary-card mb-3">
+  <div class="summary-label">Total Displayed Amount</div>
+
+  <div class="summary-value">₹ {{ getDisplayedTotal() | number: "1.2-2" }}</div>
+
+  <small *ngIf="filters.category" class="text-success">
+    Showing only "{{ filters.category }}" amounts
+  </small>
+</div>
+
+<!-- TABLE -->
 <div class="container-fluid past-expenses">
   <div class="table-responsive table-container">
     <table
@@ -88,7 +111,16 @@
           </td>
 
           <td class="category" data-label="💼 Category">
-            {{ exp.category }}
+            <span *ngFor="let c of exp.category_list; let last = last">
+              <span
+                [ngClass]="{
+                  'active-category': isSelectedCategory(c),
+                }"
+              >
+                {{ c }}
+              </span>
+              <span *ngIf="!last">, </span>
+            </span>
           </td>
 
           <td class="text-muted small" data-label="📅 Created At">
@@ -99,7 +131,21 @@
             {{ exp.expense_date | date: "dd MMM yyyy" }}
           </td>
 
-          <td class="amount" data-label="💰 Amount">₹ {{ exp.amount }}</td>
+          <td class="amount" data-label="💰 Amount">
+            <div class="d-flex flex-column align-items-end">
+              <div>₹ {{ exp.amount_value | number: "1.2-2" }}</div>
+
+              <small
+                *ngIf="
+                  filters.category && getSelectedCategoryAmount(exp) !== null
+                "
+                class="text-success fw-semibold"
+              >
+                {{ filters.category }}: ₹
+                {{ getSelectedCategoryAmount(exp) | number: "1.2-2" }}
+              </small>
+            </div>
+          </td>
 
           <td data-label="📍 Visit">
             <div
@@ -178,9 +224,26 @@
           <button class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
-        <!-- BODY -->
         <div class="modal-body pt-2">
+          <!-- BODY -->
           <div class="row g-3">
+            <!-- USER (ADMIN ONLY) -->
+            <div class="col-md-6" *ngIf="isAdmin">
+              <div class="filter-wrapper w-100">
+                <i class="bi bi-person-circle filter-icon"></i>
+                <select
+                  class="form-select form-select-sm filter-dropdown w-100"
+                  [ngModel]="filters.user"
+                  (ngModelChange)="onUserChange($event)"
+                >
+                  <option value="">All Users</option>
+                  <option *ngFor="let u of getUnique('user_name')" [value]="u">
+                    {{ u }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
             <!-- CATEGORY -->
             <div class="col-md-6">
               <div class="filter-wrapper w-100">
@@ -191,7 +254,7 @@
                   (ngModelChange)="onFilterChange()"
                 >
                   <option value="">All Categories</option>
-                  <option *ngFor="let c of getUnique('category')" [value]="c">
+                  <option *ngFor="let c of categoryList" [value]="c">
                     {{ c }}
                   </option>
                 </select>
@@ -208,10 +271,7 @@
                   (ngModelChange)="onFilterChange()"
                 >
                   <option value="">All Clients</option>
-                  <option
-                    *ngFor="let c of getUnique('client_name')"
-                    [value]="c"
-                  >
+                  <option *ngFor="let c of clientList" [value]="c">
                     {{ c }}
                   </option>
                 </select>
@@ -252,6 +312,13 @@
                   >
                     {{ v }}
                   </button>
+
+                  <div
+                    class="dropdown-item text-muted"
+                    *ngIf="filteredVisitsList.length === 0"
+                  >
+                    No results found
+                  </div>
                 </div>
               </div>
             </div>
