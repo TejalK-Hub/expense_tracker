@@ -7,122 +7,136 @@
   <!-- SUMMARY CARDS -->
   <div class="row g-3 mb-4">
     <!-- SUMMARY CARD (ADMIN) -->
-    <!-- SUMMARY CARD (ADMIN) -->
-    <!-- SUMMARY CARDS -->
-    <div class="row g-3 mb-4">
-      <div class="col-12">
-        <div
-          class="card border-0 shadow-sm action-card compact-card p-3 summary-card"
-          (click)="goToMonthlyExpenses()"
-        >
-          <!-- TOP ROW -->
-          <div class="summary-top">
+    <div class="col-12">
+      <div
+        class="card border-0 shadow-sm action-card compact-card p-3 summary-card"
+        (click)="goToMonthlyExpenses()"
+      >
+        <!-- TOP ROW -->
+        <div class="summary-top">
+          <div>
+            <div class="text-muted small">Expense Summary</div>
+            <div class="fw-semibold text-secondary small">
+              {{ current_period_label }}
+            </div>
+          </div>
+
+          <!-- USER FILTER -->
+          <div class="user-select">
+            <select
+              class="custom-select form-select-sm w-100"
+              [(ngModel)]="selectedUserId"
+              (click)="$event.stopPropagation()"
+              (ngModelChange)="onUserChange()"
+            >
+              <option [ngValue]="null">All Users</option>
+              <option *ngFor="let u of usersList" [ngValue]="u.id">
+                {{ u.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- CUSTOM MONTH FILTER -->
+          <div class="month-filters d-flex align-items-center gap-2 flex-wrap">
+            <input
+              type="month"
+              class="form-control form-control-sm"
+              [(ngModel)]="startMonth"
+              (change)="onMonthRangeChange()"
+              (click)="$event.stopPropagation()"
+            />
+
+            <span class="small text-muted">→</span>
+
+            <input
+              type="month"
+              class="form-control form-control-sm"
+              [(ngModel)]="endMonth"
+              (change)="onMonthRangeChange()"
+              (click)="$event.stopPropagation()"
+            />
+          </div>
+        </div>
+
+        <!-- TOTAL -->
+        <div class="summary-total">
+          <div class="total-value fs-6 fw-medium">
+            {{
+              summary_current_period?.total_amount || 0
+                | currency: "INR" : "symbol" : "1.2-2"
+            }}
+          </div>
+          <div class="total-label fs-6 fw-medium">
+            {{ summary_current_period?.total_count || 0 }} entries
+          </div>
+        </div>
+
+        <!-- STATUS GRID -->
+        <div class="status-grid">
+          <!-- SUBMITTED -->
+          <div
+            class="status-box submitted"
+            (click)="
+              goToFilteredExpenses('submitted'); $event.stopPropagation()
+            "
+          >
+            <i class="bi bi-hourglass-split"></i>
             <div>
-              <div class="text-muted small">Expense Summary</div>
-              <div class="fw-semibold text-secondary small">
-                {{ current_period_label }}
+              <div class="label">Submitted</div>
+              <div class="value fs-6 fw-medium">
+                {{ summary_current_period?.submitted?.count || 0 }}
               </div>
-            </div>
-
-            <!-- USER FILTER -->
-            <div class="user-select">
-              <select
-                class="custom-select form-select-sm w-100"
-                [(ngModel)]="selectedUserId"
-                (click)="$event.stopPropagation()"
-                (click)="onUserChange($event)"
-              >
-                <option [ngValue]="null">All Users</option>
-                <option *ngFor="let u of usersList" [ngValue]="u.id">
-                  {{ u.name }}
-                </option>
-              </select>
+              <div class="sub-value fs-6 fw-medium">
+                {{
+                  summary_current_period?.submitted?.amount || 0
+                    | currency: "INR" : "symbol" : "1.2-2"
+                }}
+              </div>
             </div>
           </div>
 
-          <!-- TOTAL -->
-          <div class="summary-total">
-            <div class="total-value fs-6 fw-medium ">
-              {{
-                summary_current_period?.total_amount || 0
-                  | currency: "INR" : "symbol" : "1.2-2"
-              }}
-            </div>
-            <div class="total-label fs-6 fw-medium ">
-              {{ summary_current_period?.total_count || 0 }} entries
+          <!-- APPROVED -->
+          <div
+            class="status-box approved"
+            (click)="goToFilteredExpenses('approved'); $event.stopPropagation()"
+          >
+            <i class="bi bi-check-circle"></i>
+            <div>
+              <div class="label">Approved</div>
+              <div class="value fs-6 fw-medium">
+                {{ summary_current_period?.approved?.count || 0 }}
+              </div>
+              <div class="sub-value fs-6 fw-medium">
+                {{
+                  summary_current_period?.approved?.amount || 0
+                    | currency: "INR" : "symbol" : "1.2-2"
+                }}
+              </div>
             </div>
           </div>
 
-          <!-- STATUS GRID -->
-          <div class="status-grid">
-            <!-- SUBMITTED -->
-            <div
-              class="status-box submitted"
-              (click)="
-                goToFilteredExpenses('submitted'); $event.stopPropagation()
-              "
-            >
-              <i class="bi bi-hourglass-split"></i>
-              <div>
-                <div class="label">Submitted</div>
-                <div class="value fs-6 fw-medium ">
-                  {{ summary_current_period?.submitted?.count || 0 }}
-                </div>
-                <div class="sub-value fs-6 fw-medium ">
-                  {{
-                    summary_current_period?.submitted?.amount || 0
-                      | currency: "INR" : "symbol" : "1.2-2"
-                  }}
-                </div>
+          <!-- REJECTED -->
+          <div
+            class="status-box rejected"
+            (click)="goToFilteredExpenses('rejected'); $event.stopPropagation()"
+          >
+            <i class="bi bi-x-circle"></i>
+            <div>
+              <div class="label">Rejected</div>
+              <div class="value fs-6 fw-medium">
+                {{ summary_current_period?.rejected?.count || 0 }}
               </div>
-            </div>
-
-            <!-- APPROVED -->
-            <div
-              class="status-box approved"
-              (click)="
-                goToFilteredExpenses('approved'); $event.stopPropagation()
-              "
-            >
-              <i class="bi bi-check-circle"></i>
-              <div>
-                <div class="label">Approved</div>
-                <div class="value  fs-6 fw-medium ">
-                  {{ summary_current_period?.approved?.count || 0 }}
-                </div>
-                <div class="sub-value fs-6 fw-medium ">
-                  {{
-                    summary_current_period?.approved?.amount || 0
-                      | currency: "INR" : "symbol" : "1.2-2"
-                  }}
-                </div>
-              </div>
-            </div>
-
-            <!-- REJECTED -->
-            <div
-              class="status-box rejected"
-              (click)="
-                goToFilteredExpenses('rejected'); $event.stopPropagation()
-              "
-            >
-              <i class="bi bi-x-circle"></i>
-              <div>
-                <div class="label">Rejected</div>
-                <div class="value fs-6 fw-medium ">
-                  {{ summary_current_period?.rejected?.count || 0 }}
-                </div>
-                <div class="sub-value fs-6 fw-medium ">
-                  {{
-                    summary_current_period?.rejected?.amount || 0
-                      | currency: "INR" : "symbol" : "1.2-2"
-                  }}
-                </div>
+              <div class="sub-value fs-6 fw-medium">
+                {{
+                  summary_current_period?.rejected?.amount || 0
+                    | currency: "INR" : "symbol" : "1.2-2"
+                }}
               </div>
             </div>
           </div>
         </div>
-        <!-- <div class="row d-flex justify-content-end">
+      </div>
+      <!-- <div class="row d-flex justify-content-end">
           <button
             class="goToMonthlyExpenses col-2 btn btn-outline-primary mt-2"
             (click)="goToMonthlyExpenses()"
@@ -130,7 +144,6 @@
             View Data
           </button>
         </div> -->
-      </div>
     </div>
 
     <!-- USERS CARD -->
@@ -209,36 +222,14 @@
       <i class="bi bi-receipt"></i>
       <span>Expense</span>
     </button>
-    <!-- 
-    <div class="dropdown">
-      <button
-        class="btn btn-dark dropdown-toggle px-4 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2 btn-hover-icon"
-        data-bs-toggle="dropdown"
-      >
-        <i class="bi bi-receipt"></i>
-        <span>Expense</span>
-      </button>
-
-      <ul class="dropdown-menu shadow border-0 rounded-3">
-        <li>
-          <button class="dropdown-item" (click)="handleRouting(1)">
-            ➕ Add Expense
-          </button>
-        </li>
-        <li>
-          <button class="dropdown-item" (click)="handleRouting(2)">
-            ⚙️ Review Expense
-          </button>
-        </li>
-      </ul>
-    </div> -->
   </div>
 
   <!-- PENDING TABLE -->
   <div class="card border-0 shadow-sm">
     <div class="card-body">
       <h5 class="mb-3 fw-semibold text-dark">Pending Expenses</h5>
-      <app-pending-expense-table></app-pending-expense-table>
+      <app-pending-expense-table [expenses]="tableData">
+      </app-pending-expense-table>
     </div>
   </div>
 </div>

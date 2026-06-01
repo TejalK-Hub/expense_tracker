@@ -1,14 +1,14 @@
 // 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonComponent } from '../../shared/button/button.component';
-import { ExpandableButtonComponent } from '../../shared/expandable-button-component/expandable-button.component';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PendingExpenseTableComponent } from '../../user-dashboard-component/pending-expense-table/pending-expense-table.component';
+
 import { AuthServiceService } from '../../../service/auth-service.service';
 import { ExpensesService } from '../../../service/expenses.service';
 import { UsersService } from '../../../service/users.service';
-import { FormsModule } from '@angular/forms';
+
+import { PendingExpenseTableComponent } from '../../user-dashboard-component/pending-expense-table/pending-expense-table.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -16,8 +16,6 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
-    ButtonComponent,
-    ExpandableButtonComponent,
     PendingExpenseTableComponent
   ],
   templateUrl: './admin-dashboard.component.html',
@@ -36,6 +34,9 @@ export class AdminDashboardComponent implements OnInit {
   userCount: number = 0;
 
   // ---------------- SUMMARY CARD ----------------
+  startMonth: string = '';
+  endMonth: string = '';
+
   summary_current_period: any = null;
   selectedUserId: number | null = null;
   usersList: any[] = [];
@@ -43,8 +44,6 @@ export class AdminDashboardComponent implements OnInit {
 
   allExpenses: any[] = [];
   tableData: any[] = [];
-
-  status = 'Pending';
 
   ngOnInit() {
 
@@ -68,7 +67,7 @@ export class AdminDashboardComponent implements OnInit {
       console.log('Unique Users:', users);
     });
 
-    this.expenseService.fetchExpenses().subscribe((res: any) => {
+    this.expenseService.fetchExpensesAdmin().subscribe((res: any) => {
 
       console.log('Raw Expense Data:', res.data);
 
@@ -79,6 +78,7 @@ export class AdminDashboardComponent implements OnInit {
       this.usersList = this.getUniqueUsers(this.allExpenses);
 
       this.setDateRangeLabel();
+      this.setDefaultMonthRange();
       this.calculateSummary();
     });
   }
@@ -143,40 +143,32 @@ export class AdminDashboardComponent implements OnInit {
     this.route.navigate(['/user-expense-review']);
   }
 
-  handleRouting(option: number) {
-
-    switch (option) {
-      case 1:
-        this.route.navigate(['/add-expense']);
-        break;
-
-      case 2:
-        this.route.navigate(['/user-expense-review']);
-        break;
-
-      default:
-        console.warn('Invalid option:', option);
-    }
-  }
-
   // ------------------------------------------------------------------------------------------------
   // ---------------------------------- SUMMARY CARD ------------------------------------------------
   // ------------------------------------------------------------------------------------------------
 
+
+  onMonthRangeChange() {
+
+    if (!this.validateMonthRange()) {
+      return;
+    }
+
+    this.setDateRangeLabel();
+
+    this.calculateSummary();
+  }
+
   setDateRangeLabel() {
-    const now = new Date();
 
-    const start = new Date(
-      now.getFullYear(),
-      now.getMonth() - 2,
-      1
-    );
+    if (!this.startMonth || !this.endMonth) {
+      this.current_period_label = '';
+      return;
+    }
 
-    const end = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0
-    );
+    const start = new Date(this.startMonth + '-01');
+
+    const end = new Date(this.endMonth + '-01');
 
     const format = (d: Date) =>
       d.toLocaleString('default', {
@@ -184,31 +176,27 @@ export class AdminDashboardComponent implements OnInit {
         year: 'numeric'
       });
 
-    this.current_period_label = `${format(start)} - ${format(end)}`;
+    this.current_period_label =
+      `${format(start)} - ${format(end)}`;
   }
 
-  onUserChange(value: any) {
-    if (value) {
-      this.calculateSummary();
-    }
+  onUserChange() {
+    this.calculateSummary();
   }
 
 
   calculateSummary() {
 
-    const now = new Date();
+    if (!this.validateMonthRange()) {
+      return;
+    }
 
-    const start = new Date(
-      now.getFullYear(),
-      now.getMonth() - 2,
-      1
-    );
+    const start = new Date(this.startMonth + '-01');
 
-    const end = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0
-    );
+    const end = new Date(this.endMonth + '-01');
+
+    end.setMonth(end.getMonth() + 1);
+    end.setDate(0);
 
     const summary = {
       submitted: { count: 0, amount: 0 },
@@ -287,10 +275,21 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // ------------------------------------------------------------------------------------------------
-  // ---------------------------------- SUMMARY FILTER ROUTING --------------------------------------
+  // ---------------------------------- CUSTOM MONTH RANGE -------------------------------------------
   // ------------------------------------------------------------------------------------------------
 
-  goToMonthlyExpenses() {
+  formatMonthInput(date: Date): string {
+
+    const year = date.getFullYear();
+
+    const month = String(
+      date.getMonth() + 1
+    ).padStart(2, '0');
+
+    return `${year}-${month}`;
+  }
+
+  setDefaultMonthRange() {
 
     const now = new Date();
 
@@ -302,9 +301,48 @@ export class AdminDashboardComponent implements OnInit {
 
     const end = new Date(
       now.getFullYear(),
-      now.getMonth() + 1,
-      0
+      now.getMonth(),
+      1
     );
+
+    this.startMonth = this.formatMonthInput(start);
+    this.endMonth = this.formatMonthInput(end);
+
+    this.setDateRangeLabel();
+  }
+
+
+  validateMonthRange(): boolean {
+
+    if (!this.startMonth || !this.endMonth) {
+      return false;
+    }
+
+    const start = new Date(this.startMonth + '-01');
+
+    const end = new Date(this.endMonth + '-01');
+
+    if (start > end) {
+
+      alert('Start month cannot be after end month.');
+
+      return false;
+    }
+
+    return true;
+  }
+
+  // ------------------------------------------------------------------------------------------------
+  // ---------------------------------- SUMMARY FILTER ROUTING --------------------------------------
+  // ------------------------------------------------------------------------------------------------
+  goToMonthlyExpenses() {
+
+    const start = new Date(this.startMonth + '-01');
+
+    const end = new Date(this.endMonth + '-01');
+
+    end.setMonth(end.getMonth() + 1);
+    end.setDate(0);
 
     const format = (d: Date) =>
       d.toISOString().split('T')[0];
@@ -318,28 +356,21 @@ export class AdminDashboardComponent implements OnInit {
       queryParams.userId = this.selectedUserId;
     }
 
-
     this.route.navigate(
       ['/user-expense-review'],
       { queryParams }
     );
   }
 
+
   goToFilteredExpenses(status: string) {
 
-    const now = new Date();
+    const start = new Date(this.startMonth + '-01');
 
-    const start = new Date(
-      now.getFullYear(),
-      now.getMonth() - 2,
-      1
-    );
+    const end = new Date(this.endMonth + '-01');
 
-    const end = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0
-    );
+    end.setMonth(end.getMonth() + 1);
+    end.setDate(0);
 
     const format = (d: Date) =>
       d.toISOString().split('T')[0];
