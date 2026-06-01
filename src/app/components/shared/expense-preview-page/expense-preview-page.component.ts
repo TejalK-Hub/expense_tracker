@@ -10,11 +10,12 @@ import { AuthServiceService } from '../../../service/auth-service.service';
 import { ExpensesService } from '../../../service/expenses.service';
 import { SharedServicesService } from '../../../service/shared-services.service';
 import { VisitsService } from '../../../service/visits.service';
+import { AddExpenseFormComponent } from '../../user-dashboard-component/add-expense-form/add-expense-form.component';
 
 @Component({
   selector: 'app-expense-preview-page',
   standalone: true,
-  imports: [BackButtonComponent, CommonModule, FormsModule],
+  imports: [BackButtonComponent, AddExpenseFormComponent, CommonModule, FormsModule],
   templateUrl: './expense-preview-page.component.html',
   styleUrl: './expense-preview-page.component.scss',
 })
@@ -65,16 +66,17 @@ export class ExpensePreviewPageComponent {
 
   ngOnInit() {
 
-    this.expense = this.expenseService.getSelectedExpense();
+    this.expense = this.expenseService.getCurrentExpense();
+    console.log("Expense received in preview:", this.expense);
+    if (!this.expense) {
+      console.log("No expense selected, redirecting back to manage expense page.");
+      this.router.navigate(['/manage-expense']);
+    }
     this.initialChecks();
     this.getRejectionReason();
     this.getImagePath();
     // this.deletable();
     // If user refreshes page → redirect back safely
-    if (!this.expense) {
-      console.log("No expense selected, redirecting back to manage expense page.");
-      this.router.navigate(['/manage-expense']);
-    }
 
     console.log("Selected expense: ", this.expense);
 
@@ -83,6 +85,12 @@ export class ExpensePreviewPageComponent {
 
   // ------------------------------------------------------Initial Checks------------------------------------------------------
   initialChecks() {
+
+    this.isAdmin = false;
+    this.isRejected = false;
+    this.isReviewable = false;
+    this.isDeletable = false;
+
     if (this.authService.userRole?.toLowerCase() == 'admin') {
       this.isAdmin = true;
     }
@@ -91,7 +99,7 @@ export class ExpensePreviewPageComponent {
       if (this.expense.status === 'Rejected' && this.authService.userId === this.expense.user_id) {
         this.isRejected = true;
       }
-    }else{
+    } else {
       if (this.expense.status === 'Rejected') {
         this.isRejected = true;
       }
@@ -142,7 +150,7 @@ export class ExpensePreviewPageComponent {
   }
 
 
-  confirmDelete(){
+  confirmDelete() {
     const confirmed = window.confirm('Are you sure, you want to delete this expense?');
 
     if (confirmed) {
@@ -195,6 +203,12 @@ export class ExpensePreviewPageComponent {
       const normalized = p?.replace(/\\/g, '/')?.trim();
       return `${this.apiBaseUrl}/${normalized}`;
     });
+  }
+
+  getCategories(): string {
+    return this.expense?.expense_items
+      ?.map((i: any) => i.category)
+      .join(', ') || '-NA-';
   }
 
 
@@ -305,6 +319,27 @@ export class ExpensePreviewPageComponent {
 
   }
 
+  // ------------------------------------------------------ Traverse Expense Actions ------------------------------------------------------
+
+  goNext() {
+    this.expense = this.expenseService.nextExpense();
+    this.getImagePath();
+    this.initialChecks();
+  }
+
+  goPrevious() {
+    this.expense = this.expenseService.previousExpense();
+    this.getImagePath();
+    this.initialChecks();
+  }
+
+  hasNext() {
+    return this.expenseService.hasNext();
+  }
+
+  hasPrevious() {
+    return this.expenseService.hasPrevious();
+  }
 
   // printReceipt() {
   //   const content = document.getElementById('receipt')?.innerHTML;

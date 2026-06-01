@@ -34,16 +34,32 @@
         *ngIf="isRejected"
         (click)="editExpense()"
         data-bs-toggle="modal"
-        data-bs-target="#example1Modal"
+        data-bs-target="#editExpenseModal"
       >
         Edit
       </button>
 
+      <button
+        class="btn btn-sm btn-outline-secondary"
+        (click)="goPrevious()"
+        [disabled]="!hasPrevious()"
+      >
+        ← Previous
+      </button>
+
+      <button
+        class="btn btn-sm btn-outline-secondary"
+        (click)="goNext()"
+        [disabled]="!hasNext()"
+      >
+        Next →
+      </button>
+
       <!-- DELETE BUTTON VISIBLE ONLY WHEN EXPENSE IS IN SUBMITTED STATE AND NOT APPROVED OR REJECTED -->
       <button
-      class="btn btn-sm btn-outline-danger delete-btn"
-      *ngIf="isDeletable"
-      (click)="confirmDelete()"
+        class="btn btn-sm btn-outline-danger delete-btn"
+        *ngIf="isDeletable"
+        (click)="confirmDelete()"
       >
         <i class="bi bi-trash"></i>
         Delete
@@ -51,12 +67,12 @@
 
       <!-- --------------------------------------------------Print button-------------------------------------------------- -->
       <!-- <button
-        class="btn btn-light print-btn"
-        (click)="printReceipt()"
-        title="Print Receipt"
-      >
-        <i class="bi bi-printer"></i>
-      </button> -->
+          class="btn btn-light print-btn"
+          (click)="printReceipt()"
+          title="Print Receipt"
+        >
+          <i class="bi bi-printer"></i>
+        </button> -->
     </div>
   </div>
 
@@ -129,14 +145,25 @@
       </div>
 
       <div class="item">
-        <label>Category</label>
-        <div class="value">{{ expense.category || "-NA-" }}</div>
+        <label>Categories</label>
+
+        <div class="value" *ngFor="let item of expense.expense_items">
+          {{ item.category }}
+        </div>
       </div>
 
       <!-- AMOUNT / RECEIPT -->
       <div class="item highlight">
-        <label>Amount</label>
-        <div class="value">₹ {{ expense.amount || "-NA-" }}</div>
+        <label>Total Amount</label>
+
+        <div class="value fw-semibold">₹ {{ expense.amount || "-NA-" }}</div>
+
+        <div
+          class="value small mt-1"
+          *ngFor="let item of expense.expense_items"
+        >
+          └ {{ item.category }} : ₹ {{ item.amount }}
+        </div>
       </div>
 
       <div class="item">
@@ -297,82 +324,22 @@
 </div>
 
 <!-- -----------------------------------------------Edit modal---------------------------------------------------- -->
-
-<div
-  class="modal fade"
-  id="example1Modal"
-  tabindex="-1"
-  aria-labelledby="example1ModalLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="editExpenseModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="example1ModalLabel">
-          Expense Resubmission
-        </h1>
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-semibold">Resubmit Expense</h5>
+
         <button
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-          aria-label="Close"
         ></button>
       </div>
+
       <div class="modal-body">
-        <!-- <app-add-visit />  -->
-
-        <div class="mb-3">
-          <label class="form-label">
-            Categories
-            <span class="required">*</span>
-          </label>
-          <select
-            class="form-select"
-            [(ngModel)]="selectedCategory"
-            name="selectedCategory"
-          >
-            <option value="" disabled hidden selected>
-              Select Category if you want to change
-            </option>
-            <option *ngFor="let category of categories" [value]="category.name">
-              {{ category.name }}
-            </option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label"> Amount</label>
-
-          <input
-            class="form-control"
-            type="number"
-            [(ngModel)]="amount"
-            name="amount"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label"> Resubmission Description</label>
-
-          <input
-            class="form-control"
-            type="text"
-            [(ngModel)]="resubmissionDescription"
-            name="resubmissionDescription"
-          />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="resubmitExpense()"
-        >
-          Resubmit
-        </button>
+        <app-add-expense-form [editMode]="true" [expenseData]="expense">
+        </app-add-expense-form>
       </div>
     </div>
   </div>
