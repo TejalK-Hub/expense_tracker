@@ -63,7 +63,6 @@ const pool = require('../config/db');
 
 
             e.bill_paths,
-            ec.name AS category,
             es.name AS status,
 
             approver.name AS approved_by,
@@ -78,7 +77,6 @@ const pool = require('../config/db');
         JOIN users u ON u.id = e.user_id
         JOIN visits v ON v.id = e.visit_id
         LEFT JOIN clients c ON c.id = v.client_id
-        LEFT JOIN expense_category ec ON ec.id = e.category_id
         LEFT JOIN expense_status es ON es.id = e.status_id
         LEFT JOIN users approver ON approver.id = e.approved_by
 
@@ -101,6 +99,30 @@ const pool = require('../config/db');
     // console.log("FINAL QUERY:", query);
     // console.log("VALUES:", values);
     const result = await pool.query(query, values);
+
+    for (const expense of result.rows) {
+
+        expense.bill_paths = expense.bill_paths || [];
+
+        const itemsResult = await pool.query(
+            `
+            SELECT
+                ei.expense_id,
+                ei.category_id,
+                ec.name AS category,
+                ei.amount
+            FROM expense_items ei
+            JOIN expense_category ec
+            ON ec.id = ei.category_id
+            WHERE ei.expense_id = $1
+            `,
+            [expense.id]
+        );
+
+        expense.expense_items = itemsResult.rows;
+    }
+
+    return result.rows;
     return result.rows;
 };
 
@@ -226,7 +248,6 @@ const getAllExpensesFull = async () => {
             TO_CHAR(e.created_at,'YYYY-MM-DD HH24:MI') AS created_at,
 
             e.bill_paths,
-            ec.name AS category,
             es.name AS status,
 
             approver.name AS approved_by,
@@ -239,7 +260,6 @@ const getAllExpensesFull = async () => {
         JOIN users u ON u.id = e.user_id
         JOIN visits v ON v.id = e.visit_id
         LEFT JOIN clients c ON c.id = v.client_id
-        LEFT JOIN expense_category ec ON ec.id = e.category_id
         LEFT JOIN expense_status es ON es.id = e.status_id
         LEFT JOIN users approver ON approver.id = e.approved_by
 
@@ -254,6 +274,31 @@ const getAllExpensesFull = async () => {
     `;
 
     const result = await pool.query(query);
+
+    for (const expense of result.rows) {
+        
+        expense.bill_paths = expense.bill_paths || [];
+
+        const itemsResult = await pool.query(
+            `
+            SELECT
+                ei.expense_id,
+                ei.category_id,
+                ec.name AS category,
+                ei.amount
+            FROM expense_items ei
+            JOIN expense_category ec
+            ON ec.id = ei.category_id
+            WHERE ei.expense_id = $1
+            `,
+            [expense.id]
+        );
+
+        expense.expense_items = itemsResult.rows;
+    }
+
+return result.rows;
+
     return result.rows;
 };
 
