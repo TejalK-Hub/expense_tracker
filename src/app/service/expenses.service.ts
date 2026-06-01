@@ -77,7 +77,7 @@ export class ExpensesService {
 
   // ------------------------------------------------------User: Manage Expenses------------------------------------------------------
 
-  fetchExpense(): Observable<any> {
+  fetchExpenses(): Observable<any> {
     return this.httpClient.get(`${environment.apiBaseUrl}/expenses/user/all`, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } })
     return this.httpClient.get(`${environment.apiBaseUrl}/expenses/user?user_id=${this.auth.userId}`, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } })
   }
@@ -85,7 +85,7 @@ export class ExpensesService {
 
   // ------------------------------------------------------Admin: User Manage Expenses------------------------------------------------------
 
-  fetchExpenses(): Observable<any> {
+  fetchExpensesAdmin(): Observable<any> {
 
     // let params = new HttpParams()
     //   .set('month', date);
@@ -128,14 +128,6 @@ export class ExpensesService {
   }
 
 
-
-
-
-
-  // updateExpense(id: any, body: any): Observable<any> {
-  //   return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${id}/status`, body);
-  // }
-
   updateExpenseStatus(id: string, body: any): Observable<any> {
     return this.httpClient.put(`${environment.apiBaseUrl}/expenses/${id}/status`,
       {
@@ -149,4 +141,47 @@ export class ExpensesService {
     );
   }
 
+
+
+  //------------------------------------------------------- EXPENSE PREVIEW LOGIC (start) ------------------------------------------------------
+
+  previewExpenses: any[] = [];
+  currentPreviewIndex: number = 0;
+
+  setPreviewContext(expenses: any[], index: number) {
+    this.previewExpenses = expenses;
+    this.currentPreviewIndex = index;
+  }
+
+  getCurrentExpense() {
+
+    console.log("Preview Expenses:", this.previewExpenses);
+    console.log("Current Index:", this.currentPreviewIndex);
+
+    return this.previewExpenses[this.currentPreviewIndex];
+  }
+
+  nextExpense() {
+    if (this.currentPreviewIndex < this.previewExpenses.length - 1) {
+      this.currentPreviewIndex++;
+    }
+
+    return this.getCurrentExpense();
+  }
+
+  previousExpense() {
+    if (this.currentPreviewIndex > 0) {
+      this.currentPreviewIndex--;
+    }
+
+    return this.getCurrentExpense();
+  }
+
+  hasNext(): boolean {
+    return this.currentPreviewIndex < this.previewExpenses.length - 1;
+  }
+
+  hasPrevious(): boolean {
+    return this.currentPreviewIndex > 0;
+  }
 }
