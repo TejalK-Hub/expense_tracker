@@ -16,6 +16,7 @@ const getMonthlySummary = async (month) => {
         LEFT JOIN expenses e 
             ON e.user_id = u.id
             AND TO_CHAR(e.date,'YYYY-MM') = $1
+            AND e.deleted_on IS NULL
         WHERE u.deleted_on IS NULL
         GROUP BY u.id, u.name
         ORDER BY total_amount DESC
