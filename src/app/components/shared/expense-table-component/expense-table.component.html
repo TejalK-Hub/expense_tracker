@@ -27,7 +27,7 @@
       <button
         class="btn btn-sm view-btn"
         data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
+        data-bs-target="#addExpenseModal"
       >
         + Add Expense
       </button>
@@ -80,6 +80,21 @@
     </span>
   </div>
 
+  
+  <!-- TOTAL AMOUNT BLOCK  -->
+
+  <div class="summary-card mb-3">
+    <div class="summary-label">Total Displayed Amount</div>
+
+    <div class="summary-value">
+      ₹ {{ getDisplayedTotal() | number: "1.2-2" }}
+    </div>
+
+    <small *ngIf="filters.category" class="text-success">
+      Showing only "{{ filters.category }}" amounts
+    </small>
+  </div>
+
   <!-- TABLE -->
   <div class="table-responsive table-container">
     <table
@@ -112,7 +127,21 @@
             {{ exp.user_name }}
           </td>
 
-          <td data-label="💼 Category">{{ exp.category }}</td>
+          <td data-label="💼 Category">
+            <ng-container
+              *ngFor="let item of exp.expense_items; let last = last"
+            >
+              <span
+                [ngClass]="{
+                  'active-category': isSelectedCategory(item.category),
+                }"
+              >
+                {{ item.category }}
+              </span>
+
+              <span *ngIf="!last">, </span>
+            </ng-container>
+          </td>
 
           <td class="desc" data-label="🧾 Description">
             {{ exp.expense }}
@@ -126,7 +155,20 @@
             {{ exp.receipt }}
           </td>
 
-          <td class="amount" data-label="💰 Amount">₹ {{ exp.amount }}</td>
+          <td class="amount" data-label="💰 Amount">
+            <div class="d-flex flex-column align-items-end">
+              <div>₹ {{ exp.amount }}</div>
+
+              <small
+                *ngIf="
+                  filters.category && getSelectedCategoryAmount(exp) !== null
+                "
+                class="text-success fw-semibold"
+              >
+                {{ filters.category }}: ₹ {{ getSelectedCategoryAmount(exp) }}
+              </small>
+            </div>
+          </td>
 
           <td data-label="📌 Status">
             <span
@@ -169,7 +211,7 @@
           </td>
 
           <td data-label="Action">
-            <button class="btn btn-sm view-btn" (click)="openPreview(exp)">
+            <button class="btn btn-sm view-btn" (click)="openPreview(exp, i)">
               👁 View
             </button>
           </td>
@@ -191,7 +233,7 @@
 
   <!-- ADD EXPENSE FORM MODAL -->
 
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content rounded-4">
         <div class="modal-header border-0">
@@ -275,7 +317,7 @@
                   (ngModelChange)="onFilterChange()"
                 >
                   <option value="">All Categories</option>
-                  <option *ngFor="let c of getUnique('category')" [value]="c">
+                  <option *ngFor="let c of getUniqueCategories()" [value]="c">
                     {{ c }}
                   </option>
                 </select>

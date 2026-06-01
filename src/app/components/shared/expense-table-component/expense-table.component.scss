@@ -32,8 +32,44 @@
   border-spacing: 0 10px;
 }
 
-/* HEADER */
+// TOTAL AMOUNT BLOCK
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card);
+  border-left: 4px solid var(--border-left); /* Subtle dark emphasis bar */
+  border-radius: 6px;             /* Sharp, structured corners */
+  padding: 1.1rem 1.5rem;
 
+  // width: max-content;
+  // min-width: 280px;
+  // display: inline-block;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--border-left);
+  margin-bottom: 0.2rem;
+}
+
+.summary-value {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  // color: #121212;
+  color: #16a34a;
+  font-variant-numeric: tabular-nums; /* Forces numbers to occupy equal width */
+}
+
+.summary-card small {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  padding-top: 0.4rem;
+  border-top: 1px dashed #f1f3f5; /* Clean divider for the filter info */
+}
+
+/* HEADER */
 .clean-head th {
   position: sticky;
   top: 0;
@@ -100,6 +136,14 @@
 .amount {
   font-weight: 700;
   color: #6366f1;
+}
+
+.active-category {
+  background: #d1e7dd;
+  color: #0f5132;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
 }
 
 /* =========================================================

@@ -150,9 +150,61 @@ export class ExpenseTableComponent implements OnInit {
     });
   }
 
-  // ---------------- UNIQUE VALUES ----------------
+  // ---------------- GET VALUES ----------------\
+
+  getCategories(exp: any): string {
+    return exp.expense_items?.map((i: any) => i.category).join(', ') || '';
+  }
+
+  getSelectedCategoryAmount(exp: any): number | null {
+    if (!this.filters.category) {
+      return null;
+    }
+
+    const item = exp.expense_items?.find(
+      (i: any) => i.category === this.filters.category
+    );
+
+    return item ? Number(item.amount) : null;
+  }
+
+  isSelectedCategory(category: string): boolean {
+    return this.filters.category === category;
+  }
+
+
+  getDisplayedTotal(): number {
+    if (!this.filters.category) {
+      return this.filteredExpenses.reduce(
+        (sum, exp) => sum + (exp.amount_value || 0),
+        0
+      );
+    }
+
+    return this.filteredExpenses.reduce((sum, exp) => {
+
+      const item = exp.expense_items?.find(
+        (i: any) => i.category === this.filters.category
+      );
+
+      return sum + (Number(item?.amount) || 0);
+
+    }, 0);
+  }
+
+
   getUnique(field: string) {
     return [...new Set(this.expenses.map(e => e[field]).filter(Boolean))];
+  }
+
+  getUniqueCategories() {
+    return [
+      ...new Set(
+        this.expenses.flatMap(exp =>
+          exp.expense_items?.map((i: any) => i.category) || []
+        )
+      )
+    ];
   }
 
   // ---------------- FILTER CHANGES ----------------
@@ -275,7 +327,9 @@ export class ExpenseTableComponent implements OnInit {
 
       const categoryMatch =
         !f.category ||
-        exp.category === f.category;
+        exp.expense_items?.some(
+          (item: any) => item.category === f.category
+        );
 
       const clientMatch =
         !f.client ||
@@ -291,9 +345,19 @@ export class ExpenseTableComponent implements OnInit {
         (!f.dateFrom || expenseDate >= new Date(f.dateFrom).getTime()) &&
         (!f.dateTo || expenseDate <= new Date(f.dateTo).getTime());
 
+      let amountToCheck = exp.amount_value;
+
+      if (f.category) {
+        const selectedItem = exp.expense_items?.find(
+          (item: any) => item.category === f.category
+        );
+
+        amountToCheck = Number(selectedItem?.amount) || 0;
+      }
+
       const amountMatch =
-        (f.amountMin === null || exp.amount_value >= f.amountMin) &&
-        (f.amountMax === null || exp.amount_value <= f.amountMax);
+        (f.amountMin === null || amountToCheck >= f.amountMin) &&
+        (f.amountMax === null || amountToCheck <= f.amountMax);
 
       return (
         userMatch &&
@@ -313,8 +377,8 @@ export class ExpenseTableComponent implements OnInit {
   // ---------------- LOAD EXPENSES ----------------
   loadExpenses() {
     const request = this.isAdmin
-      ? this.expensesService.fetchExpenses()
-      : this.expensesService.fetchExpense();
+      ? this.expensesService.fetchExpensesAdmin()
+      : this.expensesService.fetchExpenses();
 
     request.subscribe(res => {
       console.log('Raw API Data:', res.data);
@@ -415,8 +479,12 @@ export class ExpenseTableComponent implements OnInit {
   }
 
   // ---------------- PREVIEW ----------------
-  openPreview(exp: any) {
-    this.expensesService.setSelectedExpense(exp);
+  openPreview(exp: any, index: number) {
+    this.expensesService.setPreviewContext(
+      this.filteredExpenses,
+      index
+    );
+
     this.router.navigate(['/expense-preview']);
   }
 }
