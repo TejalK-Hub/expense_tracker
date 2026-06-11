@@ -72,6 +72,7 @@
           </th>
 
           <th>Client Name</th>
+          <th>Client Site</th>
           <th>Description</th>
         </tr>
       </thead>
@@ -107,10 +108,17 @@
             {{ visit.created_at | date: "dd MMM yyyy" }}
           </td>
 
-          <!-- CLIENT -->
+          <!-- CLIENT NAME -->
           <td data-label="👤 Client" class="client">
             <div class="ellipsis-cell client-cell">
               {{ visit.client }}
+            </div>
+          </td>
+
+          <!-- CLIENT SITE -->
+          <td data-label="📍 Client Site" class="client">
+            <div class="ellipsis-cell client-cell">
+              {{ visit.client_site }}
             </div>
           </td>
 

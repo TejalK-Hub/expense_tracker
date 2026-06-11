@@ -49,7 +49,9 @@ export class VisitsTableComponent {
     this.visitService.fetchVisits().subscribe((res) => {
       this.visits = res.data;
 
-      this.filteredVisitNames = this.getUnique('visit_name'); // ✅ important
+      this.filteredVisitNames = this.getUnique('visit_name'); 
+
+      console.log('Fetched visits:', this.visits);
 
       this.applyFilters();
     });
