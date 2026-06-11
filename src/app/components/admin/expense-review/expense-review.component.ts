@@ -84,6 +84,7 @@ onImgError(event: any) {
 }
 
   openUserExpenses(user:any) {
-    this.router.navigate(['/user-expense-review']);
+    // this.router.navigate(['/user-expense-review']);
+    console.log("Selected user:", user);
   }
 }
