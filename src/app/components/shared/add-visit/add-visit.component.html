@@ -59,15 +59,19 @@
           </select>
         </div>
 
-        <!-- Client Branch (READ ONLY PLACEHOLDER) -->
+        <!-- Client Site -->
         <div class="col-md-6">
-          <label class="form-label"> Client Branch </label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="client_site"
-            readonly
-          />
+          <label class="form-label">
+            Client Site <span class="required">*</span>
+          </label>
+
+          <select class="form-select" formControlName="client_site">
+            <option value="" disabled>Select Site</option>
+
+            <option *ngFor="let site of clientSites" [value]="site">
+              {{ site }}
+            </option>
+          </select>
         </div>
 
         <!-- Visit Reason -->

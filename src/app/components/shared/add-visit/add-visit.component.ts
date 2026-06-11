@@ -31,6 +31,7 @@ export class AddVisitComponent {
 
   clients: any;
   visitReasons: any;
+  clientSites: string[] = [];
 
   showPopup: boolean = false;
 
@@ -56,12 +57,17 @@ export class AddVisitComponent {
       client_id: ['', Validators.required],
       visit_reason_id: ['', Validators.required],
       agenda: [''],
-      client_site: [{ value: 'NA', disabled: true }]
+      client_site: ['', Validators.required]
     }, {
-      validators: this.dateValidator // ✅ attach validator here
+      validators: this.dateValidator
     });
 
+    this.visitForm.get('client_id')?.valueChanges.subscribe(clientId => {
+      this.onClientChange(clientId);
+    }); 
+
     this.sharedService.fetchClients().subscribe(res => {
+      console.log('Fetched clients:', res.data);
       this.clients = res.data;
     });
 
@@ -70,7 +76,7 @@ export class AddVisitComponent {
     });
   }
 
-  // ✅ CUSTOM VALIDATOR
+  // CUSTOM VALIDATOR
   dateValidator(group: AbstractControl) {
     const start = group.get('start_date')?.value;
     const end = group.get('end_date')?.value;
@@ -80,31 +86,42 @@ export class AddVisitComponent {
     return end < start ? { invalidDate: true } : null;
   }
 
+  onClientChange(clientId: number) {
+
+    const selectedClient = this.clients.find(
+      (c: any) => c.id == clientId
+    );
+
+    this.clientSites = selectedClient?.site || [];
+
+    this.visitForm.patchValue({
+      client_site: ''
+    });
+  }
+
   clearFields() {
     this.visitForm.reset();
+    this.clientSites = [];
   }
 
   onSubmit() {
 
-    // ❌ DON'T navigate before validation (this was wrong in your code)
     if (this.visitForm.invalid) {
       this.visitForm.markAllAsTouched();
       return;
     }
 
-
-
     const formValues = this.visitForm.value;
 
-        const body = {
-          // user_id: this.authService.userId,
-          visit_reason_id: Number(formValues.visit_reason_id),
-          client_id: Number(formValues.client_id),
-          start_date: formValues.start_date,
-          end_date: formValues.end_date,
-          agenda: formValues.agenda,
-          client_site: 'NA'
-        };
+    const body = {
+      // user_id: this.authService.userId,
+      visit_reason_id: Number(formValues.visit_reason_id),
+      client_id: Number(formValues.client_id),
+      start_date: formValues.start_date,
+      end_date: formValues.end_date,
+      agenda: formValues.agenda,
+      client_site: formValues.client_site
+    };
 
     this.visitService.addVisit(body).subscribe({
       next: (res) => {
@@ -115,9 +132,10 @@ export class AddVisitComponent {
 
         this.visitForm.reset();
 
-        // ✅ Navigate AFTER success
         // this.router.navigate(['/visits']);
       }
     });
   }
+
+
 }
