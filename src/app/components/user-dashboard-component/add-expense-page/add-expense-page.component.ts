@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ButtonComponent } from '../../shared/button/button.component';
 import { InputComponent } from '../../shared/input/input.component';
-import { DropDownButtonComponent } from '../../shared/drop-down-button/drop-down-button.component';
+import { DropDownButtonComponent } from '../../shared/drop-down-button (DEPRICATED)/drop-down-button.component';
 import { AddReceiptComponent } from '../add-receipt/add-receipt.component';
 import {
   FormBuilder,

@@ -144,6 +144,12 @@
   }
 }
 
+/* CATEGORY TAGS */
+.category-tag {
+  display: inline-block;
+  white-space: nowrap;
+}
+
 /* SORTABLE */
 .sortable {
   cursor: pointer;
@@ -415,6 +421,19 @@
 
   .range-separator {
     display: none;
+  }
+
+  .mobile-table td.category {
+    align-items: flex-start;
+  }
+
+  .mobile-table td.category > span {
+    flex: 1;
+    text-align: right;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
   }
 }
 

@@ -111,15 +111,18 @@
           </td>
 
           <td class="category" data-label="💼 Category">
-            <span *ngFor="let c of exp.category_list; let last = last">
-              <span
-                [ngClass]="{
-                  'active-category': isSelectedCategory(c),
-                }"
-              >
-                {{ c }}
-              </span>
-              <span *ngIf="!last">, </span>
+            <span>
+              <ng-container *ngFor="let c of exp.category_list; let last = last">
+                <span
+                  class="category-tag"
+                  [ngClass]="{
+                    'active-category': isSelectedCategory(c),
+                  }"
+                >
+                  {{ c }}
+                </span>
+                <span *ngIf="!last">, </span>
+              </ng-container>
             </span>
           </td>
 

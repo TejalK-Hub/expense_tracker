@@ -6,6 +6,7 @@ import { AuthServiceService } from '../../../service/auth-service.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+
 @Component({
   selector: 'app-pending-expense-table',
   standalone: true,
@@ -13,10 +14,11 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './pending-expense-table.component.html',
   styleUrl: './pending-expense-table.component.scss'
 })
+
+
 export class PendingExpenseTableComponent implements OnInit {
 
   filteredExpenses: any[] = [];
-
   filters = {
     user: '',
     userId: null as number | null,
@@ -53,38 +55,8 @@ export class PendingExpenseTableComponent implements OnInit {
 
   sortDirection: 'asc' | 'desc' = 'asc';
 
-  // ngOnInit() {
-  //   this.isAdmin = this.authService.userRole?.toLowerCase() === 'admin';
-
-  //   this.loadFilters();
-  //   this.filteredVisitsList = this.getUnique('visit_name');
-  //   console.log("Unique visits: ", this.filteredVisitsList);
-
-
-  //   if (this.isAdmin) {
-  //     this.expensesService.fetchAdminPending().subscribe(res => {
-  //       console.log("Admin pending expenses response: ", res);
-  //       this.expenses = this.normalizeExpenses(res.data);
-  //       this.filteredVisitsList = this.getUnique('visit_name');
-  //       this.applyFilters();
-  //     });
-  //   } else {
-  //     this.expensesService.fetchEmployeePending().subscribe({
-  //       next: (res) => {
-  //         console.log("Employee pending expenses response: ++++++++++++++++++++++++++++++++++++++++++++++++++++ ", res.data);
-  //         this.expenses = this.normalizeExpenses(res.data);
-  //         this.categoryList = [...new Set(this.expenses.flatMap(e => e.category_list))];
-  //         this.clientList = this.getUnique('client_name');
-  //         this.filteredVisitsList = this.getUnique('visit_name');
-  //         this.applyFilters();
-  //       },
-  //       error: (err: string) => {
-  //         console.log("Pending Expense error: ", err);
-  //       }
-  //     });
-  //   }
-  // }
-
+  
+  // ------------------------------------------------------ LIFECYCLE HOOKS ------------------------------------------------------
   ngOnInit() {
     this.isAdmin = this.authService.userRole?.toLowerCase() === 'admin';
 
@@ -104,21 +76,21 @@ export class PendingExpenseTableComponent implements OnInit {
   }
 
 
+  // ------------------------------------------------------ INITIALIZATION ------------------------------------------------------
   private onExpensesLoaded(data: any[]) {
     this.expenses = this.normalizeExpenses(data);
 
-    // this.categoryList = this.getUniqueCategories();
     this.categoryList = this.getUnique('category_list');
     this.filteredVisitsList = this.getUnique('visit_name');
     this.clientList = this.getUnique('client_name');
-    // this.filteredVisitsList = this.getUnique('visit_name');
     this.visitSearch = this.filters.visit || '';
 
     this.applyFilters();
   }
 
-  // ---------------- FILTER STORAGE ----------------
 
+
+  // ------------------------------------------------------ LOCAL STORAGE ------------------------------------------------------
   saveFilters() {
     localStorage.setItem(this.FILTER_KEY, JSON.stringify(this.filters));
   }
@@ -137,16 +109,33 @@ export class PendingExpenseTableComponent implements OnInit {
           amountMax: parsed.amountMax !== null ? Number(parsed.amountMax) : null
         };
 
-        // this.visitSearch = this.filters.visit || '';
-
       } catch {
         this.clearFilters();
       }
     }
   }
 
+  saveSort() {
+    localStorage.setItem(this.SORT_KEY, this.sortDirection);
+  }
 
-  // ---------------- VISIT SEARCH ----------------
+  loadSort() {
+    const saved = localStorage.getItem(this.SORT_KEY) as 'asc' | 'desc' | null;
+    this.sortDirection = saved || 'asc';
+  }
+
+
+  // ------------------------------------------------------ EVENT LISTENERS ------------------------------------------------------
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: any) {
+    const clickedInside = event.target.closest('.visit-dropdown');
+    if (!clickedInside) {
+      this.isVisitDropdownOpen = false;
+    }
+  }
+
+
+  // ------------------------------------------------------ DROP-DOWN SEARCH ------------------------------------------------------
   onVisitSearchChange() {
     const search = this.visitSearch.toLowerCase();
 
@@ -163,24 +152,7 @@ export class PendingExpenseTableComponent implements OnInit {
   }
 
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: any) {
-    const clickedInside = event.target.closest('.visit-dropdown');
-    if (!clickedInside) {
-      this.isVisitDropdownOpen = false;
-    }
-  }
-
-  // ---------------- NORMALIZE ----------------
-
-  // normalizeExpenses(data: any[]) {
-  //   return data.map((e: any) => ({
-  //     ...e,
-  //     amount_value: this.extractAmount(e.amount)
-  //   }));
-  // }
-
-
+  // ------------------------------------------------------ DATA TRANSFORMATION ------------------------------------------------------
   normalizeExpenses(data: any[]) {
     return data.map((e: any) => {
       const items = e.expense_items || [];
@@ -207,7 +179,7 @@ export class PendingExpenseTableComponent implements OnInit {
         category_list: [...new Set(categories)],
         category: [...new Set(categories)].join(', '),
 
-        category_amount_map: categoryMap,   // 🔥 NEW
+        category_amount_map: categoryMap,
 
         amount_value: this.extractAmount(e.amount)
       };
@@ -219,6 +191,31 @@ export class PendingExpenseTableComponent implements OnInit {
     return parseFloat(amount.replace(/[^\d.]/g, '')) || 0;
   }
 
+
+  // ------------------------------------------------------ UTILITY METHODS ------------------------------------------------------
+  getUnique(field: string) {
+    return [
+      ...new Set(
+        this.expenses.flatMap(e =>
+          Array.isArray(e[field]) ? e[field] : [e[field]]
+        ).filter(Boolean)
+      )
+    ];
+  }
+
+  getUserNameById(id: number | null): string {
+
+    if (!id) {
+      return '';
+    }
+
+    const user = this.expenses.find(
+      e => e.user_id === id
+    );
+
+    return user?.user_name || 'Unknown';
+  }
+
   getSelectedCategoryAmount(exp: any): number | null {
 
     if (!this.filters.category) {
@@ -226,10 +223,6 @@ export class PendingExpenseTableComponent implements OnInit {
     }
 
     return exp.category_amount_map?.[this.filters.category] ?? null;
-  }
-
-  isSelectedCategory(category: string): boolean {
-    return this.filters.category === category;
   }
 
   getDisplayedTotal(): number {
@@ -252,21 +245,12 @@ export class PendingExpenseTableComponent implements OnInit {
     }, 0);
   }
 
-  getUserNameById(id: number | null): string {
-
-    if (!id) {
-      return '';
-    }
-
-    const user = this.expenses.find(
-      e => e.user_id === id
-    );
-
-    return user?.user_name || 'Unknown';
+  isSelectedCategory(category: string): boolean {
+    return this.filters.category === category;
   }
 
-  // ---------------- FILTER CHANGE ----------------
 
+  // ------------------------------------------------------ FILTER CHANGE ------------------------------------------------------
   onFilterChange() {
     clearTimeout(this.debounceTimer);
 
@@ -276,10 +260,7 @@ export class PendingExpenseTableComponent implements OnInit {
     }, 300);
   }
 
-  // ---------------- FILTER LOGIC ----------------
-
   applyFilters() {
-
     const f = this.filters;
 
     this.filteredExpenses = this.expenses.filter(exp => {
@@ -349,19 +330,7 @@ export class PendingExpenseTableComponent implements OnInit {
     this.applySorting();
   }
 
-
-  saveSort() {
-    localStorage.setItem(this.SORT_KEY, this.sortDirection);
-  }
-
-  loadSort() {
-    const saved = localStorage.getItem(this.SORT_KEY) as 'asc' | 'desc' | null;
-    this.sortDirection = saved || 'asc';
-  }
-  // ---------------- ACTIVE FILTERS ----------------
-
   hasActiveFilters(): boolean {
-
     const f = this.filters;
 
     return !!(
@@ -378,7 +347,6 @@ export class PendingExpenseTableComponent implements OnInit {
   }
 
   removeFilter(type: string) {
-
     switch (type) {
 
       case 'user':
@@ -434,26 +402,14 @@ export class PendingExpenseTableComponent implements OnInit {
     this.applyFilters();
   }
 
-  // ---------------- UTIL ----------------
-
-  getUnique(field: string) {
-    return [
-      ...new Set(
-        this.expenses.flatMap(e =>
-          Array.isArray(e[field]) ? e[field] : [e[field]]
-        ).filter(Boolean)
-      )
-    ];
-  }
-
   onUserChange(value: string) {
     this.filters.user = value;
     this.filters.userId = null;
     this.onFilterChange();
   }
 
-  // ---------------- SORTING ----------------
 
+  // ------------------------------------------------------ SORTING ------------------------------------------------------
   applySorting() {
 
     this.filteredExpenses.sort((a: any, b: any) => {
@@ -481,15 +437,8 @@ export class PendingExpenseTableComponent implements OnInit {
     this.applySorting();
   }
 
-  // ---------------- PREVIEW ----------------
 
-  // openPreview(exp: any) {
-  //   this.expensesService.setSelectedExpense(exp);
-  //   console.log("------------> This is the expense obj: ", exp);
-  //   this.router.navigate(['/expense-preview']);
-  // }
-
-
+// ------------------------------------------------------ NAVIGATION ------------------------------------------------------
   openPreview(exp: any) {
 
     const index = this.filteredExpenses.findIndex(
