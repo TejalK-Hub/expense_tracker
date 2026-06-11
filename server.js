@@ -10,6 +10,7 @@ const pool = require('./config/db');
 const dataRoutes = require('./routes/master.routes');      // Generic CRUD
 const dashboardRoutes = require('./routes/dashboard.routes');
 const visitsRoutes = require('./routes/visits.routes');
+const clientRoutes = require('./routes/client.routes');
 const expenseRoutes = require('./routes/expense.routes');
 const expenseAdminRoutes = require('./routes/expense.admin.routes');
 
@@ -89,7 +90,8 @@ app.use('/dashboard', dashboardRoutes);
 // UI Display APIs
 app.use('/visits', visitsRoutes);
 
-
+// Client routes
+app.use('/clients', clientRoutes);
 
 
 //expense route
