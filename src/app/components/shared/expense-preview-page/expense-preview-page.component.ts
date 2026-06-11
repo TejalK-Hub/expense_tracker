@@ -1,84 +1,87 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { ToastrService } from 'ngx-toastr';
 
 import { environment } from '../../../../environments/environment';
-import { BackButtonComponent } from '../../back-button/back-button.component';
+
 import { AuthServiceService } from '../../../service/auth-service.service';
 import { ExpensesService } from '../../../service/expenses.service';
 import { SharedServicesService } from '../../../service/shared-services.service';
-import { VisitsService } from '../../../service/visits.service';
+
+import { BackButtonComponent } from '../../back-button/back-button.component';
 import { AddExpenseFormComponent } from '../../user-dashboard-component/add-expense-form/add-expense-form.component';
+
 
 @Component({
   selector: 'app-expense-preview-page',
   standalone: true,
-  imports: [BackButtonComponent, AddExpenseFormComponent, CommonModule, FormsModule],
+  imports: [
+    BackButtonComponent,
+    AddExpenseFormComponent,
+    
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './expense-preview-page.component.html',
   styleUrl: './expense-preview-page.component.scss',
 })
+
+
 export class ExpensePreviewPageComponent {
+
+  // Expense Data
   expense: any;
+  apiBaseUrl: string = environment.apiBaseUrl;
+  body: any = {};
 
-  editable: boolean = false;
-
+  // Flags
   isAdmin: boolean = false;
-
-  isSelfAdmin: boolean = true;
-
   isReviewable: boolean = false;
-
   isRejected: boolean = false;
-
   isDeletable: boolean = false;
 
+  // Image Preview
   showImagePreview = false;
+  imagePaths: string[] = [];
+  previewImage: string = '';
 
-  // ----------------------------------------------modal properties------------------------------------------------
+  // Rejection Modal
   rejectionReasons: any;
   selectedRejectionReason: string = '';
   rejectionDescription: string = '';
 
-
+  // Resubmission Modal
   amount: number = 0;
   categories: any;
   selectedCategory: string = '';
   resubmissionDescription: string = '';
 
-
-  // ----------------------------------------------modal properties------------------------------------------------
-  apiBaseUrl: string = environment.apiBaseUrl;
-  // imgName: string = '';
-  imagePaths: string[] = [];
-  previewImage: string = '';
-
-  // ----------------------------------------------api params------------------------------------------------
-  body: any = {};
-
-
-  constructor(private expenseService: ExpensesService, private router: Router, private authService: AuthServiceService, private sharedService: SharedServicesService, private visitService: VisitsService, private toastr: ToastrService) { }
-
-  // bill_path:"uploads\\1773641334791.png"
-
-
+  constructor(
+    private expenseService: ExpensesService,
+    private router: Router,
+    private authService: AuthServiceService,
+    private sharedService: SharedServicesService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit() {
-
     this.expense = this.expenseService.getCurrentExpense();
-    console.log("Expense received in preview:", this.expense);
+
     if (!this.expense) {
-      console.log("No expense selected, redirecting back to manage expense page.");
+      console.log(
+        'No expense selected, redirecting back to manage expense page.'
+      );
+
       this.router.navigate(['/manage-expense']);
+      return;
     }
+
     this.initialChecks();
     this.getRejectionReason();
     this.getImagePath();
-    // this.deletable();
-    // If user refreshes page → redirect back safely
-
-    console.log("Selected expense: ", this.expense);
 
   }
 
@@ -91,7 +94,7 @@ export class ExpensePreviewPageComponent {
     this.isReviewable = false;
     this.isDeletable = false;
 
-    if (this.authService.userRole?.toLowerCase() == 'admin') {
+    if (this.authService.userRole?.toLowerCase() === 'admin') {
       this.isAdmin = true;
     }
 
@@ -112,32 +115,25 @@ export class ExpensePreviewPageComponent {
     this.deletable();
 
   }
+
+
   // ------------------------------------------------------DELETE EXPENSE LOGIC------------------------------------------------------
-
   deletable() {
-
     if (this.isAdmin) {
-
       if (this.expense.user_id === this.authService.userId && this.expense.approved_at == null) {
         this.isDeletable = true;
       }
-
     } else {
-
       if (!this.expense.approved_at) {
         this.isDeletable = true;
       }
     }
-
-
     if (this.expense.approved_at == null && !this.isAdmin) {
       this.isDeletable = true;
     }
   }
 
-
   deleteExpense() {
-
     this.expenseService.deleteExpense(this.expense.id).subscribe({
       next: () => {
         this.toastr.success('Expense deleted successfully!');
@@ -149,21 +145,15 @@ export class ExpensePreviewPageComponent {
     })
   }
 
-
   confirmDelete() {
     const confirmed = window.confirm('Are you sure, you want to delete this expense?');
-
     if (confirmed) {
       this.deleteExpense();
     }
   }
 
-  // ------------------------------------------------------ DELETE EXPENSE LOGIC (end) ------------------------------------------------------
-
-
 
   // ------------------------------------------------------ IMAGE PREVIEW LOGIC ------------------------------------------------------
-
   openImagePreview(img: string) {
     if (!img) return;
     this.previewImage = img;
@@ -175,12 +165,8 @@ export class ExpensePreviewPageComponent {
     this.previewImage = '';
   }
 
-  // ------------------------------------------------------ IMAGE PREVIEW LOGIC (end)------------------------------------------------------
-
 
   // ------------------------------------------------------Service Calls (Initialization)------------------------------------------------------
-
-
   getRejectionReason() {
     this.expenseService.fetchRejectionReasons().subscribe(res => {
       this.rejectionReasons = res.data
@@ -260,7 +246,6 @@ export class ExpensePreviewPageComponent {
   }
 
   rejectExpense() {
-    // console.log("Reject");
     this.body = {
       action: "reject",
       rejection_reason_id: this.rejectionReasons.find((r: any) => this.selectedRejectionReason === r.name)?.id ?? 0,
@@ -282,19 +267,14 @@ export class ExpensePreviewPageComponent {
 
 
   // ------------------------------------------------------Employee Expense Actions------------------------------------------------------
-
-
   editExpense() {
-    // console.log("Editable: ",this.selectedCategory);
     this.fetchCategories();
 
   }
-  resubmitExpense() {
 
+  resubmitExpense() {
     this.populateForm();
   }
-
-
 
   populateForm() {
     const body = {
@@ -320,7 +300,6 @@ export class ExpensePreviewPageComponent {
   }
 
   // ------------------------------------------------------ Traverse Expense Actions ------------------------------------------------------
-
   goNext() {
     this.expense = this.expenseService.nextExpense();
     this.getImagePath();
@@ -341,45 +320,4 @@ export class ExpensePreviewPageComponent {
     return this.expenseService.hasPrevious();
   }
 
-  // printReceipt() {
-  //   const content = document.getElementById('receipt')?.innerHTML;
-
-  //   const printWindow = window.open('', '', 'width=800,height=600');
-
-  //   if (printWindow && content) {
-  //     printWindow.document.write(`
-  //     <html>
-  //       <head>
-  //         <title>Receipt</title>
-  //         <style>
-  //           body {
-  //             font-family: Arial, sans-serif;
-  //             padding: 20px;
-  //           }
-
-  //           .lux-receipt {
-  //             max-width: 520px;
-  //             margin: auto;
-  //           }
-
-  //           img {
-  //             max-width: 100%;
-  //             height: auto;
-  //           }
-  //         </style>
-  //       </head>
-  //       <body>
-  //         <div class="lux-receipt">
-  //           ${content}
-  //         </div>
-  //       </body>
-  //     </html>
-  //   `);
-
-  //     printWindow.document.close();
-  //     printWindow.focus();
-  //     printWindow.print();
-  //     printWindow.close();
-  //   }
-  // }
 }

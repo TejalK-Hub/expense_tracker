@@ -13,7 +13,7 @@
 }
 
 /* =========================================================
-   TOP BAR
+   TOP HEADER BAR
 ========================================================= */
 
 h5 {
@@ -58,17 +58,39 @@ h5 {
   color: #fff;
 }
 
+/* EDIT */
+
+.btn-outline-primary {
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.btn-outline-primary:hover {
+  background: #3b82f6;
+  color: #fff;
+}
+
+/* NAVIGATION */
+
+.btn-outline-secondary:hover {
+  color: #fff;
+}
+
+.delete-btn i {
+  margin-right: 4px;
+}
+
 /* =========================================================
    RECEIPT CARD
 ========================================================= */
 
 .lux-receipt {
   width: 100%;
-  max-width: 760px;
+  max-width: 620px;
 
   margin: 0 auto;
 
-  padding: 34px;
+  padding: 26px;
 
   border-radius: 30px;
 
@@ -79,43 +101,70 @@ h5 {
 }
 
 /* =========================================================
-   STATUS THEMES
+   RECEIPT STATUS THEMES
 ========================================================= */
 
-/* APPROVED */
 .lux-receipt.approved {
   background: var(--expense-approved-bg);
-
   border: 1px solid var(--expense-approved-border);
-
   box-shadow: var(--expense-card-shadow);
 }
 
-/* REJECTED */
 .lux-receipt.rejected {
   background: var(--expense-rejected-bg);
-
   border: 1px solid var(--expense-rejected-border);
-
   box-shadow: var(--expense-card-shadow);
 }
 
-/* PENDING */
 .lux-receipt.pending {
   background: var(--expense-pending-bg);
-
   border: 1px solid var(--expense-pending-border);
-
   box-shadow: var(--expense-card-shadow);
 }
 
 /* =========================================================
-   HEADER
+   STATUS STAMP
+========================================================= */
+
+.stamp {
+  position: absolute;
+  top: 24px;
+  right: -42px;
+
+  width: 170px;
+
+  text-align: center;
+
+  transform: rotate(35deg);
+
+  padding: 8px 0;
+
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.stamp.approved {
+  background: rgba(34, 197, 94, 0.18);
+  color: #22c55e;
+}
+
+.stamp.rejected {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+}
+
+.stamp.pending {
+  background: rgba(99, 102, 241, 0.18);
+  color: #6366f1;
+}
+
+/* =========================================================
+   RECEIPT HEADER
 ========================================================= */
 
 .header {
   text-align: center;
-
   margin-bottom: 28px;
 }
 
@@ -140,25 +189,29 @@ h5 {
 }
 
 /* =========================================================
-   GRID
+   RECEIPT GRID
 ========================================================= */
 
-.grid {
+.top-grid {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
 
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-
-  gap: 14px;
-
-  margin-bottom: 18px;
+.mid-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 /* =========================================================
-   CARDS
+   GRID ITEMS
 ========================================================= */
 
 .item {
-  padding: 18px;
+  padding: 13px;
 
   border-radius: 18px;
 
@@ -175,8 +228,6 @@ h5 {
 
 .item:hover {
   transform: translateY(-2px);
-
-  border-color: var(--border-color);
 }
 
 .item.full {
@@ -186,16 +237,16 @@ h5 {
 .item label {
   display: block;
 
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
 
   color: var(--text-secondary);
 }
 
 .value {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.5;
 
@@ -209,21 +260,69 @@ h5 {
 ========================================================= */
 
 .highlight {
-  // background: linear-gradient(
-  //   145deg,
-  //   rgba(99, 102, 241, 0.08),
-  //   rgba(59, 130, 246, 0.08)
-  // );
-
   background: var(--bg-card);
-
   border: 1px solid rgba(99, 102, 241, 0.14);
 }
 
-.highlight .value {
+.total-amount {
   color: #4f46e5;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
 
-  font-size: 18px;
+.rejection-box {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.rejection-box label {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.rejection-text {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.rejection-comment {
+  margin-top: -8px;
+
+  background: rgba(239, 68, 68, 0.05);
+
+  border-left: 4px solid #ef4444;
+}
+
+.rejection-comment .rejection-text {
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* ---------------------- CATEGORY BREAKDOWN -----------------*/
+.breakdown {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 6px;
+  padding: 6px 10px;
+
+  border-radius: 10px;
+
+  background: rgba(99, 102, 241, 0.05);
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.breakdown span:first-child {
+  color: var(--text-secondary);
+}
+
+.breakdown span:last-child {
+  font-weight: 600;
+  color: #4f46e5;
 }
 
 /* =========================================================
@@ -246,38 +345,26 @@ h5 {
   font-weight: 600;
 }
 
-/* APPROVED */
-
 .status-badge.approved {
   background: rgba(88, 243, 212, 0.176);
-
   color: #86efac;
-
   border: 1px solid rgba(34, 197, 94, 0.18);
 }
 
-/* REJECTED */
-
 .status-badge.rejected {
   background: rgba(239, 68, 68, 0.12);
-
   color: #fca5a5;
-
   border: 1px solid rgba(239, 68, 68, 0.18);
 }
 
-/* PENDING */
-
 .status-badge.pending {
   background: rgba(99, 102, 241, 0.14);
-
   color: #5d78e6;
-
   border: 1px solid rgba(99, 102, 241, 0.18);
 }
 
 /* =========================================================
-   IMAGE SECTION
+   RECEIPT IMAGE SECTION
 ========================================================= */
 
 .section {
@@ -295,12 +382,6 @@ h5 {
   font-weight: 600;
 
   color: var(--text-secondary);
-}
-
-.receipt-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
 }
 
 .receipt-img {
@@ -324,12 +405,11 @@ h5 {
 
 .receipt-img:hover {
   transform: scale(1.03);
-
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
 }
 
 /* =========================================================
-   NO IMAGE
+   NO IMAGE PLACEHOLDER
 ========================================================= */
 
 .no-img {
@@ -352,34 +432,7 @@ h5 {
 }
 
 /* =========================================================
-   FOOTER
-========================================================= */
-
-.footer {
-  margin-top: 24px;
-
-  padding-top: 22px;
-
-  border-top: 1px solid var(--border-color);
-
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.footer label {
-  display: block;
-
-  margin-bottom: 6px;
-
-  font-size: 13px;
-  font-weight: 500;
-
-  color: var(--text-secondary);
-}
-
-/* =========================================================
-   IMAGE PREVIEW
+   IMAGE PREVIEW OVERLAY
 ========================================================= */
 
 .image-overlay {
@@ -409,6 +462,113 @@ h5 {
 
   animation: zoomIn 0.2s ease;
 }
+
+.image-section {
+  margin-top: 12px;
+}
+
+.receipt-img {
+  width: 100px;
+  height: 100px;
+}
+
+/* =========================================================
+   RECEIPT FOOTER
+========================================================= */
+
+.footer {
+  margin-top: 24px;
+
+  padding-top: 22px;
+
+  border-top: 1px solid var(--border-color);
+
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.footer label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  color: var(--text-secondary);
+}
+
+/* =========================================================
+   REJECTION MODAL
+========================================================= */
+
+.required {
+  color: #ef4444;
+}
+
+.modal-content {
+  border-radius: 20px;
+  border: none;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color);
+}
+
+
+/* =========================================================
+    NAVIGATION LAYOUT
+========================================================= */
+
+.receipt-navigation-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.receipt-center {
+  flex: 0 0 auto;
+}
+
+.side-nav {
+  width: 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-btn {
+  white-space: nowrap;
+}
+
+
+
+.lux-receipt {
+  position: relative;
+}
+
+.receipt-side-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.receipt-side-btn-left {
+  left: -140px;
+}
+
+.receipt-side-btn-right {
+  right: -140px;
+}
+/* =========================================================
+   ANIMATIONS
+========================================================= */
 
 @keyframes fadeIn {
   from {
@@ -479,6 +639,12 @@ h5 {
   .receipt-img {
     width: 100%;
     height: 220px;
+  }
+
+  .stamp {
+    right: -55px;
+    width: 180px;
+    font-size: 11px;
   }
 }
 

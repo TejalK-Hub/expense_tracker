@@ -64,15 +64,6 @@
         <i class="bi bi-trash"></i>
         Delete
       </button>
-
-      <!-- --------------------------------------------------Print button-------------------------------------------------- -->
-      <!-- <button
-          class="btn btn-light print-btn"
-          (click)="printReceipt()"
-          title="Print Receipt"
-        >
-          <i class="bi bi-printer"></i>
-        </button> -->
     </div>
   </div>
 
@@ -87,7 +78,7 @@
     }"
   >
     <!-- Stamp -->
-    <div
+    <!-- <div
       class="stamp"
       [ngClass]="{
         approved: expense.status === 'Approved',
@@ -96,38 +87,35 @@
       }"
     >
       {{ expense.status || "-NA-" }}
-    </div>
+    </div> -->
 
+    <!-- Header -->
     <!-- Header -->
     <div class="header">
       <h2>Expense Receipt</h2>
       <span>{{ expense.created_at || "-NA-" }}</span>
     </div>
 
-    <!-- Rejection Reason -->
-    <div class="item mb-2" *ngIf="expense.status === 'Rejected'">
-      <label>Rejection Reason</label>
-      <div class="value">{{ expense.rejection_reason || "-NA-" }}</div>
+    <hr class="receipt-divider" />
+
+    <!-- Admin User Block -->
+    <div class="info-row" *ngIf="isAdmin">
+      <div class="info-col">
+        <label>User</label>
+        <div class="value">
+          {{ expense.user_name || "-NA-" }}
+          <span class="text-muted">({{ expense.user_id || "-NA-" }})</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Grid -->
-    <div class="grid">
-      <!-- USER -->
-      <ng-container *ngIf="isAdmin">
-        <div class="item">
-          <label>User ID</label>
-          <div class="value">{{ expense.user_id || "-NA-" }}</div>
-        </div>
+    <!-- Rejection Reason -->
+    <!-- TOP ROW -->
 
-        <div class="item">
-          <label>User Name</label>
-          <div class="value">{{ expense.user_name || "-NA-" }}</div>
-        </div>
-      </ng-container>
-
-      <!-- STATUS / CATEGORY -->
+    <div class="top-grid">
       <div class="item">
         <label>Status</label>
+
         <div
           class="status-badge"
           [ngClass]="{
@@ -145,6 +133,28 @@
       </div>
 
       <div class="item">
+        <label>Expense Date</label>
+
+        <div class="value">
+          {{ expense.expense_date | date: "dd MMMM yyyy" }}
+        </div>
+      </div>
+
+      <div class="item">
+        <label>Client</label>
+
+        <div class="value">
+          {{ expense.client_name || "-NA-" }}
+        </div>
+      </div>
+    </div>
+
+    <hr class="receipt-divider" />
+
+    <!-- SECOND ROW -->
+
+    <div class="mid-grid">
+      <div class="item">
         <label>Categories</label>
 
         <div class="value" *ngFor="let item of expense.expense_items">
@@ -152,60 +162,87 @@
         </div>
       </div>
 
-      <!-- AMOUNT / RECEIPT -->
       <div class="item highlight">
         <label>Total Amount</label>
 
-        <div class="value fw-semibold">₹ {{ expense.amount || "-NA-" }}</div>
+        <div class="value total-amount">₹ {{ expense.amount || "-NA-" }}</div>
 
-        <div
-          class="value small mt-1"
-          *ngFor="let item of expense.expense_items"
-        >
-          └ {{ item.category }} : ₹ {{ item.amount }}
+        <div class="breakdown" *ngFor="let item of expense.expense_items">
+          <span>{{ item.category }}: </span>
+
+          <span>₹{{ item.amount }}</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="receipt-divider" />
+
+    <!-- THIRD ROW -->
+
+    <div class="mid-grid">
+      <div class="item">
+        <label>Visit</label>
+
+        <div class="value wrap-text">
+          {{ expense.visit_name || "-NA-" }}
         </div>
       </div>
 
       <div class="item">
         <label>Receipt No</label>
-        <div class="value">{{ expense.receipt || "-NA-" }}</div>
-      </div>
 
-      <!-- CLIENT / VISIT -->
-      <div class="item">
-        <label>Client</label>
-        <div class="value">{{ expense.client_name || "-NA-" }}</div>
-      </div>
-
-      <div class="item">
-        <label>Visit</label>
         <div class="value">
-          {{ expense.visit_name || "-NA-" }}
+          {{ expense.receipt || "-NA-" }}
         </div>
-      </div>
-
-      <!-- DATE (FULL WIDTH) -->
-      <div class="item full">
-        <label>Expense Date</label>
-        <div class="value">
-          {{ (expense.expense_date | date: "dd MMMM yyyy") || "-NA-" }}
-        </div>
-      </div>
-
-      <!-- DESCRIPTION (FULL WIDTH) -->
-      <div class="item full">
-        <label>Description</label>
-        <div class="value">{{ expense.expense || "-NA-" }}</div>
       </div>
     </div>
 
-    <!-- IMAGE -->
-    <div class="section text-center">
-      <label>Receipt Images</label>
+    <hr class="receipt-divider" />
+
+    <!-- DESCRIPTION -->
+
+    <div class="item full mb-3">
+      <label>Description</label>
+
+      <div class="value">
+        {{ expense.expense || "-NA-" }}
+      </div>
+    </div>
+
+    <!-- REJECTION -->
+
+    <div
+      class="item full mb-3 rejection-box"
+      *ngIf="expense.status === 'Rejected'"
+    >
+      <label>Rejection Reason</label>
+
+      <div class="value rejection-text">
+        {{ expense.rejection_reason || "-NA-" }}
+      </div>
+    </div>
+
+    <div
+      class="item full mb-3 rejection-box rejection-comment"
+      *ngIf="expense.status === 'Rejected' && expense.rejection_description"
+    >
+      <label>Additional Comments</label>
+
+      <div class="value rejection-text">
+        {{ expense.rejection_description }}
+      </div>
+    </div>
+
+    <hr class="receipt-divider" />
+
+    <!-- RECEIPT IMAGES -->
+
+    <div class="image-section">
+      <label class="section-title">Receipt Images</label>
 
       <div
         *ngIf="imagePaths.length > 0; else noImage"
-        class="d-flex justify-content-center gap-2 flex-wrap"
+        class="d-flex flex-wrap gap-3 justify-content-center"
       >
         <img
           *ngFor="let img of imagePaths"
@@ -220,7 +257,7 @@
       </ng-template>
     </div>
 
-    <!-- IMAGE PREVIEW OVERLAY -->
+    <!-- IMAGE PREVIEW -->
     <div
       class="image-overlay"
       *ngIf="showImagePreview"
@@ -233,20 +270,33 @@
       />
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
+    <!-- FOOTER -->
+    <div
+      class="footer"
+      *ngIf="
+        expense.status === 'Approved' &&
+        (expense.approved_by || expense.approved_at)
+      "
+    >
       <div>
         <label>Reviewed By</label>
-        <div class="value">{{ expense.approved_by || "-NA-" }}</div>
+
+        <div class="value">
+          {{ expense.approved_by || "-NA-" }}
+        </div>
       </div>
 
       <div>
         <label>Reviewed At</label>
-        <div class="value">{{ expense.approved_at || "-NA-" }}</div>
+
+        <div class="value">
+          {{ expense.approved_at || "-NA-" }}
+        </div>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- Modal -->
 
@@ -275,7 +325,7 @@
 
         <div class="mb-3">
           <label class="form-label">
-            Visit Reason
+            Rejection Reason
             <span class="required">*</span>
           </label>
           <select
@@ -297,7 +347,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label"> Rejection Description</label>
+          <label class="form-label"> Additional Comments </label>
 
           <input
             class="form-control"
@@ -328,7 +378,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content rounded-4">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-semibold">Resubmit Expense</h5>
+        <h5 class="modal-title fw-semibold">Edit Expense</h5>
 
         <button
           type="button"
