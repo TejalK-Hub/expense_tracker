@@ -2,10 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { ExpensesService } from '../../../service/expenses.service';
-import { BackButtonComponent } from '../../back-button/back-button.component';
 import { AuthServiceService } from '../../../service/auth-service.service';
+
+import { BackButtonComponent } from '../../back-button/back-button.component';
 import { AddExpenseFormComponent } from '../../user-dashboard-component/add-expense-form/add-expense-form.component';
+
 
 @Component({
   selector: 'app-expense-table',
@@ -13,12 +16,15 @@ import { AddExpenseFormComponent } from '../../user-dashboard-component/add-expe
   imports: [
     CommonModule,
     FormsModule,
+    
     AddExpenseFormComponent,
     BackButtonComponent
   ],
   templateUrl: './expense-table.component.html',
   styleUrl: './expense-table.component.scss',
 })
+
+
 export class ExpenseTableComponent implements OnInit {
 
   constructor(
@@ -40,7 +46,8 @@ export class ExpenseTableComponent implements OnInit {
   private debounceTimer: any;
   private queryParamsApplied = false;
 
-  // ---------------- FILTER STATE ----------------
+
+  // ------------------------------------------------------ FILTER STATE ------------------------------------------------------
   filters = {
     user: '',
     userId: null as number | null,
@@ -54,7 +61,8 @@ export class ExpenseTableComponent implements OnInit {
     amountMax: null as number | null
   };
 
-  // ---------------- VISIT SEARCH ----------------
+
+  // ------------------------------------------------------ VISIT SEARCH ------------------------------------------------------
   visitSearch = '';
   filteredVisitsList: string[] = [];
   isVisitDropdownOpen = false;
@@ -67,7 +75,8 @@ export class ExpenseTableComponent implements OnInit {
     this.loadExpenses();
   }
 
-  // ---------------- CREATE EXPENSE ----------------
+
+  // ------------------------------------------------------ CREATE EXPENSE ------------------------------------------------------
   onExpenseCreated() {
     this.loadExpenses();
 
@@ -78,7 +87,31 @@ export class ExpenseTableComponent implements OnInit {
     }
   }
 
-  // ---------------- QUERY PARAMS ----------------
+
+  // ------------------------------------------------------ LOAD EXPENSES ------------------------------------------------------
+  loadExpenses() {
+    const request = this.isAdmin
+      ? this.expensesService.fetchExpensesAdmin()
+      : this.expensesService.fetchExpenses();
+
+    request.subscribe(res => {
+      console.log('Raw API Data:', res.data);
+
+      this.expenses = this.removeDuplicateExpenses(
+        this.normalizeExpenses(res.data)
+      );
+
+      console.log('After Dedup:', this.expenses);
+
+      this.filteredVisitsList = this.getUnique('visit_name');
+
+      this.applyQueryParamsOnce();
+      this.applyFilters();
+    });
+  }
+
+
+  // ------------------------------------------------------ QUERY PARAMS ------------------------------------------------------
   applyQueryParamsOnce() {
     if (this.queryParamsApplied) return;
 
@@ -89,13 +122,7 @@ export class ExpenseTableComponent implements OnInit {
       this.clearFilters();
 
       if ('status' in params) {
-        console.log(params['status'], "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
-        // this.filters.status = params['status'] || '';
         this.filters.status = this.getUnique('status').find(s => s.toLowerCase() === params['status'].toLowerCase()) || '';
-        // this.filters.status =
-        //   this.getUnique('status').find(
-        //     s => s.toLowerCase() === params['status']?.toLowerCase()
-        //   ) || '';
       }
 
       if ('dateFrom' in params) {
@@ -121,7 +148,8 @@ export class ExpenseTableComponent implements OnInit {
     this.queryParamsApplied = true;
   }
 
-  // ---------------- NORMALIZE ----------------
+
+  // ------------------------------------------------------ NORMALIZATION ------------------------------------------------------
   normalizeExpenses(data: any[]) {
     return data.map((e: any) => ({
       ...e,
@@ -134,7 +162,6 @@ export class ExpenseTableComponent implements OnInit {
     return parseFloat(amount.toString().replace(/[^\d.]/g, '')) || 0;
   }
 
-  // ---------------- REMOVE DUPLICATES ----------------
   removeDuplicateExpenses(data: any[]) {
     const seen = new Set();
 
@@ -150,8 +177,8 @@ export class ExpenseTableComponent implements OnInit {
     });
   }
 
-  // ---------------- GET VALUES ----------------\
 
+  // ------------------------------------------------------ DISPLAY HELPERS ------------------------------------------------------
   getCategories(exp: any): string {
     return exp.expense_items?.map((i: any) => i.category).join(', ') || '';
   }
@@ -207,7 +234,15 @@ export class ExpenseTableComponent implements OnInit {
     ];
   }
 
-  // ---------------- FILTER CHANGES ----------------
+  getUserNameById(id: number | null): string {
+    if (!id) return '';
+
+    const user = this.expenses.find(e => e.user_id === id);
+    return user?.user_name || 'Unknown';
+  }
+
+
+  // ------------------------------------------------------ FILTER -------------------------------------------------------
   onFilterChange() {
     clearTimeout(this.debounceTimer);
 
@@ -234,82 +269,6 @@ export class ExpenseTableComponent implements OnInit {
     );
   }
 
-  // ---------------- LOCAL STORAGE ----------------
-  saveFilters() {
-    localStorage.setItem(this.FILTER_KEY, JSON.stringify(this.filters));
-  }
-
-  loadFilters() {
-    const saved = localStorage.getItem(this.FILTER_KEY);
-    console.log('Loading filters from localStorage: ', saved);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-
-        this.filters = {
-          ...this.filters,
-          ...parsed,
-          amountMin: parsed.amountMin !== null ? Number(parsed.amountMin) : null,
-          amountMax: parsed.amountMax !== null ? Number(parsed.amountMax) : null
-        };
-
-        this.visitSearch = this.filters.visit || '';
-        console.log('Loaded filters: ', this.filters);
-      } catch {
-        this.clearFilters();
-      }
-    }
-  }
-
-  saveSort() {
-    localStorage.setItem(this.SORT_KEY, this.sortDirection);
-  }
-
-  loadSort() {
-    const saved = localStorage.getItem(this.SORT_KEY) as 'asc' | 'desc' | null;
-    this.sortDirection = saved || 'desc';
-  }
-
-  // ---------------- VISIT SEARCH ----------------
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: any) {
-    const clickedInside = event.target.closest('.visit-dropdown');
-
-    if (!clickedInside) {
-      this.isVisitDropdownOpen = false;
-    }
-  }
-
-  onVisitSearchChange() {
-    const search = this.visitSearch.toLowerCase();
-
-    this.filteredVisitsList = this.getUnique('visit_name').filter(v =>
-      v.toLowerCase().includes(search)
-    );
-  }
-
-  selectVisit(value: string) {
-    this.filters.visit = value;
-    this.visitSearch = value;
-    this.isVisitDropdownOpen = false;
-    this.onFilterChange();
-  }
-
-  // ---------------- USER ----------------
-  onUserChange(value: string) {
-    this.filters.user = value;
-    this.filters.userId = null;
-    this.onFilterChange();
-  }
-
-  getUserNameById(id: number | null): string {
-    if (!id) return '';
-
-    const user = this.expenses.find(e => e.user_id === id);
-    return user?.user_name || 'Unknown';
-  }
-
-  // ---------------- FILTER LOGIC ----------------
   applyFilters() {
     const f = this.filters;
 
@@ -374,49 +333,6 @@ export class ExpenseTableComponent implements OnInit {
 
   }
 
-  // ---------------- LOAD EXPENSES ----------------
-  loadExpenses() {
-    const request = this.isAdmin
-      ? this.expensesService.fetchExpensesAdmin()
-      : this.expensesService.fetchExpenses();
-
-    request.subscribe(res => {
-      console.log('Raw API Data:', res.data);
-
-      this.expenses = this.removeDuplicateExpenses(
-        this.normalizeExpenses(res.data)
-      );
-
-      console.log('After Dedup:', this.expenses);
-
-      this.filteredVisitsList = this.getUnique('visit_name');
-
-      this.applyQueryParamsOnce();
-      this.applyFilters();
-    });
-  }
-
-  // ---------------- SORT ----------------
-  applySorting() {
-    this.filteredExpenses.sort((a: any, b: any) => {
-      const dateA = new Date(a.created_at).getTime();
-      const dateB = new Date(b.created_at).getTime();
-
-      return this.sortDirection === 'desc'
-        ? dateB - dateA
-        : dateA - dateB;
-    });
-  }
-
-  sortByDate() {
-    this.sortDirection =
-      this.sortDirection === 'asc' ? 'desc' : 'asc';
-
-    this.saveSort();
-    this.applySorting();
-  }
-
-  // ---------------- CLEAR ----------------
   clearFilters() {
     this.filters = {
       user: '',
@@ -478,7 +394,98 @@ export class ExpenseTableComponent implements OnInit {
     this.applyFilters();
   }
 
-  // ---------------- PREVIEW ----------------
+  onUserChange(value: string) {
+    this.filters.user = value;
+    this.filters.userId = null;
+    this.onFilterChange();
+  }
+
+
+  // ------------------------------------------------------ VISIT SEARCH ------------------------------------------------------
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: any) {
+    const clickedInside = event.target.closest('.visit-dropdown');
+
+    if (!clickedInside) {
+      this.isVisitDropdownOpen = false;
+    }
+  }
+
+  onVisitSearchChange() {
+    const search = this.visitSearch.toLowerCase();
+
+    this.filteredVisitsList = this.getUnique('visit_name').filter(v =>
+      v.toLowerCase().includes(search)
+    );
+  }
+
+  selectVisit(value: string) {
+    this.filters.visit = value;
+    this.visitSearch = value;
+    this.isVisitDropdownOpen = false;
+    this.onFilterChange();
+  }
+
+
+  // ------------------------------------------------------ LOCAL STORAGE ------------------------------------------------------
+  saveFilters() {
+    localStorage.setItem(this.FILTER_KEY, JSON.stringify(this.filters));
+  }
+
+  loadFilters() {
+    const saved = localStorage.getItem(this.FILTER_KEY);
+    console.log('Loading filters from localStorage: ', saved);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+
+        this.filters = {
+          ...this.filters,
+          ...parsed,
+          amountMin: parsed.amountMin !== null ? Number(parsed.amountMin) : null,
+          amountMax: parsed.amountMax !== null ? Number(parsed.amountMax) : null
+        };
+
+        this.visitSearch = this.filters.visit || '';
+        console.log('Loaded filters: ', this.filters);
+      } catch {
+        this.clearFilters();
+      }
+    }
+  }
+
+  saveSort() {
+    localStorage.setItem(this.SORT_KEY, this.sortDirection);
+  }
+
+  loadSort() {
+    const saved = localStorage.getItem(this.SORT_KEY) as 'asc' | 'desc' | null;
+    this.sortDirection = saved || 'desc';
+  }
+
+
+  // ------------------------------------------------------ SORTING ------------------------------------------------------
+  applySorting() {
+    this.filteredExpenses.sort((a: any, b: any) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+
+      return this.sortDirection === 'desc'
+        ? dateB - dateA
+        : dateA - dateB;
+    });
+  }
+
+  sortByDate() {
+    this.sortDirection =
+      this.sortDirection === 'asc' ? 'desc' : 'asc';
+
+    this.saveSort();
+    this.applySorting();
+  }
+
+
+  // ------------------------------------------------------ NAVIGATION ------------------------------------------------------
   openPreview(exp: any, index: number) {
     this.expensesService.setPreviewContext(
       this.filteredExpenses,

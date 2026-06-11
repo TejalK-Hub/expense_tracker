@@ -23,7 +23,7 @@
         Filters
       </button>
 
-      <!-- ✅ ADD EXPENSE BUTTON -->
+      <!-- ADD EXPENSE BUTTON -->
       <button
         class="btn btn-sm view-btn"
         data-bs-toggle="modal"
@@ -80,7 +80,6 @@
     </span>
   </div>
 
-  
   <!-- TOTAL AMOUNT BLOCK  -->
 
   <div class="summary-card mb-3">
@@ -127,20 +126,22 @@
             {{ exp.user_name }}
           </td>
 
-          <td data-label="💼 Category">
-            <ng-container
-              *ngFor="let item of exp.expense_items; let last = last"
-            >
-              <span
-                [ngClass]="{
-                  'active-category': isSelectedCategory(item.category),
-                }"
+          <td data-label="💼 Category" class="category-cell">
+            <div class="category-list">
+              <ng-container
+                *ngFor="let item of exp.expense_items; let last = last"
               >
-                {{ item.category }}
-              </span>
+                <span
+                  [ngClass]="{
+                    'active-category': isSelectedCategory(item.category),
+                  }"
+                >
+                  {{ item.category }}
+                </span>
 
-              <span *ngIf="!last">, </span>
-            </ng-container>
+                <span *ngIf="!last">, </span>
+              </ng-container>
+            </div>
           </td>
 
           <td class="desc" data-label="🧾 Description">

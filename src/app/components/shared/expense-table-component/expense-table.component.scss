@@ -37,7 +37,7 @@
   background: var(--bg-card);
   border: 1px solid var(--bg-card);
   border-left: 4px solid var(--border-left); /* Subtle dark emphasis bar */
-  border-radius: 6px;             /* Sharp, structured corners */
+  border-radius: 6px; /* Sharp, structured corners */
   padding: 1.1rem 1.5rem;
 
   // width: max-content;
@@ -53,7 +53,9 @@
 }
 
 .summary-value {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
   font-size: 1.65rem;
   font-weight: 700;
   // color: #121212;
@@ -569,6 +571,28 @@ input[type="date"] {
 
   .range-filter .filter-input {
     width: 100%;
+  }
+
+  .category-cell {
+    align-items: flex-start !important;
+  }
+
+  .category-list {
+    flex: 1;
+    text-align: right;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+
+    max-width: 55%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .category-list span {
+    white-space: normal;
   }
 }
 
