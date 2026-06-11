@@ -11,7 +11,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { authGuard } from './guard/auth.guard';
 import { MainComponentComponent } from './main-component/main-component.component';
 
-import { UserListComponent } from './components/admin/users-component/user-list/user-list.component';
+// import { UserListComponent } from './components/admin/users-component/user-list/user-list.component';
 import { ExpenseReviewComponent } from './components/admin/expense-review/expense-review.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { ClientComponent } from './components/admin/client/client.component';
@@ -50,9 +50,9 @@ export const routes: Routes = [
             // {path: 'users', component: UserListComponent},
             // {path: 'admin-add-expense', component: AddExpensePageComponent, canActivate: [authGuard], data: { role: 'Admin' }},
             // {path: 'admin-manage-expense', component: ExpenseTableComponent},
-            { path: 'admin-review-expense', component: ExpenseReviewComponent, canActivate: [authGuard], data: { role: 'Admin' } },
-            { path: 'user-list', component: UserListComponent, canActivate: [authGuard], data: { role: 'Admin' } },
-            { path: 'user-expense-review', component: ExpenseTableComponent},
+            { path: 'user-list', component: ExpenseReviewComponent, canActivate: [authGuard], data: { role: 'Admin' } },
+            // { path: 'user-list1', component: UserListComponent, canActivate: [authGuard], data: { role: 'Admin' } },    LEGACY COMPONENT, DO NOT DELETE  
+            { path: 'user-expense-review', component: ExpenseTableComponent, canActivate: [authGuard], data: { role: 'Admin' }},
             { path: 'clients', component: ClientComponent, canActivate: [authGuard], data: { role: 'Admin' } },
 
             { path: 'profile-page', component: ProfilePageComponent, canActivate: [authGuard] },
