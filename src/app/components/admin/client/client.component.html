@@ -11,31 +11,69 @@
       class="btn btn-sm view-btn"
       data-bs-toggle="modal"
       data-bs-target="#clientModal"
+      (click)="resetForm()"
     >
       + Add Client
     </button>
   </div>
 
   <!-- TABLE -->
-  <div class="table-responsive">
-    <table class="table clean-table align-middle small text-nowrap">
+  <div class="table-container">
+    <table class="table clean-table mobile-table align-middle">
       <thead class="clean-head">
         <tr>
           <th>#</th>
           <th>Name</th>
-          <th>City</th>
-          <th>Contact</th>
+          <th>Sites</th>
+          <th>Phone</th>
           <th>Email</th>
+          <th class="text-center">Actions</th>
         </tr>
       </thead>
 
       <tbody>
         <tr *ngFor="let c of clients; let i = index" class="clean-row">
-          <td>{{ i + 1 }}</td>
-          <td>{{ c.name }}</td>
-          <td>{{ c.city }}</td>
-          <td>{{ c.contact }}</td>
-          <td>{{ c.email }}</td>
+          <td data-label="#">{{ i + 1 }}</td>
+
+          <td data-label="Client Name" class="client-name">
+            <div class="ellipsis-cell client-cell">
+              {{ c.name }}
+            </div>
+          </td>
+
+          <td data-label="Sites">
+            <div class="d-flex flex-wrap gap-1">
+              <span *ngFor="let site of c.sites" class="site-badge">
+                {{ site }}
+              </span>
+            </div>
+          </td>
+
+          <td data-label="Contact" class="contact">
+            {{ c.contact }}
+          </td>
+
+          <td data-label="Email" class="email">
+            <div class="ellipsis-cell email-cell">
+              {{ c.email }}
+            </div>
+          </td>
+
+          <td class="text-center" data-label="Actions">
+            <button
+              class="btn btn-sm action-btn edit-btn me-2"
+              (click)="editClient(c)"
+            >
+              <i class="bi bi-pencil"></i>
+            </button>
+
+            <button
+              class="btn btn-sm action-btn delete-btn"
+              (click)="deleteClient(c)"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -45,11 +83,10 @@
   <div class="modal fade" id="clientModal" tabindex="-1">
     <div class="modal-dialog modal-md modal-dialog-centered">
       <div class="modal-content rounded-4">
-
         <!-- HEADER -->
         <div class="modal-header border-0">
-          <h5 class="modal-title fw-semibold w-100 text-center">
-            Add Client
+          <h5 class="modal-title fw-semibold">
+            {{ isEditMode ? "Edit Client" : "Add Client" }}
           </h5>
           <button class="btn-close" data-bs-dismiss="modal"></button>
         </div>
@@ -58,7 +95,6 @@
         <div class="modal-body">
           <form>
             <div class="row g-3">
-
               <div class="col-12">
                 <label class="form-label">Name *</label>
                 <input
@@ -70,14 +106,56 @@
               </div>
 
               <div class="col-12">
-                <label class="form-label">City *</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="clientForm.city"
-                  name="city"
-                />
+                <div
+                  class="d-flex justify-content-between align-items-center mb-2"
+                >
+                  <label class="form-label mb-0"> Sites * </label>
+
+                  <button
+                    type="button"
+                    class="btn btn-sm view-btn"
+                    (click)="addSiteField()"
+                  >
+                    <i class="bi bi-plus"></i>
+                    Add Site
+                  </button>
+                </div>
+
+                <div
+                  *ngFor="
+                    let site of clientForm.sites;
+                    let i = index;
+                    trackBy: trackByIndex
+                  "
+                  class="mb-2"
+                >
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="clientForm.sites[i]"
+                      [name]="'site' + i"
+                      list="siteSuggestions"
+                    />
+
+                    <button
+                      *ngIf="clientForm.sites.length > 1"
+                      type="button"
+                      class="btn btn-outline-danger"
+                      (click)="removeSiteField(i)"
+                    >
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              <datalist id="siteSuggestions">
+                <option
+                  *ngFor="let site of existingSites"
+                  [value]="site"
+                ></option>
+              </datalist>
 
               <div class="col-12">
                 <label class="form-label">Contact *</label>
@@ -98,7 +176,6 @@
                   name="email"
                 />
               </div>
-
             </div>
 
             <!-- ACTIONS -->
@@ -108,7 +185,7 @@
                 class="btn btn-primary w-100"
                 (click)="saveClient()"
               >
-                Save
+                {{ isEditMode ? "Update" : "Save" }}
               </button>
 
               <button
@@ -119,10 +196,8 @@
                 Cancel
               </button>
             </div>
-
           </form>
         </div>
-
       </div>
     </div>
   </div>
