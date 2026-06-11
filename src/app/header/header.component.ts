@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-
-import { ToastrService } from 'ngx-toastr';
-import { AuthServiceService } from '../service/auth-service.service';
+import { NavigationEnd, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+
+import { AuthServiceService } from '../service/auth-service.service';
+
 
 @Component({
   selector: 'app-header',
@@ -16,6 +18,7 @@ export class HeaderComponent {
 
   userName: string = 'User';
   userInitial: string = 'U';
+  isAdmin: boolean = false;
   userRole: string = 'Employee'; // default
 
   isDarkTheme = false;
@@ -30,9 +33,9 @@ export class HeaderComponent {
 
     this.userName = name;
     this.userInitial = name.charAt(0).toUpperCase();
+    this.isAdmin = this.authService.userRole?.toLowerCase() === 'admin';
     this.userRole = role;
   }
-
 
 
   ngOnInit() {
@@ -43,6 +46,72 @@ export class HeaderComponent {
     if (this.isDarkTheme) {
       document.body.classList.add('dark-theme');
     }
+
+    // if (this.isAdmin) {
+    //   this.activeTab = 'admin-dashboard';
+    // } else {
+    //   this.activeTab = 'user-dashboard';
+    // }
+    this.setActiveTabFromUrl(this.router.url);
+    // this.router.events.subscribe(event => { console.log('Router event:', event) });
+    // this.router.events
+    // .pipe(filter(event => event instanceof NavigationEnd))
+    // .subscribe((event: any) => {
+    //   this.setActiveTabFromUrl(event.url)
+    // })
+  }
+
+  private setActiveTabFromUrl(url: string) {
+
+    if (url.includes('/admin-dashboard')) {
+      this.activeTab = 'admin-dashboard';
+    }
+    else if (url.includes('/user-dashboard')) {
+
+      this.activeTab = 'user-dashboard';
+    }
+    else if (url.includes('/clients')) {
+
+      this.activeTab = 'clients';
+    }
+    else if (url.includes('/visits')) {
+
+      this.activeTab = 'visits';
+    }
+    else if (url.includes('/user-expense-review')) {
+
+      this.activeTab = 'expenses';
+    }
+
+  }
+
+
+  // ---------------------------------------- HEADER NAVIGATION ----------------------------------------
+  activeTab = '';
+
+  goToAdminDashboard() {
+    this.activeTab = 'admin-dashboard';
+    this.router.navigate(['/admin-dashboard']);
+  }
+
+  goToUserDashboard() {
+    this.activeTab = 'user-dashboard';
+    this.router.navigate(['/user-dashboard']);
+  }
+
+  viewClients() {
+    this.activeTab = 'clients';
+    this.router.navigate(['/clients']);
+  }
+
+  viewVisits() {
+    this.activeTab = 'visits';
+    this.router.navigate(['/visits']);
+  }
+
+  goToExpenseTable() {
+    this.activeTab = 'expenses';
+    this.router.navigate(['/user-expense-review']);
   }
 
 
@@ -70,6 +139,6 @@ export class HeaderComponent {
   }
 
   goToProfile() {
-    this.router.navigate(['/profile-page']);
+    // this.router.navigate(['/profile-page']);
   }
 }

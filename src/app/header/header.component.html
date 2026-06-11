@@ -23,6 +23,53 @@
     <!-- DIVIDER (subtle separation) -->
     <div class="header-divider d-none d-md-block"></div>
 
+    <!-- CENTER NAVIGATION -->
+    <div class="header-nav d-none d-lg-flex">
+      <button
+        *ngIf="isAdmin"
+        class="nav-pill-item"
+        [class.active]="activeTab === 'admin-dashboard'"  
+        (click)="goToAdminDashboard()"
+      >
+        Admin Dashboard
+      </button>
+
+      <button
+        *ngIf="!isAdmin"
+        class="nav-pill-item"
+        [class.active]="activeTab === 'user-dashboard'"
+        (click)="goToUserDashboard()"
+      >
+        User Dashboard
+      </button>
+
+      <button
+        *ngIf="isAdmin"
+        class="nav-pill-item"
+        [class.active]="activeTab === 'clients'"
+        (click)="viewClients()"
+      >
+        Clients
+      </button>
+
+      <button
+        class="nav-pill-item"
+        [class.active]="activeTab === 'visits'"
+        (click)="viewVisits()"
+      >
+        Visits
+      </button>
+
+      <button
+        class="nav-pill-item"
+        [class.active]="activeTab === 'expenses'"
+        (click)="goToExpenseTable()"
+      >
+        Expenses
+      </button>
+    </div>
+
+
     <!-- PROFILE -->
     <div
       class="profile d-flex align-items-center gap-2"
@@ -52,11 +99,52 @@
       ></i>
     </button>
 
-   
+    <!-- MOBILE NAV (DROPDOWN) -->
+    <div class="dropdown d-lg-none">
+      <button class="btn btn-light mobile-nav-btn" data-bs-toggle="dropdown">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+        <li *ngIf="isAdmin">
+          <button class="dropdown-item" (click)="goToAdminDashboard()">
+            Admin Dashboard
+          </button>
+        </li>
+
+        <li *ngIf="!isAdmin">
+          <button class="dropdown-item" (click)="goToUserDashboard()">
+            User Dashboard
+          </button>
+        </li>
+
+        <li *ngIf="isAdmin">
+          <button class="dropdown-item" (click)="viewClients()">Clients</button>
+        </li>
+
+        <li>
+          <button class="dropdown-item" (click)="viewVisits()">Visits</button>
+        </li>
+
+        <li>
+          <button class="dropdown-item" (click)="goToExpenseTable()">
+            Expenses
+          </button>
+        </li>
+
+        <li><hr class="dropdown-divider" /></li>
+
+        <li>
+          <button class="dropdown-item text-danger" (click)="logout()">
+            Logout
+          </button>
+        </li>
+      </ul>
+    </div>
 
     <!-- LOGOUT -->
     <button
-      class="btn btn-light logout-btn d-flex align-items-center gap-1 gap-md-2"
+      class="btn btn-light logout-btn d-flex align-items-center gap-1 gap-md-2 d-none d-lg-block"
       (click)="logout()"
     >
       <i class="bi bi-box-arrow-right"></i>
