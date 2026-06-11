@@ -79,7 +79,7 @@ export class ExpensesService {
 
   fetchExpenses(): Observable<any> {
     return this.httpClient.get(`${environment.apiBaseUrl}/expenses/user/all`, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } })
-    return this.httpClient.get(`${environment.apiBaseUrl}/expenses/user?user_id=${this.auth.userId}`, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } })
+    // return this.httpClient.get(`${environment.apiBaseUrl}/expenses/user?user_id=${this.auth.userId}`, { headers: { Authorization: `Bearer ${this.auth.getToken()}` } })
   }
 
 

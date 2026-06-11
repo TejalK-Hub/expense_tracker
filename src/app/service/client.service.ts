@@ -7,12 +7,41 @@ import { AuthServiceService } from './auth-service.service';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class ClientService {
 
-  constructor(private http: HttpClient, private authService: AuthServiceService) { }
+  constructor(private http: HttpClient) {}
 
+  getClients(): Observable<any> {
+    return this.http.get(
+      `${environment.apiBaseUrl}/clients`
+    );
+  }
 
-  fetchClients(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/clients`, { headers: { Authorization: `Bearer ${this.authService.getToken()}` } });
+  getDistinctSites(): Observable<any> {
+    return this.http.get(
+      `${environment.apiBaseUrl}/clients/sites/distinct`
+    );
+  }
+
+  createClient(body: any): Observable<any> {
+    return this.http.post(
+      `${environment.apiBaseUrl}/clients`,
+      body
+    );
+  }
+
+  updateClient(id: number, body: any): Observable<any> {
+    return this.http.put(
+      `${environment.apiBaseUrl}/clients/${id}`,
+      body
+    );
+  }
+
+  deleteClient(id: number): Observable<any> {
+    return this.http.delete(
+      `${environment.apiBaseUrl}/clients/${id}`
+    );
   }
 }
