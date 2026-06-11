@@ -243,7 +243,7 @@ const getUserExpenses = async (userId) => {
             e.description AS expense,
             TO_CHAR(e.date,'YYYY-MM-DD') AS expense_date,
             e.receipt_id AS receipt,
-            CONCAT('INR ', e.amount) AS amount,
+            e.amount AS amount,
             e.visit_id AS visit,
             v.visit_name,
             v.start_date AS visit_start_date,
@@ -713,7 +713,8 @@ const getUserAllExpenses = async (userId) => {
             TO_CHAR(e.approved_at,'YYYY-MM-DD HH24:MI') AS approved_at,
 
             rr_data.rejection_reason_id,
-            rr_data.rejection_reason
+            rr_data.rejection_reason,
+            h.rejection_description
 
         FROM expenses e
         JOIN visits v 
@@ -724,6 +725,8 @@ const getUserAllExpenses = async (userId) => {
             ON es.id = e.status_id
         LEFT JOIN users approver 
             ON approver.id = e.approved_by
+        LEFT JOIN expense_status_history h
+            ON h.expense_id = e.id
 
         LEFT JOIN LATERAL (
             SELECT 
