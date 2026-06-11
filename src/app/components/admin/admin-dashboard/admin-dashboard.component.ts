@@ -124,11 +124,12 @@ export class AdminDashboardComponent implements OnInit {
   // ------------------------------------------------------------------------------------------------
 
   listUsers() {
-    this.route.navigate(['/admin-review-expense']);
+    this.route.navigate(['/user-list']);
   }
 
   grafanaReports() {
-    window.open('http://localhost:3330/login', '_blank');
+    // window.open('http://localhost:3330/login', '_blank');
+    window.open('http://localhost:3330/d/ad276nr/expense-tracker?orgId=1&from=now%2Fy&to=now%2Fy&timezone=browser', '_blank');
   }
 
   viewClients() {

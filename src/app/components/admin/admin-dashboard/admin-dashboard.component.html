@@ -1,3 +1,4 @@
+
 <div class="container-fluid py-3 admin-dashboard">
   <!-- HEADER -->
   <div class="d-flex justify-content-center mb-4">
@@ -13,18 +14,33 @@
         (click)="goToMonthlyExpenses()"
       >
         <!-- TOP ROW -->
-        <div class="summary-top">
-          <div>
-            <div class="text-muted small">Expense Summary</div>
-            <div class="fw-semibold text-secondary small">
-              {{ current_period_label }}
-            </div>
+        <!-- FILTER ROW -->
+        <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
+          <!-- MONTH FILTER -->
+          <div class="month-filters d-flex align-items-center gap-2">
+            <input
+              type="month"
+              class="form-control form-control-sm month-picker"
+              [(ngModel)]="startMonth"
+              (change)="onMonthRangeChange()"
+              (click)="$event.stopPropagation()"
+            />
+
+            <span class="text-muted">-</span>
+
+            <input
+              type="month"
+              class="form-control form-control-sm month-picker"
+              [(ngModel)]="endMonth"
+              (change)="onMonthRangeChange()"
+              (click)="$event.stopPropagation()"
+            />
           </div>
 
           <!-- USER FILTER -->
           <div class="user-select">
             <select
-              class="custom-select form-select-sm w-100"
+              class="custom-select form-select-sm"
               [(ngModel)]="selectedUserId"
               (click)="$event.stopPropagation()"
               (ngModelChange)="onUserChange()"
@@ -35,41 +51,36 @@
               </option>
             </select>
           </div>
+        </div>
 
-          <!-- CUSTOM MONTH FILTER -->
-          <div class="month-filters d-flex align-items-center gap-2 flex-wrap">
-            <input
-              type="month"
-              class="form-control form-control-sm"
-              [(ngModel)]="startMonth"
-              (change)="onMonthRangeChange()"
-              (click)="$event.stopPropagation()"
-            />
+        <!-- SUMMARY HEADER -->
+        <div
+          class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3"
+        >
+          <!-- LEFT -->
+          <div>
+            <div class="text-muted small">Expense Summary</div>
 
-            <span class="small text-muted">→</span>
+            <div class="fw-semibold text-secondary small">
+              {{ current_period_label }}
+            </div>
+          </div>
 
-            <input
-              type="month"
-              class="form-control form-control-sm"
-              [(ngModel)]="endMonth"
-              (change)="onMonthRangeChange()"
-              (click)="$event.stopPropagation()"
-            />
+          <!-- RIGHT -->
+          <div class="text-end ms-auto">
+            <div class="total-value fs-6 fw-medium">
+              {{
+                summary_current_period?.total_amount || 0
+                  | currency: "INR" : "symbol" : "1.2-2"
+              }}
+            </div>
+
+            <div class="total-label fs-6 fw-medium">
+              {{ summary_current_period?.total_count || 0 }} entries
+            </div>
           </div>
         </div>
 
-        <!-- TOTAL -->
-        <div class="summary-total">
-          <div class="total-value fs-6 fw-medium">
-            {{
-              summary_current_period?.total_amount || 0
-                | currency: "INR" : "symbol" : "1.2-2"
-            }}
-          </div>
-          <div class="total-label fs-6 fw-medium">
-            {{ summary_current_period?.total_count || 0 }} entries
-          </div>
-        </div>
 
         <!-- STATUS GRID -->
         <div class="status-grid">
@@ -206,26 +217,26 @@
     </button> -->
 
     <!-- VISITS BUTTON  -->
-    <button
+    <!-- <button
       class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon overflow-hidden"
       (click)="viewVisits()"
     >
       <i class="bi bi-geo-alt"></i>
       <span>Visits</span>
-    </button>
+    </button> -->
 
     <!-- EXPENSE BUTTON -->
-    <button
+    <!-- <button
       class="btn btn-outline-dark px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm btn-hover-icon"
       (click)="goToExpenseTable()"
     >
       <i class="bi bi-receipt"></i>
       <span>Expense</span>
     </button>
-  </div>
+  </div> -->
 
   <!-- PENDING TABLE -->
-  <div class="card border-0 shadow-sm">
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
     <div class="card-body">
       <h5 class="mb-3 fw-semibold text-dark">Pending Expenses</h5>
       <app-pending-expense-table [expenses]="tableData">
