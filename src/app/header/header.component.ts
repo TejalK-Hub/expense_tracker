@@ -111,7 +111,13 @@ export class HeaderComponent {
 
   goToExpenseTable() {
     this.activeTab = 'expenses';
-    this.router.navigate(['/user-expense-review']);
+
+    if (this.authService.isAdmin) {
+      this.router.navigate(['/user-expense-review']);
+      return;
+    } else {
+      this.router.navigate(['/review-expense']);
+    }
   }
 
 
